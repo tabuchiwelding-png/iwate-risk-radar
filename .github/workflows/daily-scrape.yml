@@ -1,0 +1,60 @@
+name: Daily Iwate Bankruptcy Scraper
+
+# 毎日 6:00 JST に自動実行
+on:
+  schedule:
+    - cron: "0 21 * * *"  # 21:00 UTC = 06:00 JST 翌日
+  workflow_dispatch:  # 手動実行も可能
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        id: scrape
+        run: |
+          python scraper/scrape_iwate.py | tee scrape.log
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain data/)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/bankruptcies.json
+          git commit -m "🤖 Daily update: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+          git push
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## 📊 Scrape Result" >> $GITHUB_STEP_SUMMARY
+          echo "Run time: $(TZ=Asia/Tokyo date +'%Y-%m-%d %H:%M:%S JST')" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat scrape.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
