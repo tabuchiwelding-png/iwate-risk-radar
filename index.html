@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>岩手県 倒産企業BIマップ 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { width:100%; height:100%; overflow:hidden; background:#fbf8f2; color:#2a1f1c; font-family:'Noto Sans JP', sans-serif; font-size:14px; }
+button { font-family:inherit; cursor:pointer; border:none; background:none; }
+
+/* ===== TOP TABS ===== */
+#top { position:fixed; top:0; left:0; right:0; background:#fff; border-bottom:1px solid #e8dfd0; z-index:1000; }
+#tabs { display:flex; background:#f4ead8; }
+.tab { flex:1; padding:11px 2px; text-align:center; font-size:13px; font-weight:700; color:#8a6f5a; letter-spacing:0.06em; border-bottom:3px solid transparent; transition:all 0.2s; }
+.tab.active { color:#d2453e; background:#fff; border-bottom-color:#d2453e; }
+#brand-row { padding:6px 14px 8px; display:flex; align-items:center; justify-content:space-between; }
+#brand { font-size:10px; font-weight:700; color:#8a6f5a; letter-spacing:0.15em; }
+#brand .accent { color:#d2453e; font-weight:900; }
+#layer-tabs { display:flex; background:#fff; padding:0 8px 8px; gap:4px; }
+.layer-tab { flex:1; padding:9px 4px; font-size:11px; font-weight:700; color:#6b5444; background:#f4ead8; border-radius:4px; transition:all 0.2s; border:1px solid transparent; }
+.layer-tab.active { background:#d2453e; color:#fff; }
+.layer-tab .count { display:inline-block; background:rgba(255,255,255,0.25); padding:1px 5px; border-radius:8px; margin-left:4px; font-family:'JetBrains Mono'; font-size:10px; }
+.layer-tab:not(.active) .count { background:rgba(0,0,0,0.06); color:#3a2a28; }
+
+/* ===== MAIN LAYOUT (mobile first) ===== */
+#main { position:fixed; top:108px; left:0; right:0; bottom:0; display:flex; flex-direction:column; }
+#map-view { flex:1; display:flex; flex-direction:column; }
+#map { flex:1; min-height:0; width:100%; background:#e8dfd0; }
+#side-panel { display:none; }
+
+/* Info card (bottom on mobile) */
+#info-card { background:#fff; border-top:1px solid #e8dfd0; max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+#info-card.visible { max-height:280px; }
+#info-card-inner { padding:12px 14px; }
+#ic-tag { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px; margin-bottom:5px; letter-spacing:0.08em; }
+#ic-name { font-size:18px; font-weight:900; color:#2a1f1c; line-height:1.2; margin-bottom:2px; }
+#ic-loc { font-size:11px; color:#6b5444; margin-bottom:8px; }
+#ic-grid { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:8px; padding:7px 0; border-top:1px solid #f0e8d8; border-bottom:1px solid #f0e8d8; margin-bottom:8px; }
+.icg-cell { min-width:0; }
+.icg-cell .l { font-family:'JetBrains Mono'; font-size:8.5px; color:#8a6f5a; letter-spacing:0.1em; margin-bottom:2px; }
+.icg-cell .v { font-size:13px; font-weight:700; color:#2a1f1c; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.icg-cell .v.debt { font-family:'JetBrains Mono'; color:#d2453e; font-size:14px; }
+.icg-cell .v.nodata { color:#a89280; font-size:11px; font-weight:500; }
+#ic-detail-btn { display:block; width:100%; padding:8px; background:#f4ead8; border:1px solid #d8c4a8; color:#3a2a28; font-size:12px; font-weight:700; letter-spacing:0.08em; border-radius:4px; cursor:pointer; }
+#ic-detail-btn:active { background:#e8d8b8; }
+
+/* Map controls */
+#map-controls { background:#fff; border-top:1px solid #e8dfd0; padding:8px 12px 10px; display:flex; gap:6px; align-items:center; }
+.mc-btn { flex:1; height:38px; background:#fff; border:1.5px solid #d8c4a8; color:#3a2a28; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; border-radius:4px; }
+.mc-btn:active { background:#f0e8d8; }
+.mc-btn.primary { flex:2; background:#d2453e; border-color:#d2453e; color:#fff; }
+.mc-btn.primary:active { background:#b8362f; }
+.mc-btn:disabled { opacity:0.35; }
+#mc-counter { font-family:'JetBrains Mono'; font-size:10px; color:#8a6f5a; min-width:54px; text-align:center; padding:0 4px; }
+#mc-counter .now { color:#d2453e; font-weight:700; font-size:12px; }
+
+/* ===== LEAFLET CUSTOMIZATIONS ===== */
+.leaflet-container { font-family:'Noto Sans JP', sans-serif; background:#cce5dd; }
+.leaflet-control-attribution { font-size:9px !important; }
+.leaflet-popup-content-wrapper { border-radius:6px; padding:0; }
+.leaflet-popup-content { margin:8px 12px; font-size:12px; line-height:1.4; }
+.leaflet-popup-content .pop-name { font-weight:900; color:#2a1f1c; font-size:13px; margin-bottom:3px; }
+.leaflet-popup-content .pop-loc { color:#6b5444; font-size:10px; margin-bottom:4px; }
+.leaflet-popup-content .pop-debt { color:#d2453e; font-weight:700; font-family:'JetBrains Mono'; }
+
+/* Custom markers */
+.bankrupt-marker {
+  width:24px; height:24px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.bankrupt-marker::before {
+  content:''; position:absolute; inset:0;
+  background:#d2453e; border:2px solid #fff;
+  border-radius:50%; box-shadow:0 2px 5px rgba(0,0,0,0.4);
+}
+.bankrupt-marker::after {
+  content:''; position:absolute; inset:0;
+  background:rgba(210,69,62,0.5); border-radius:50%;
+  animation:bm-pulse 1.6s ease-out infinite;
+}
+.bankrupt-marker.large::before { background:#a01010; }
+.bankrupt-marker.large { width:30px; height:30px; }
+.bankrupt-marker.small { width:18px; height:18px; }
+.bankrupt-marker.active::before { box-shadow:0 0 0 4px rgba(210,69,62,0.4), 0 4px 12px rgba(210,69,62,0.6); }
+@keyframes bm-pulse {
+  0% { transform:scale(1); opacity:0.6; }
+  100% { transform:scale(2.8); opacity:0; }
+}
+.steel-marker {
+  width:22px; height:22px; background:#3060a0;
+  border:2px solid #fff; border-radius:3px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:10px; font-weight:900;
+}
+.steel-marker.major { width:28px; height:28px; background:#1a3a6a; font-size:12px; }
+.distressed-marker {
+  width:22px; height:22px; background:#e88820;
+  border:2px solid #fff; transform:rotate(45deg);
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+  display:flex; align-items:center; justify-content:center;
+}
+.distressed-marker span { transform:rotate(-45deg); color:#fff; font-size:11px; font-weight:900; }
+
+/* ===== SCROLL VIEWS ===== */
+.scroll-view { position:fixed; top:108px; left:0; right:0; bottom:0; background:#fbf8f2; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px; display:none; }
+.scroll-view.active { display:block; }
+.sv-section { margin-bottom:22px; }
+.sv-title { font-size:13px; font-weight:700; color:#3a2a28; letter-spacing:0.08em; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #d2453e; display:flex; align-items:baseline; justify-content:space-between; }
+.sv-title .sub { font-family:'JetBrains Mono'; font-size:10px; color:#8a6f5a; font-weight:500; }
+
+/* Summary cards */
+.summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sg-card { background:#fff; padding:12px; border-radius:6px; border:1px solid #e8dfd0; }
+.sg-card .l { font-family:'JetBrains Mono'; font-size:9px; color:#8a6f5a; letter-spacing:0.15em; margin-bottom:6px; }
+.sg-card .n { font-family:'JetBrains Mono'; font-size:22px; font-weight:700; color:#d2453e; line-height:1; }
+.sg-card .n .u { font-size:11px; color:#6b5444; margin-left:3px; font-family:'Noto Sans JP'; font-weight:500; }
+.sg-card .s { font-size:10px; color:#8a6f5a; margin-top:4px; line-height:1.4; }
+
+/* Bars */
+.bar-chart { background:#fff; padding:14px; border-radius:6px; border:1px solid #e8dfd0; }
+.bar-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.bar-row:last-child { margin-bottom:0; }
+.bar-label { font-size:11px; font-weight:700; color:#3a2a28; width:90px; flex-shrink:0; text-align:right; }
+.bar-container { flex:1; height:20px; background:#f4ead8; border-radius:3px; overflow:hidden; }
+.bar-fill { height:100%; background:linear-gradient(90deg, #d2453e, #e8704a); }
+.bar-fill.bad { background:linear-gradient(90deg, #c41a1a, #e85040); }
+.bar-fill.warn { background:linear-gradient(90deg, #c47a1a, #e8a040); }
+.bar-fill.ok { background:linear-gradient(90deg, #3a8a4a, #5aa86a); }
+.bar-value { font-family:'JetBrains Mono'; font-size:11px; font-weight:700; color:#3a2a28; min-width:54px; flex-shrink:0; }
+
+/* Table */
+.ctable { background:#fff; border-radius:6px; border:1px solid #e8dfd0; overflow:hidden; }
+.ctable-row { padding:10px 12px; border-bottom:1px solid #f0e8d8; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.ctable-row:last-child { border-bottom:none; }
+.ctable-row:active { background:#fbf6e8; }
+.ctable-date { font-family:'JetBrains Mono'; font-size:10px; color:#8a6f5a; min-width:42px; }
+.ctable-info { flex:1; min-width:0; }
+.ctable-name { font-size:13px; font-weight:700; color:#2a1f1c; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ctable-meta { font-size:10px; color:#6b5444; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ctable-debt { font-family:'JetBrains Mono'; font-size:12px; font-weight:700; color:#d2453e; min-width:70px; text-align:right; }
+.ctable-debt.nodata { color:#a89280; font-size:10px; font-weight:500; font-family:'Noto Sans JP'; }
+
+/* BI banner */
+.bi-banner { background:linear-gradient(135deg, #d2453e, #b8362f); color:#fff; padding:14px 16px; border-radius:8px; margin-bottom:12px; }
+.bi-banner .t { font-family:'JetBrains Mono'; font-size:10px; letter-spacing:0.2em; opacity:0.85; margin-bottom:4px; }
+.bi-banner .h { font-size:16px; font-weight:900; line-height:1.3; margin-bottom:4px; }
+.bi-banner .d { font-size:11px; opacity:0.95; line-height:1.5; }
+
+/* Insight card */
+.insight { background:#fff; border-left:4px solid #d2453e; padding:11px 13px; margin-bottom:10px; border-radius:0 6px 6px 0; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.insight.warn { border-left-color:#c47a1a; }
+.insight.info { border-left-color:#2a5a8a; }
+.insight.good { border-left-color:#3a8a4a; }
+.insight .it { font-family:'JetBrains Mono'; font-size:9px; font-weight:700; letter-spacing:0.18em; color:#d2453e; margin-bottom:5px; }
+.insight.warn .it { color:#c47a1a; }
+.insight.info .it { color:#2a5a8a; }
+.insight.good .it { color:#3a8a4a; }
+.insight .ih { font-size:13px; font-weight:700; color:#2a1f1c; margin-bottom:4px; line-height:1.3; }
+.insight .ib { font-size:11.5px; color:#3a2a28; line-height:1.6; }
+.insight .ib strong { color:#d2453e; }
+
+/* Pattern card */
+.pattern-card { background:#fff; border-radius:6px; border:1px solid #e8dfd0; padding:11px 13px; margin-bottom:10px; }
+.pc-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:7px; padding-bottom:5px; border-bottom:1px dashed #d8c4a8; }
+.pc-name { font-size:13px; font-weight:900; color:#2a1f1c; }
+.pc-count { font-family:'JetBrains Mono'; font-size:10px; color:#d2453e; font-weight:700; }
+.pc-trigger { font-size:11px; color:#6b5444; line-height:1.5; margin-bottom:6px; }
+.pc-trigger strong { color:#d2453e; }
+.pc-tags { display:flex; flex-wrap:wrap; gap:4px; }
+.pc-tag { font-size:10px; padding:2px 6px; background:#fbf6e8; border:1px solid #e8dfd0; border-radius:3px; color:#3a2a28; }
+
+/* Checklist */
+.checklist { background:#fff; border-radius:6px; border:1px solid #e8dfd0; padding:14px; }
+.cl-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid #f0e8d8; align-items:flex-start; }
+.cl-item:last-child { border-bottom:none; }
+.cl-num { font-family:'JetBrains Mono'; font-size:11px; font-weight:700; color:#d2453e; min-width:24px; }
+.cl-content { flex:1; }
+.cl-title { font-size:13px; font-weight:700; color:#2a1f1c; margin-bottom:3px; line-height:1.3; }
+.cl-desc { font-size:11px; color:#6b5444; line-height:1.5; }
+.cl-desc .case { color:#d2453e; font-weight:600; }
+
+/* Risk matrix */
+.risk-matrix { background:#fff; border-radius:6px; border:1px solid #e8dfd0; overflow:hidden; }
+.rm-row { display:flex; border-bottom:1px solid #f0e8d8; }
+.rm-row:last-child { border-bottom:none; }
+.rm-cell { padding:9px 7px; flex:1; font-size:10.5px; min-width:0; }
+.rm-cell.head { background:#f4ead8; font-weight:700; color:#3a2a28; font-size:10px; }
+.rm-cell.label { background:#fbf6e8; font-weight:700; color:#3a2a28; flex:0 0 75px; }
+.rm-cell .lv { display:inline-block; padding:2px 5px; border-radius:3px; font-weight:700; font-size:9.5px; }
+.rm-cell .lv.h { background:#fde0dc; color:#a01010; }
+.rm-cell .lv.m { background:#fdeed0; color:#8a5410; }
+.rm-cell .lv.l { background:#dde8d0; color:#3a6a2a; }
+
+/* Radar chart container */
+.radar-wrap { background:#fff; border-radius:6px; border:1px solid #e8dfd0; padding:14px; text-align:center; }
+.radar-svg { width:100%; max-width:340px; height:auto; }
+.radar-legend { display:flex; flex-wrap:wrap; gap:8px 12px; justify-content:center; margin-top:10px; font-size:10px; }
+.radar-legend .ll { display:flex; align-items:center; gap:5px; }
+.radar-legend .lb { width:10px; height:10px; border-radius:2px; }
+
+/* Comparison bars */
+.cmp-bar-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; padding:4px 0; }
+.cmp-bar-row .pref { width:48px; font-size:11px; font-weight:700; flex-shrink:0; }
+.cmp-bar-row .ttrack { flex:1; height:16px; background:#f4ead8; border-radius:3px; position:relative; }
+.cmp-bar-row .tfill { height:100%; border-radius:3px; }
+.cmp-bar-row .tv { font-family:'JetBrains Mono'; font-size:11px; font-weight:700; min-width:48px; text-align:right; }
+
+/* ===== MODAL ===== */
+#modal { position:fixed; inset:0; background:rgba(13,10,12,0.7); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); z-index:2000; display:none; align-items:flex-end; }
+#modal.visible { display:flex; }
+#modal-content { background:#fff; width:100%; max-height:90vh; border-radius:14px 14px 0 0; overflow:hidden; display:flex; flex-direction:column; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes slideUp { 0%{transform:translateY(100%);} 100%{transform:translateY(0);} }
+#modal-handle { width:40px; height:4px; background:#d8c4a8; border-radius:2px; margin:8px auto 0; flex-shrink:0; }
+#modal-header { padding:14px 16px 12px; border-bottom:1px solid #f0e8d8; flex-shrink:0; position:relative; }
+#modal-tag { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:3px; margin-bottom:8px; letter-spacing:0.08em; }
+#modal-name { font-size:22px; font-weight:900; color:#2a1f1c; line-height:1.2; }
+#modal-loc { font-size:13px; color:#6b5444; margin-top:3px; }
+#modal-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 16px 30px; }
+.field { padding:9px 0; border-bottom:1px solid #f0e8d8; display:flex; gap:12px; align-items:baseline; }
+.field:last-child { border-bottom:none; }
+.field .k { font-family:'JetBrains Mono'; font-size:10px; color:#8a6f5a; letter-spacing:0.1em; flex-shrink:0; width:80px; }
+.field .v { font-size:13px; color:#2a1f1c; font-weight:500; flex:1; line-height:1.5; word-break:break-word; }
+.field .v.highlight { color:#d2453e; font-weight:700; font-size:15px; font-family:'JetBrains Mono'; }
+.field .v.nodata { color:#a89280; font-style:italic; }
+#modal-close { position:absolute; top:14px; right:14px; width:32px; height:32px; border-radius:50%; background:#f4ead8; color:#3a2a28; font-size:18px; display:flex; align-items:center; justify-content:center; font-family:sans-serif; cursor:pointer; }
+.narrative { background:#fbf6e8; padding:10px 12px; border-left:3px solid #d2453e; margin-top:14px; font-size:12px; color:#3a2a28; line-height:1.6; border-radius:0 4px 4px 0; }
+.narrative .nt { font-size:10px; font-weight:700; color:#d2453e; letter-spacing:0.15em; margin-bottom:4px; }
+
+/* ===== START ===== */
+#start { position:fixed; inset:0; background:rgba(251,248,242,0.98); z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; transition:opacity 0.4s; }
+#start.hidden { opacity:0; pointer-events:none; }
+#start .lb { font-family:'JetBrains Mono'; font-size:10px; color:#d2453e; letter-spacing:0.3em; margin-bottom:12px; }
+#start .ttl { font-size:22px; font-weight:900; color:#2a1f1c; letter-spacing:0.02em; margin-bottom:6px; line-height:1.3; }
+#start .sub { font-size:11px; color:#6b5444; letter-spacing:0.05em; margin-bottom:18px; }
+#start .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 22px; margin-bottom:16px; width:100%; max-width:300px; }
+#start .gn { font-family:'JetBrains Mono'; font-size:21px; font-weight:700; color:#d2453e; line-height:1; margin-bottom:2px; }
+#start .gl { font-size:9px; color:#6b5444; letter-spacing:0.1em; font-weight:600; }
+#start-btn { background:#d2453e; color:#fff; padding:13px 32px; font-size:14px; font-weight:700; letter-spacing:0.15em; border-radius:4px; box-shadow:0 4px 12px rgba(210,69,62,0.3); cursor:pointer; margin-bottom:8px; }
+#start .legend { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; justify-content:center; font-size:10px; }
+#start .lg-item { display:flex; align-items:center; gap:4px; color:#3a2a28; font-weight:600; }
+#start .lg-circle { width:12px; height:12px; border-radius:50%; }
+#start .lg-square { width:12px; height:12px; border-radius:2px; }
+#start .lg-diamond { width:10px; height:10px; transform:rotate(45deg); }
+#start .src { font-family:'JetBrains Mono'; font-size:8.5px; color:#8a6f5a; letter-spacing:0.06em; margin-top:6px; line-height:1.6; }
+
+/* ===== PC DUAL PANE LAYOUT ===== */
+@media (min-width:1024px) {
+  body { font-size:15px; }
+  #main { flex-direction:row; }
+  #map-view { flex:0 0 60%; max-width:60%; }
+  #side-panel { display:block; flex:1; background:#fbf8f2; overflow-y:auto; border-left:1px solid #e8dfd0; padding:16px; }
+  #info-card.visible { max-height:none; }
+  #info-card { border-top:none; border-bottom:1px solid #e8dfd0; }
+  .scroll-view { left:0; right:0; }
+  /* On PC, when scroll views are active, hide side panel */
+  body.tab-data .scroll-view#data-view { display:block; }
+  body.tab-biz .scroll-view#biz-view { display:block; }
+}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <div id="tabs">
+    <button class="tab active" id="tab-map" onclick="switchTab('map')">マップ</button>
+    <button class="tab" id="tab-data" onclick="switchTab('data')">データ</button>
+    <button class="tab" id="tab-biz" onclick="switchTab('biz')">ビジネス活用</button>
+  </div>
+  <div id="brand-row">
+    <div id="brand"><span class="accent">岩手</span> 倒産企業BIマップ 2026</div>
+    <div style="font-family:'JetBrains Mono';font-size:10px;color:#8a6f5a">WORST1 / 0.423%</div>
+  </div>
+  <div id="layer-tabs">
+    <button class="layer-tab active" data-layer="bankrupt" onclick="switchLayer('bankrupt')">🔴 倒産企業 <span class="count">15</span></button>
+    <button class="layer-tab" data-layer="steel" onclick="switchLayer('steel')">⬛ 鉄鋼関連 <span class="count">28</span></button>
+    <button class="layer-tab" data-layer="distressed" onclick="switchLayer('distressed')">🔶 赤字・要注意 <span class="count">5</span></button>
+  </div>
+</div>
+
+<div id="main">
+  <div id="map-view">
+    <div id="map"></div>
+    <div id="info-card">
+      <div id="info-card-inner">
+        <div id="ic-tag">—</div>
+        <div id="ic-name">—</div>
+        <div id="ic-loc">—</div>
+        <div id="ic-grid">
+          <div class="icg-cell"><div class="l">負債/状況</div><div class="v debt" id="ic-debt">—</div></div>
+          <div class="icg-cell"><div class="l">設立</div><div class="v" id="ic-founded">—</div></div>
+          <div class="icg-cell"><div class="l">業種</div><div class="v" id="ic-industry">—</div></div>
+        </div>
+        <button id="ic-detail-btn" onclick="openDetail()">📋 詳細データを見る</button>
+      </div>
+    </div>
+    <div id="map-controls">
+      <button class="mc-btn" id="prev-btn" onclick="prevEvent()">◀ 前</button>
+      <button class="mc-btn primary" id="play-btn" onclick="toggleAuto()">▶ 自動再生</button>
+      <div id="mc-counter"><span class="now" id="counter-now">—</span> / <span id="counter-total">—</span></div>
+      <button class="mc-btn" id="next-btn" onclick="nextEvent()">次 ▶</button>
+    </div>
+  </div>
+  <div id="side-panel"></div>
+</div>
+
+<!-- ====== DATA VIEW ====== -->
+<div id="data-view" class="scroll-view">
+  <div class="sv-section">
+    <div class="sv-title">サマリー <span class="sub">SUMMARY</span></div>
+    <div class="summary-grid">
+      <div class="sg-card"><div class="l">倒産</div><div class="n">15<span class="u">社</span></div><div class="s">2026年1-5月</div></div>
+      <div class="sg-card"><div class="l">累計負債</div><div class="n">25.50<span class="u">億円</span></div><div class="s">公開分のみ</div></div>
+      <div class="sg-card"><div class="l">鉄鋼関連企業</div><div class="n">28<span class="u">社</span></div><div class="s">主要拠点+中小</div></div>
+      <div class="sg-card"><div class="l">赤字/要注意</div><div class="n">5<span class="u">社</span></div><div class="s">公開情報ベース</div></div>
+    </div>
+  </div>
+  <div class="sv-section">
+    <div class="sv-title">倒産15社 <span class="sub">タップで詳細</span></div>
+    <div class="ctable" id="bankrupt-table"></div>
+  </div>
+  <div class="sv-section">
+    <div class="sv-title">鉄鋼関連企業（生存） <span class="sub">28社</span></div>
+    <div class="ctable" id="steel-table"></div>
+  </div>
+  <div class="sv-section" style="margin-bottom:40px">
+    <div class="sv-title">業績懸念企業 <span class="sub">公開情報ベース</span></div>
+    <div class="ctable" id="distressed-table"></div>
+  </div>
+</div>
+
+<!-- ====== BIZ VIEW ====== -->
+<div id="biz-view" class="scroll-view">
+  <div class="bi-banner">
+    <div class="t">CRITICAL CONTEXT</div>
+    <div class="h">岩手県は倒産発生率<br>全国WORST 1位（0.423%）</div>
+    <div class="d">2024年度。前年5位から悪化、東北5県がWORST 10入り。2025年通年81件は震災以降最多。本マップは岩手県を取り巻く倒産・健全企業・業績悪化企業を可視化し、与信判断と戦略立案を支援。</div>
+  </div>
+
+  <!-- 5都道府県比較 -->
+  <div class="sv-section">
+    <div class="sv-title">業界強弱：5都道府県比較 <span class="sub">4軸レーダー</span></div>
+    <div class="radar-wrap">
+      <svg class="radar-svg" viewBox="0 0 400 340" id="radar-svg"></svg>
+      <div class="radar-legend">
+        <div class="ll"><div class="lb" style="background:#d2453e"></div>岩手</div>
+        <div class="ll"><div class="lb" style="background:#2a5a8a"></div>東京</div>
+        <div class="ll"><div class="lb" style="background:#3a8a4a"></div>大阪</div>
+        <div class="ll"><div class="lb" style="background:#c47a1a"></div>北海道</div>
+        <div class="ll"><div class="lb" style="background:#7050a0"></div>福岡</div>
+      </div>
+      <div style="font-size:10px;color:#8a6f5a;margin-top:8px;line-height:1.5">外側ほど高リスク。<strong>岩手は全軸で他県を上回る</strong>＝深刻な経営環境。</div>
+    </div>
+  </div>
+
+  <!-- 倒産発生率比較 -->
+  <div class="sv-section">
+    <div class="sv-title">倒産発生率：5都道府県比較 <span class="sub">2024年度</span></div>
+    <div class="bar-chart">
+      <div class="cmp-bar-row"><div class="pref">岩手</div><div class="ttrack"><div class="tfill bar-fill bad" style="width:100%"></div></div><div class="tv" style="color:#d2453e">0.423%</div></div>
+      <div class="cmp-bar-row"><div class="pref">大阪</div><div class="ttrack"><div class="tfill bar-fill warn" style="width:82%"></div></div><div class="tv">0.350%</div></div>
+      <div class="cmp-bar-row"><div class="pref">東京</div><div class="ttrack"><div class="tfill bar-fill warn" style="width:67%"></div></div><div class="tv">0.283%</div></div>
+      <div class="cmp-bar-row"><div class="pref">北海道</div><div class="ttrack"><div class="tfill bar-fill" style="width:59%;background:#a89280"></div></div><div class="tv">0.250%</div></div>
+      <div class="cmp-bar-row"><div class="pref">福岡</div><div class="ttrack"><div class="tfill bar-fill ok" style="width:54%"></div></div><div class="tv">0.230%</div></div>
+      <div class="cmp-bar-row" style="border-top:1px dashed #d8c4a8;padding-top:8px;margin-top:6px"><div class="pref" style="color:#8a6f5a;font-weight:500">全国</div><div class="ttrack"><div class="tfill bar-fill" style="width:67%;background:#a89280"></div></div><div class="tv" style="color:#8a6f5a">0.282%</div></div>
+    </div>
+    <div class="insight info" style="margin-top:8px">
+      <div class="it">💡 INSIGHT</div>
+      <div class="ib">岩手は全国平均の<strong>1.5倍</strong>、福岡の<strong>1.8倍</strong>の倒産発生率。東北5県（岩手・山形0.408% / 青森0.397% / 宮城0.368% / 福島0.321%）がWORST10入り。</div>
+    </div>
+  </div>
+
+  <!-- 業種別高リスク企業 -->
+  <div class="sv-section">
+    <div class="sv-title">業種別 高リスク企業数（岩手県） <span class="sub">TDB 2025/6</span></div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">建設業</div><div class="bar-container"><div class="bar-fill bad" style="width:100%"></div></div><div class="bar-value">375社 (+13)</div></div>
+      <div class="bar-row"><div class="bar-label">製造業 ⚠</div><div class="bar-container"><div class="bar-fill bad" style="width:93%"></div></div><div class="bar-value">347社 (+46)</div></div>
+      <div class="bar-row"><div class="bar-label">小売業</div><div class="bar-container"><div class="bar-fill warn" style="width:84%"></div></div><div class="bar-value">316社 (-17)</div></div>
+      <div class="bar-row"><div class="bar-label">運輸通信</div><div class="bar-container"><div class="bar-fill" style="width:34%;background:#a89280"></div></div><div class="bar-value">129社 (-24)</div></div>
+    </div>
+    <div class="insight warn" style="margin-top:8px">
+      <div class="it">⚠ 製造業に注目</div>
+      <div class="ib">半年で<strong>製造業の高リスク企業が46社増加</strong>＝全業種で最大の伸び。総合工事業の高リスクは細業種で最多166社。JFE協力会社の与信判断にも直結。</div>
+    </div>
+  </div>
+
+  <!-- 求人増減 -->
+  <div class="sv-section">
+    <div class="sv-title">業界の縮小サイン：新規求人増減 <span class="sub">岩手 2025/8</span></div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">建設業</div><div class="bar-container"><div class="bar-fill bad" style="width:100%"></div></div><div class="bar-value" style="color:#d2453e">-15.7%</div></div>
+      <div class="bar-row"><div class="bar-label">製造業</div><div class="bar-container"><div class="bar-fill bad" style="width:89%"></div></div><div class="bar-value" style="color:#d2453e">-14.0%</div></div>
+      <div class="bar-row"><div class="bar-label">運輸郵便</div><div class="bar-container"><div class="bar-fill warn" style="width:70%"></div></div><div class="bar-value" style="color:#c47a1a">-11.0%</div></div>
+      <div class="bar-row"><div class="bar-label">全産業計</div><div class="bar-container"><div class="bar-fill warn" style="width:87%"></div></div><div class="bar-value" style="color:#c47a1a">-13.6%</div></div>
+    </div>
+  </div>
+
+  <!-- マクロ -->
+  <div class="sv-section">
+    <div class="sv-title">マクロ環境 <span class="sub">MACRO</span></div>
+    <div class="summary-grid">
+      <div class="sg-card"><div class="l">2025年通年倒産</div><div class="n">81<span class="u">件</span></div><div class="s">震災以降最多／16年ぶり80件超</div></div>
+      <div class="sg-card"><div class="l">休廃業・解散</div><div class="n">511<span class="u">件</span></div><div class="s">倒産の6倍／過去10年最多</div></div>
+      <div class="sg-card"><div class="l">高リスク企業</div><div class="n">1,428<span class="u">社</span></div><div class="s">県内企業の10.3%</div></div>
+      <div class="sg-card"><div class="l">2025年度負債</div><div class="n">98<span class="u">億円</span></div><div class="s">震災以降2番目</div></div>
+    </div>
+  </div>
+
+  <!-- 倒産パターン -->
+  <div class="sv-section">
+    <div class="sv-title">倒産パターン4分類 <span class="sub">PATTERNS</span></div>
+    <div class="pattern-card">
+      <div class="pc-head"><div class="pc-name">① 復興特需崩落型</div><div class="pc-count">3社</div></div>
+      <div class="pc-trigger"><strong>トリガー：</strong>復興需要への過度依存、特需終息で固定費が重荷</div>
+      <div class="pc-tags"><div class="pc-tag">ハウスM21（11.55億）</div><div class="pc-tag">大船渡市場輸送（1.56億）</div><div class="pc-tag">加藤興業（1.4億）</div></div>
+    </div>
+    <div class="pattern-card">
+      <div class="pc-head"><div class="pc-name">② 観光×コロナ複合型</div><div class="pc-count">2社</div></div>
+      <div class="pc-trigger"><strong>トリガー：</strong>バブル崩壊→震災→豪雨→コロナの累積、特別貸付返済原資なし</div>
+      <div class="pc-tags"><div class="pc-tag">ホテル近江屋（4.14億）</div><div class="pc-tag">ホテル偕楽苑（1.36億）</div></div>
+    </div>
+    <div class="pattern-card">
+      <div class="pc-head"><div class="pc-name">③ 構造的縮小市場型</div><div class="pc-count">3社</div></div>
+      <div class="pc-trigger"><strong>トリガー：</strong>業界全体の需要構造変化（紙書籍・酒類卸・木材）に対応できず</div>
+      <div class="pc-tags"><div class="pc-tag">志戸平商事（1.18億）</div><div class="pc-tag">菅原書店（0.8億）</div><div class="pc-tag">豊田木材（2.6億）</div></div>
+    </div>
+    <div class="pattern-card">
+      <div class="pc-head"><div class="pc-name">④ 小規模工事業型</div><div class="pc-count">3社</div></div>
+      <div class="pc-trigger"><strong>トリガー：</strong>資材高・人件費上昇・公共発注減で利益確保困難</div>
+      <div class="pc-tags"><div class="pc-tag">タカユウ屋根（0.5億）</div><div class="pc-tag">大東冷熱（0.4億）</div><div class="pc-tag">紺野電業（未公表）</div></div>
+    </div>
+  </div>
+
+  <!-- リスクマトリックス -->
+  <div class="sv-section">
+    <div class="sv-title">業種別リスクマトリックス <span class="sub">RISK MATRIX</span></div>
+    <div class="risk-matrix">
+      <div class="rm-row">
+        <div class="rm-cell head label">業種</div>
+        <div class="rm-cell head">2026倒産</div>
+        <div class="rm-cell head">高リスク数</div>
+        <div class="rm-cell head">求人</div>
+        <div class="rm-cell head">総合</div>
+      </div>
+      <div class="rm-row"><div class="rm-cell label">建設・工事</div><div class="rm-cell">5社</div><div class="rm-cell">375社</div><div class="rm-cell">-15.7%</div><div class="rm-cell"><span class="lv h">最高</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">製造業</div><div class="rm-cell">2社</div><div class="rm-cell">347社+46</div><div class="rm-cell">-14.0%</div><div class="rm-cell"><span class="lv h">最高</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">宿泊・旅館</div><div class="rm-cell">2社</div><div class="rm-cell">縮小</div><div class="rm-cell">減</div><div class="rm-cell"><span class="lv h">最高</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">卸売・小売</div><div class="rm-cell">2社</div><div class="rm-cell">316社</div><div class="rm-cell">減</div><div class="rm-cell"><span class="lv m">中〜高</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">運輸</div><div class="rm-cell">1社</div><div class="rm-cell">129社-24</div><div class="rm-cell">-11.0%</div><div class="rm-cell"><span class="lv m">中</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">農・漁業</div><div class="rm-cell">2社</div><div class="rm-cell">—</div><div class="rm-cell">—</div><div class="rm-cell"><span class="lv m">中</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">医薬・調剤</div><div class="rm-cell">1社</div><div class="rm-cell">—</div><div class="rm-cell">—</div><div class="rm-cell"><span class="lv l">低〜中</span></div></div>
+      <div class="rm-row"><div class="rm-cell label">銀行・金融</div><div class="rm-cell">0社</div><div class="rm-cell">—</div><div class="rm-cell">—</div><div class="rm-cell"><span class="lv l">低</span></div></div>
+    </div>
+  </div>
+
+  <!-- 与信チェックリスト -->
+  <div class="sv-section">
+    <div class="sv-title">取引前 与信チェックリスト <span class="sub">DUE DILIGENCE</span></div>
+    <div class="checklist">
+      <div class="cl-item">
+        <div class="cl-num">01</div>
+        <div class="cl-content">
+          <div class="cl-title">ピーク売上比 -50% 以上の急落か</div>
+          <div class="cl-desc">ハウスM21は36.97→11.77億（-68%）、加藤興業は2.57→0.38億（-85%）。<span class="case">急落企業は2〜3年で破綻確率が高い</span></div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">02</div>
+        <div class="cl-content">
+          <div class="cl-title">直近2年連続の最終赤字計上か</div>
+          <div class="cl-desc">大東冷熱は2022年に営業赤字240万円。<span class="case">慢性赤字は資本食い潰しの典型シグナル</span></div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">03</div>
+        <div class="cl-content">
+          <div class="cl-title">単一事業・単一顧客依存80%超か</div>
+          <div class="cl-desc">加藤興業は<span class="case">官公庁発注80%以上</span>に依存し発注減で売上1/7に。大船渡市場輸送は漁業＋復興特需依存で双方崩落</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">04</div>
+        <div class="cl-content">
+          <div class="cl-title">経営者60歳以上＋後継者不在か</div>
+          <div class="cl-desc">岩手の<span class="case">休廃業企業の経営者平均年齢70代、60代以上が9割</span>。承継問題はサイレント・リスク</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">05</div>
+        <div class="cl-content">
+          <div class="cl-title">コロナ特別貸付＋返済据置中か</div>
+          <div class="cl-desc">ホテル偕楽苑・近江屋ともコロナ貸付延命も<span class="case">据置終了後の資金繰り急悪化</span>で破綻</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">06</div>
+        <div class="cl-content">
+          <div class="cl-title">震災復興特需依存事業か</div>
+          <div class="cl-desc">建設・運輸・住宅で復興期に売上急拡大した企業は<span class="case">「特需崩落」リスク</span>が極めて高い</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-num">07</div>
+        <div class="cl-content">
+          <div class="cl-title">同業他社の倒産・休廃業が地域で頻発か</div>
+          <div class="cl-desc"><span class="case">沿岸×建設、内陸×宿泊</span>は岩手で要注意のクロスセクター。地域・業種クラスター連鎖は構造的悪化のサイン</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 機会 -->
+  <div class="sv-section" style="margin-bottom:40px">
+    <div class="sv-title">機会の側面 <span class="sub">OPPORTUNITIES</span></div>
+    <div class="insight good">
+      <div class="it">💡 攻めの視点</div>
+      <div class="ih">倒産・廃業の進展は受注機会の再分配局面でもある</div>
+      <div class="ib">特に建設・工事系で<strong>沿岸4社倒産＝復興特需崩落エリア</strong>と<strong>県南3社倒産＝公共発注減エリア</strong>では、健全な受注余力のある事業者にとってシェア拡大の機会。倒産企業の従業員獲得（特に熟練工）も中期戦略として有効。鉄鋼関連は釜石・北上に集積（28社）し、自動車・半導体クラスター（北上・金ケ崎）は引き続き堅調。</div>
+    </div>
+    <div class="insight info">
+      <div class="it">🔍 月次モニタリング推奨</div>
+      <div class="ib">
+        ① TSR盛岡支店「月次倒産集計」（翌月上旬）<br>
+        ② 帝国データバンク盛岡支店 速報<br>
+        ③ 岩手日報・岩手日日 経済欄（事業停止・申請準備段階）<br>
+        ④ 官報の破産手続開始決定公告<br>
+        ⑤ TSR「岩手県 倒産リスク」分析（半年毎）
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL ====== -->
+<div id="modal" onclick="if(event.target===this)closeDetail()">
+  <div id="modal-content">
+    <div id="modal-handle"></div>
+    <div id="modal-header">
+      <button id="modal-close" onclick="closeDetail()">×</button>
+      <div id="modal-tag">—</div>
+      <div id="modal-name">—</div>
+      <div id="modal-loc">—</div>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ====== START SCREEN ====== -->
+<div id="start">
+  <div class="lb">IWATE / 倒産企業BIマップ</div>
+  <div class="ttl">岩手県 倒産企業<br>ビジネス・インテリジェンス</div>
+  <div class="sub">市場調査・与信判断・戦略立案ツール</div>
+  <div class="grid">
+    <div><div class="gn">15</div><div class="gl">2026年倒産</div></div>
+    <div><div class="gn">28</div><div class="gl">鉄鋼関連</div></div>
+    <div><div class="gn">5</div><div class="gl">業績懸念</div></div>
+    <div><div class="gn">No.1</div><div class="gl">倒産率WORST</div></div>
+  </div>
+  <div class="legend">
+    <div class="lg-item"><div class="lg-circle" style="background:#d2453e"></div>倒産（赤丸・点滅）</div>
+    <div class="lg-item"><div class="lg-square" style="background:#3060a0"></div>鉄鋼関連</div>
+    <div class="lg-item"><div class="lg-diamond" style="background:#e88820"></div>業績懸念</div>
+  </div>
+  <button id="start-btn" onclick="beginApp()">はじめる</button>
+  <div class="src">出典: TSR / TDB / 岩手日報 / IBC / mit / JC-NET / OpenStreetMap</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+// ============= DATA LOADING =============
+// 起動時に ./data/*.json を fetch。失敗時はインライン fallback を使用。
+var DATA_LOADED = false;
+var LAST_UPDATED = null;
+
+function fetchJSON(url) {
+  return fetch(url, {cache: 'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+}
+
+function isRecent(dateStr, days) {
+  // YYYY-MM-DD 形式の日付が「日数」以内かを判定（last_updated 起点）
+  if (!dateStr || !LAST_UPDATED) return false;
+  try {
+    var d = new Date(dateStr);
+    var ref = new Date(LAST_UPDATED);
+    var diff = (ref - d) / (1000*60*60*24);
+    return diff >= 0 && diff <= days;
+  } catch(e){ return false; }
+}
+
+function convertBankruptEntry(c) {
+  // JSON schema -> 内部 schema 変換
+  var date = c.date || '';
+  var parts = date.split('-');
+  var month = parts.length>=2 ? parseInt(parts[1],10) : null;
+  var day = parts.length>=3 ? parseInt(parts[2],10) : null;
+  return {
+    name: c.name,
+    form: c.form || '',
+    loc: c.address || c.city || '',
+    city: c.city || '',
+    lat: c.lat, lng: c.lng,
+    industry: c.industry || '—',
+    debt: c.debt != null ? c.debt : null,
+    capital: c.capital,
+    founded: c.founded,
+    ceo: c.ceo,
+    peakRev: c.peakRev,
+    peakYear: c.peakYear,
+    recentRev: c.recentRev,
+    recentYear: c.recentYear,
+    recentLoss: c.recentLoss,
+    employees: c.employees,
+    court: c.court || '—',
+    decisionDate: '20' + (date.length>=10 ? date.substring(2,10).replace(/-/g,'.') : '26.??.??'),
+    trustee: c.trustee,
+    corp: c.corp,
+    narrative: c.narrative || '',
+    date: month && day ? (String(month).padStart(2,'0')+'.'+String(day).padStart(2,'0')) : '??.??',
+    m: month,
+    isNew: isRecent(c.scraped_at || c.date, 7),
+    status: c.status || '破産開始決定'
+  };
+}
+
+function loadData() {
+  return Promise.all([
+    fetchJSON('./data/bankruptcies.json').catch(function(){ return null; }),
+    fetchJSON('./data/steel.json').catch(function(){ return null; }),
+    fetchJSON('./data/distressed.json').catch(function(){ return null; })
+  ]).then(function(results){
+    var bk = results[0], st = results[1], ds = results[2];
+    if (bk && bk.companies) {
+      LAST_UPDATED = bk.last_updated;
+      BANKRUPT = bk.companies.map(convertBankruptEntry).sort(function(a,b){
+        // 日付昇順（古→新）でナラティブ再生用
+        return (a.m||0)*100 + (parseInt(a.date.split('.')[1],10)||0) - ((b.m||0)*100 + (parseInt(b.date.split('.')[1],10)||0));
+      });
+      console.log('[data] bankruptcies.json: '+BANKRUPT.length+' 社 読込');
+    } else {
+      console.warn('[data] bankruptcies.json 読込失敗 → fallback 使用');
+    }
+    if (st && st.companies) {
+      STEEL = st.companies;
+      console.log('[data] steel.json: '+STEEL.length+' 社 読込');
+    }
+    if (ds && ds.companies) {
+      DISTRESSED = ds.companies;
+      console.log('[data] distressed.json: '+DISTRESSED.length+' 社 読込');
+    }
+    DATA_LOADED = true;
+    updateStatusBadge();
+  }).catch(function(e){
+    console.error('[data] 致命的エラー → 全て fallback 使用:', e);
+    DATA_LOADED = true;
+  });
+}
+
+function updateStatusBadge() {
+  // 最終更新表示・NEW件数を上部に表示
+  if (!LAST_UPDATED) return;
+  try {
+    var d = new Date(LAST_UPDATED);
+    var dispStr = d.toLocaleDateString('ja-JP', {month:'2-digit', day:'2-digit'}) + ' 更新';
+    var el = document.querySelector('#brand-row > div:last-child');
+    if (el) el.textContent = dispStr + ' / WORST1';
+    var newCount = BANKRUPT.filter(function(c){return c.isNew;}).length;
+    if (newCount > 0) {
+      console.log('[data] 直近7日以内の新規倒産: '+newCount+' 件');
+    }
+  } catch(e){}
+}
+
+// ============= DATA (FALLBACK - JSON読込失敗時のみ使用) =============
+var BANKRUPT = [
+  { date:'01.16', m:1, name:'タカユウ', form:'(有)', loc:'矢巾町白沢', lat:39.6112, lng:141.1393, industry:'屋根工事業', debt:5283, capital:600, founded:1992, ceo:'寺沢義秋', peakRev:17505, peakYear:'1997年2月期', court:'盛岡地裁', decisionDate:'2026.01.16', narrative:'1992年設立。顧客の要望に応じて内装工事も手がけ業績を伸ばし、ピークの1997年2月期に売上高1億7,505万円を計上していた。' },
+  { date:'01.20', m:1, name:'ハウスM21', form:'(株)', loc:'盛岡市', lat:39.7036, lng:141.1527, industry:'住宅建築販売', debt:115500, capital:5100, founded:1994, peakRev:369727, peakYear:'2014年3月期', recentRev:117721, recentYear:'2025年3月期', recentLoss:2400, employees:21, court:'盛岡地裁', decisionDate:'2026.01.20', narrative:'1994年7月設立。住宅建築販売・リフォーム・不動産。震災復興需要で2014年3月期売上36.97億円ピークも、特需終息＋コロナで2025年3月期11.77億円・損失2,400万円。1月20日従業員21人全員解雇、同日盛岡地裁に破産申請し即日開始決定。岩手2026年最大規模。' },
+  { date:'01.28', m:1, name:'大東冷熱', form:'(株)', loc:'滝沢市巣子', lat:39.7345, lng:141.0764, industry:'設備工事業', debt:3770, capital:1500, founded:1986, ceo:'吉谷地一志', recentRev:2627, recentYear:'2022年', recentLoss:240, employees:'5人未満', court:'盛岡地裁', decisionDate:'2026.01.28', corp:'5400001000912', narrative:'1986年3月設立、管工事業。直近の決算（2022年）で売上2,627万円・営業赤字240万円と慢性赤字。2025年11月18日事業停止、2026年1月28日破産開始決定。' },
+  { date:'02.03', m:2, name:'志戸平商事', form:'(株)', loc:'花巻市湯口字志戸平26-1', lat:39.3886, lng:141.0930, industry:'酒類卸売業', debt:11800, capital:1100, ceo:'久保田明寿', court:'盛岡地裁花巻支部', decisionDate:'2026.02.03', trustee:'日高拓郎弁護士', corp:'4400001005326', narrative:'酒類卸売・小売（業務用酒店「いづみや」）・日用雑貨・灯油・損保代理店を展開。ヤマザキショップ志戸平店も運営。関連会社の(株)志戸平温泉タクシーも同日破産。' },
+  { date:'02.03', m:2, name:'ホテル近江屋', form:'(有)', loc:'宮古市磯鶏', lat:39.6280, lng:141.9510, industry:'観光ホテル業', debt:41400, capital:5000, founded:1975, ceo:'近江勇', peakRev:80000, peakYear:'1990年代（8億超）', recentRev:17000, recentYear:'2012年8月期', court:'盛岡地裁', decisionDate:'2026.05.19', narrative:'1967年創業・1975年8月法人化。約40室＋宴会場・結婚式場。ピーク92年約12億円。バブル崩壊→震災2階浸水→コロナ。2025年8月期負債4.14億円。2026年2月3日債務整理一任、5月19日破産開始決定。' },
+  { date:'02.12', m:2, name:'豊田木材', form:'(株)', loc:'宮古市磯鶏', lat:39.6310, lng:141.9560, industry:'製材・床材製造', debt:26000, capital:3000, ceo:'角舘宏', court:'盛岡地裁宮古支部', decisionDate:'2026.02.12', narrative:'2024年3月期時点で負債約2.6億円。2025年6月従業員全員解雇・事業停止、2026年2月12日付で破産開始決定。' },
+  { date:'03.06', m:3, name:'ホテル偕楽苑', form:'(有)', loc:'雫石町鶯宿温泉', lat:39.6948, lng:140.9764, industry:'旅館業', debt:13600, founded:1996, ceo:'小田弘輝', peakRev:18000, peakYear:'2012年7月期', recentRev:8000, recentYear:'直近（半減）', court:'盛岡地裁', decisionDate:'2026.03.06', trustee:'天間正継弁護士', narrative:'前身1977年〜、1996年8月事業分割で設立。和風数寄屋造り。2012年7月期売上1.8億円、2013年豪雨被災と鶯宿温泉全体集客低迷＋コロナで直近8千万円まで半減。コロナ特別貸付限界。2025年11月4日事業停止。' },
+  { date:'03.12', m:3, name:'藤森', form:'(株)', loc:'洋野町種市', lat:40.4118, lng:141.7165, industry:'—', debt:null, court:'—', decisionDate:'2026.03.12', narrative:'公開情報は破産開始決定のみ。負債額・業種詳細は未公表。' },
+  { date:'03.16', m:3, name:'加藤興業', form:'(有)', loc:'一関市室根町折壁字上前木48-1', lat:38.9905, lng:141.4805, industry:'土木工事業', debt:14000, capital:800, founded:1967, ceo:'加藤金男', peakRev:25676, peakYear:'1998年5月期', recentRev:3769, recentYear:'2024年5月期', court:'—', decisionDate:'2026.03.16', narrative:'1967年創業・1982年法人化。土木工事＋舗装＋とび。官公庁発注80%以上。ピーク1998年5月期2.57億円→2024年5月期3,769万円（-85%）。2025年9月1日事業停止。' },
+  { date:'03.27', m:3, name:'児玉ファーム', form:'(有)', loc:'北上市相去町日香下', lat:39.2640, lng:141.0790, industry:'農業', debt:null, court:'—', decisionDate:'2026.03.27', narrative:'公開情報は破産開始決定のみ。負債額未公表。' },
+  { date:'04.03', m:4, name:'みなみ薬局', form:'(有)', loc:'盛岡市向中野1丁目', lat:39.6890, lng:141.1320, industry:'調剤薬局', debt:null, court:'—', decisionDate:'2026.04.03', narrative:'公開情報は破産開始決定のみ。負債額未公表。' },
+  { date:'04.03', m:4, name:'三号新栄丸', form:'(株)', loc:'洋野町種市', lat:40.4120, lng:141.7170, industry:'漁業関連', debt:null, court:'—', decisionDate:'2026.04.03', narrative:'公開情報は破産開始決定のみ。社名から漁業関連と推定。負債額未公表。' },
+  { date:'04.20', m:4, name:'大船渡市場輸送', form:'(株)', loc:'大船渡市赤崎町', lat:39.0680, lng:141.7480, industry:'一般貨物自動車運送業', debt:15600, founded:1974, peakRev:29900, peakYear:'2016年3月期', recentRev:15400, recentYear:'2025年3月期', court:'盛岡地裁一関支部', decisionDate:'2026.04.20', narrative:'1974年8月設立。大船渡魚市場からの魚介類運送主業、2001年以降建材・FRP船・食品にも拡大。震災後ダンプ7台で土砂運搬、ピーク2016年売上2.99億円。復興特需終息でダンプ1台に縮減、2021年売上1.1億円。漁獲不振・燃料増。2026年3月23日自己破産申請、4月20日開始決定。' },
+  { date:'04.27', m:4, name:'紺野電業', form:'(同)', loc:'陸前高田市高田町字法量21-7', lat:39.0252, lng:141.6258, industry:'電気工事業', debt:null, court:'—', decisionDate:'2026.04.27', narrative:'合同会社。引込線工事・交通信号設備・避雷針・電気防食・ネオン等。負債額未公表。' },
+  { date:'05.11', m:5, name:'菅原書店', form:'(有)', loc:'紫波町日詰字郡山駅50', lat:39.5520, lng:141.1633, industry:'書籍・雑誌販売業', debt:8000, capital:2300, ceo:'菅原一', court:'盛岡地裁', decisionDate:'2026.05.11', trustee:'畠山将樹弁護士', corp:'6400002007105', narrative:'資本金2,300万円。2026年5月11日に盛岡地裁から破産開始決定。書籍販売の縮小市場での閉店事例。' }
+];
+
+var STEEL = [
+  // 大手・拠点（釜石中心）
+  { name:'日本製鉄 北日本製鉄所 釜石地区', loc:'釜石市鈴子町23-2', lat:39.2745, lng:141.8843, cat:'major', industry:'製鉄', detail:'旧釜石製鉄所。特殊鋼線材トップメーカー。2026年で創業140周年。' },
+  { name:'日鉄テックスエンジ 東北支店', loc:'釜石市', lat:39.2735, lng:141.8830, cat:'major', industry:'鉄鋼設備・エンジニアリング', detail:'日鉄グループ。設備保守・エンジニアリング。' },
+  { name:'産業振興 北日本事業所', loc:'釜石市', lat:39.2755, lng:141.8855, cat:'major', industry:'鉄鋼原料・スクラップ', detail:'日鉄系列。鉄鋼原料の調達・加工。' },
+  { name:'日鉄物流 北日本支店', loc:'釜石市', lat:39.2725, lng:141.8870, cat:'major', industry:'物流', detail:'日鉄系列の物流。' },
+  { name:'エヌエスオカムラ', loc:'釜石市', lat:39.2760, lng:141.8825, cat:'major', industry:'製造', detail:'日鉄系。釜石。' },
+  { name:'双葉精密', loc:'釜石市', lat:39.2715, lng:141.8810, cat:'mid', industry:'精密機械', detail:'釜石。製造業。' },
+  { name:'津田商店', loc:'釜石市', lat:39.2750, lng:141.8800, cat:'mid', industry:'製造', detail:'釜石。' },
+  { name:'グランバー', loc:'釜石市', lat:39.2730, lng:141.8870, cat:'mid', industry:'製造', detail:'釜石。' },
+  // 大槌
+  { name:'千田精密工業 大槌工場', loc:'大槌町', lat:39.3608, lng:141.9023, cat:'mid', industry:'精密機械', detail:'大槌町。鉄鋼関連加工。' },
+  { name:'エノモト', loc:'大槌町', lat:39.3620, lng:141.9010, cat:'mid', industry:'製造', detail:'大槌町。' },
+  // 遠野
+  { name:'遠野新高電気', loc:'遠野市', lat:39.3275, lng:141.5343, cat:'mid', industry:'電気工事', detail:'遠野市。' },
+  { name:'オーレックス 遠野事業所', loc:'遠野市', lat:39.3280, lng:141.5350, cat:'mid', industry:'製造', detail:'遠野市。' },
+  { name:'クライン 岩手営業所', loc:'遠野市', lat:39.3270, lng:141.5335, cat:'mid', industry:'製造', detail:'遠野市。' },
+  { name:'ワイ・デー・ケー', loc:'遠野市', lat:39.3290, lng:141.5320, cat:'mid', industry:'製造', detail:'遠野市。鉄鋼関連加工。' },
+  // 北上 機械鉄工業協同組合エリア
+  { name:'テクノ北上', loc:'北上市堤ケ丘2-10-20', lat:39.2870, lng:141.1150, cat:'mid', industry:'鋼構物・製缶', detail:'プラントの鋼構物製作・据付・製缶工事・メンテナンス。' },
+  { name:'北上マシナリー工業', loc:'北上市', lat:39.2880, lng:141.1140, cat:'mid', industry:'機械', detail:'北上機械鉄工業協同組合 賛助会員。' },
+  { name:'釜石電機製作所 北上事業所', loc:'北上市堤ヶ丘2-1-88', lat:39.2890, lng:141.1145, cat:'mid', industry:'電機', detail:'北上機械鉄工業協同組合 賛助会員。' },
+  // 花巻
+  { name:'中央コーポレーション', loc:'花巻市東宮野目11-5', lat:39.3920, lng:141.1230, cat:'mid', industry:'鉄構事業', detail:'岩手県鉄構工業協同組合 理事長会社。' },
+  // 北上・金ケ崎 自動車クラスター
+  { name:'トヨタ自動車東日本 岩手工場', loc:'金ケ崎町西根', lat:39.2056, lng:141.1100, cat:'major', industry:'自動車製造', detail:'金ケ崎町。北上・金ケ崎自動車クラスターの中核。' },
+  { name:'トヨタ紡織東北', loc:'金ケ崎町', lat:39.2060, lng:141.1120, cat:'major', industry:'自動車部品', detail:'トヨタ系。' },
+  { name:'アイシン東北', loc:'北上市', lat:39.2861, lng:141.1130, cat:'major', industry:'自動車部品', detail:'北上市。' },
+  { name:'IJTT 北上工場', loc:'北上市', lat:39.2850, lng:141.1140, cat:'mid', industry:'鋳造', detail:'北上市。鋳造部品。' },
+  { name:'東北日発', loc:'北上市', lat:39.2870, lng:141.1110, cat:'mid', industry:'自動車部品', detail:'日本発条系。北上市。' },
+  // 一関エリア
+  { name:'関東化成工業 一関工場', loc:'一関市', lat:38.9355, lng:141.1268, cat:'mid', industry:'化学・自動車', detail:'一関市。' },
+  { name:'タケヒロ東北', loc:'一関市', lat:38.9360, lng:141.1280, cat:'mid', industry:'自動車部品', detail:'一関市。' },
+  { name:'日ピス岩手 一関工場', loc:'一関市', lat:38.9370, lng:141.1290, cat:'mid', industry:'自動車部品', detail:'一関市。日本ピストンリング系。' },
+  // 半導体（北上）
+  { name:'キオクシア岩手', loc:'北上市', lat:39.2900, lng:141.1100, cat:'major', industry:'半導体', detail:'北上市。半導体メモリ製造の大型拠点。' },
+  { name:'シチズン時計マニュファクチャリング東北 北上', loc:'北上市', lat:39.2895, lng:141.1115, cat:'mid', industry:'精密機械', detail:'北上市。' }
+];
+
+var DISTRESSED = [
+  { name:'ネクスグループ', code:'6634', loc:'花巻市椚ノ目', lat:39.3886, lng:141.1163, industry:'IoT・電気機器', status:'⚠ 営業赤字', detail:'東証スタンダード上場。2025年5月通期：売上12.96億（-39.1%）・営業損失65.3百万円・利益率-5%。IoTソリューション事業の急減。', revPeak:null, revCur:1296 },
+  { name:'岩泉ホールディングス', loc:'岩泉町', lat:39.8389, lng:141.7972, industry:'食品・観光（三セク）', status:'過去赤字→好調', detail:'第三セクター。2009年以前は累積赤字3億円。山下社長就任後改革し、岩泉ヨーグルト等で売上30億円規模に。2025年現在は好調。参考事例。', revCur:3000 },
+  { name:'岩手県内 高リスク企業群', loc:'盛岡市他', lat:39.7000, lng:141.1500, industry:'全業種計', status:'⚠ TDB高リスク', detail:'TDB「倒産予測値」で1年以内倒産確率が高い「グレード8〜10」企業群が県内1,428社（10.3%）。具体名は有料情報。建設375社・製造347社（+46）・小売316社・運輸通信129社。', revCur:null },
+  { name:'観光宿泊業界全体', loc:'沿岸・温泉地', lat:39.6948, lng:140.9764, industry:'宿泊・旅館業', status:'⚠ 構造不況', detail:'鶯宿温泉「寿広園」「赤い風車」も2025年8月営業終了。鶯宿温泉全体・宮古市内の旅館の集客低迷が続く。コロナ特別貸付の返済期限到来で連鎖警戒。', revCur:null },
+  { name:'復興特需依存建設業群', loc:'沿岸全域', lat:39.0825, lng:141.7080, industry:'建設・土木', status:'⚠ 特需崩落', detail:'震災後の沿岸復興需要に依存した建設・運輸事業者群。ハウスM21・大船渡市場輸送・加藤興業に続く同パターン崩落の連鎖警戒対象。総合工事業の高リスク166社が細業種最多。', revCur:null }
+];
+
+// ============= GLOBAL STATE =============
+var map, bankruptLayer, steelLayer, distressedLayer;
+var currentLayer = 'bankrupt';
+var currentIdx = -1;
+var autoPlay = false, autoTimer = null;
+var EVENT_MS = 4500;
+var markerMap = { bankrupt:{}, steel:{}, distressed:{} };
+
+// ============= INIT MAP =============
+function initMap() {
+  map = L.map('map', {
+    zoomControl: true,
+    scrollWheelZoom: true,
+    minZoom: 7,
+    maxZoom: 17
+  }).setView([39.5, 141.4], 8);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 19
+  }).addTo(map);
+
+  bankruptLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
+  steelLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
+  distressedLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
+
+  // Bankrupt markers
+  BANKRUPT.forEach(function(c, i) {
+    var debt = c.debt || 0;
+    var sizeClass = debt > 50000 ? 'large' : (debt < 5000 && debt > 0 ? 'small' : '');
+    var icon = L.divIcon({
+      className: '',
+      html: '<div class="bankrupt-marker '+sizeClass+'"></div>',
+      iconSize: [24,24],
+      iconAnchor: [12,12]
+    });
+    var m = L.marker([c.lat, c.lng], {icon:icon});
+    m.bindPopup(buildPopup(c, 'bankrupt'));
+    m.on('click', function(){ selectMarker('bankrupt', i); });
+    markerMap.bankrupt[i] = m;
+    bankruptLayer.addLayer(m);
+  });
+
+  // Steel markers
+  STEEL.forEach(function(c, i) {
+    var icon = L.divIcon({
+      className: '',
+      html: '<div class="steel-marker '+(c.cat==='major'?'major':'')+'">鉄</div>',
+      iconSize: [22,22],
+      iconAnchor: [11,11]
+    });
+    var m = L.marker([c.lat, c.lng], {icon:icon});
+    m.bindPopup(buildPopup(c, 'steel'));
+    m.on('click', function(){ selectMarker('steel', i); });
+    markerMap.steel[i] = m;
+    steelLayer.addLayer(m);
+  });
+
+  // Distressed markers
+  DISTRESSED.forEach(function(c, i) {
+    var icon = L.divIcon({
+      className: '',
+      html: '<div class="distressed-marker"><span>!</span></div>',
+      iconSize: [22,22],
+      iconAnchor: [11,11]
+    });
+    var m = L.marker([c.lat, c.lng], {icon:icon});
+    m.bindPopup(buildPopup(c, 'distressed'));
+    m.on('click', function(){ selectMarker('distressed', i); });
+    markerMap.distressed[i] = m;
+    distressedLayer.addLayer(m);
+  });
+
+  map.addLayer(bankruptLayer);
+}
+
+function buildPopup(c, type) {
+  var html = '<div class="pop-name">' + (c.form||'') + ' ' + c.name + '</div>';
+  html += '<div class="pop-loc">' + c.loc + '</div>';
+  if (type === 'bankrupt' && c.debt) html += '<div class="pop-debt">負債 ' + formatDebt(c.debt) + '</div>';
+  if (type === 'steel') html += '<div style="font-size:11px;color:#3060a0;font-weight:700">' + c.industry + '</div>';
+  if (type === 'distressed') html += '<div style="font-size:11px;color:#e88820;font-weight:700">' + c.status + '</div>';
+  return html;
+}
+
+function formatDebt(m) {
+  if (!m) return null;
+  if (m >= 10000) return (m/10000).toFixed(2) + ' 億円';
+  return m.toLocaleString() + ' 万円';
+}
+
+// ============= LAYER SWITCHING =============
+window.switchLayer = function(layer) {
+  if (currentLayer === layer) return;
+  currentLayer = layer;
+  document.querySelectorAll('.layer-tab').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.layer === layer);
+  });
+  map.removeLayer(bankruptLayer);
+  map.removeLayer(steelLayer);
+  map.removeLayer(distressedLayer);
+  if (layer === 'bankrupt') map.addLayer(bankruptLayer);
+  else if (layer === 'steel') map.addLayer(steelLayer);
+  else map.addLayer(distressedLayer);
+  currentIdx = -1;
+  document.getElementById('info-card').classList.remove('visible');
+  document.getElementById('counter-total').textContent = getCurrentList().length;
+  document.getElementById('counter-now').textContent = '—';
+  document.getElementById('play-btn').innerHTML = '▶ 自動再生';
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  autoPlay = false;
+  if (layer === 'bankrupt') {
+    map.flyTo([39.5, 141.4], 8, {duration:1.2});
+  } else if (layer === 'steel') {
+    map.flyTo([39.3, 141.4], 9, {duration:1.2});
+  } else {
+    map.flyTo([39.5, 141.5], 8, {duration:1.2});
+  }
+};
+
+function getCurrentList() {
+  if (currentLayer === 'bankrupt') return BANKRUPT;
+  if (currentLayer === 'steel') return STEEL;
+  return DISTRESSED;
+}
+
+// ============= SELECT MARKER =============
+function selectMarker(layer, i) {
+  if (layer !== currentLayer) return;
+  currentIdx = i;
+  var c = getCurrentList()[i];
+  map.flyTo([c.lat, c.lng], 13, {duration:1.5});
+  updateInfoCard();
+  document.getElementById('info-card').classList.add('visible');
+  document.getElementById('counter-now').textContent = (i+1).toString().padStart(2,'0');
+}
+
+function updateInfoCard() {
+  if (currentIdx < 0) return;
+  var c = getCurrentList()[currentIdx];
+  var tag = document.getElementById('ic-tag');
+  if (currentLayer === 'bankrupt') {
+    var newBadge = c.isNew ? ' 🆕' : '';
+    tag.textContent = '🔴 倒産 ' + c.date + newBadge;
+    tag.style.background = c.isNew ? '#fff0e0' : '#fde0dc';
+    tag.style.color = c.isNew ? '#c47a1a' : '#a01010';
+  } else if (currentLayer === 'steel') {
+    tag.textContent = '⬛ 鉄鋼関連' + (c.cat==='major'?'（大手）':'（中堅・中小）');
+    tag.style.background = '#dde6f0'; tag.style.color = '#1a3a6a';
+  } else {
+    tag.textContent = '🔶 業績懸念';
+    tag.style.background = '#fdeed0'; tag.style.color = '#8a5410';
+  }
+  document.getElementById('ic-name').textContent = (c.form||'') + ' ' + c.name;
+  document.getElementById('ic-loc').textContent = c.loc;
+  var debtEl = document.getElementById('ic-debt');
+  if (currentLayer === 'bankrupt') {
+    var d = formatDebt(c.debt);
+    if (d) debtEl.innerHTML = d;
+    else debtEl.innerHTML = '<span class="nodata">未公表</span>';
+  } else if (currentLayer === 'distressed') {
+    debtEl.innerHTML = '<span style="color:#e88820;font-size:12px">' + c.status + '</span>';
+  } else {
+    debtEl.innerHTML = '<span style="color:#3060a0;font-size:12px">' + (c.cat==='major'?'拠点':'中堅') + '</span>';
+  }
+  document.getElementById('ic-founded').textContent = c.founded ? c.founded + '年' : '—';
+  document.getElementById('ic-industry').textContent = c.industry || '—';
+}
+
+// ============= NAVIGATION =============
+window.nextEvent = function() {
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  var list = getCurrentList();
+  if (currentIdx < list.length - 1) selectMarker(currentLayer, currentIdx + 1);
+};
+window.prevEvent = function() {
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  autoPlay = false;
+  document.getElementById('play-btn').innerHTML = '▶ 自動再生';
+  if (currentIdx > 0) selectMarker(currentLayer, currentIdx - 1);
+};
+window.toggleAuto = function() {
+  var list = getCurrentList();
+  if (currentIdx >= list.length - 1) {
+    autoPlay = true;
+    document.getElementById('play-btn').innerHTML = '❚❚ 一時停止';
+    selectMarker(currentLayer, 0);
+    autoTimer = setTimeout(autoStep, EVENT_MS);
+    return;
+  }
+  autoPlay = !autoPlay;
+  if (autoPlay) {
+    document.getElementById('play-btn').innerHTML = '❚❚ 一時停止';
+    if (currentIdx < 0) selectMarker(currentLayer, 0);
+    autoTimer = setTimeout(autoStep, EVENT_MS);
+  } else {
+    document.getElementById('play-btn').innerHTML = '▶ 自動再生';
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  }
+};
+function autoStep() {
+  if (!autoPlay) return;
+  var list = getCurrentList();
+  if (currentIdx < list.length - 1) {
+    selectMarker(currentLayer, currentIdx + 1);
+    autoTimer = setTimeout(autoStep, EVENT_MS);
+  } else {
+    autoPlay = false;
+    document.getElementById('play-btn').innerHTML = '↺ 最初から';
+  }
+}
+
+// ============= DETAIL MODAL =============
+window.openDetail = function() {
+  if (currentIdx < 0) return;
+  openDetailFor(currentLayer, currentIdx);
+};
+window.openDetailFor = function(layer, i) {
+  var list = layer === 'bankrupt' ? BANKRUPT : (layer === 'steel' ? STEEL : DISTRESSED);
+  var c = list[i];
+  var tag = document.getElementById('modal-tag');
+  if (layer === 'bankrupt') {
+    tag.textContent = '🔴 倒産 ' + c.date;
+    tag.style.background = '#fde0dc'; tag.style.color = '#a01010';
+  } else if (layer === 'steel') {
+    tag.textContent = '⬛ 鉄鋼関連' + (c.cat==='major'?'（大手）':'（中堅）');
+    tag.style.background = '#dde6f0'; tag.style.color = '#1a3a6a';
+  } else {
+    tag.textContent = '🔶 業績懸念';
+    tag.style.background = '#fdeed0'; tag.style.color = '#8a5410';
+  }
+  document.getElementById('modal-name').textContent = (c.form||'') + ' ' + c.name;
+  document.getElementById('modal-loc').textContent = c.loc;
+  var body = document.getElementById('modal-body');
+  body.innerHTML = '';
+  function addF(k, v, cls) {
+    if (!v && v !== 0) return;
+    var f = document.createElement('div');
+    f.className = 'field';
+    f.innerHTML = '<div class="k">' + k + '</div><div class="v ' + (cls||'') + '">' + v + '</div>';
+    body.appendChild(f);
+  }
+  if (layer === 'bankrupt') {
+    var d = formatDebt(c.debt);
+    addF('負債総額', d ? d : '<span class="nodata">未公表</span>', 'highlight');
+    addF('破産開始決定', c.decisionDate);
+    addF('管轄裁判所', c.court);
+    if (c.trustee) addF('破産管財人', c.trustee);
+    addF('業種', c.industry);
+    addF('代表者', c.ceo);
+    if (c.founded) addF('設立', c.founded + '年');
+    if (c.capital) addF('資本金', c.capital.toLocaleString() + ' 万円');
+    if (c.employees) addF('従業員', c.employees + (typeof c.employees==='number'?'人':''));
+    if (c.peakRev) addF('ピーク売上', (c.peakRev/10000).toFixed(2) + ' 億円<br><span style="color:#8a6f5a;font-size:11px">' + c.peakYear + '</span>');
+    if (c.recentRev) addF('直近売上', (c.recentRev>=10000?(c.recentRev/10000).toFixed(2)+' 億円':c.recentRev.toLocaleString()+' 万円') + '<br><span style="color:#8a6f5a;font-size:11px">' + c.recentYear + (c.recentLoss?' / 損失 '+c.recentLoss.toLocaleString()+'万円':'') + '</span>');
+    if (c.corp) addF('法人番号', c.corp);
+  } else if (layer === 'steel') {
+    addF('カテゴリ', c.cat==='major'?'大手・拠点':'中堅・中小');
+    addF('業種', c.industry);
+    addF('所在地', c.loc);
+  } else {
+    addF('状況', c.status, 'highlight');
+    addF('業種', c.industry);
+    if (c.code) addF('証券コード', c.code);
+    if (c.revCur) addF('直近売上', (c.revCur/10000).toFixed(2) + ' 億円');
+  }
+  if (c.narrative || c.detail) {
+    var nb = document.createElement('div');
+    nb.className = 'narrative';
+    nb.innerHTML = '<div class="nt">背景・経緯</div>' + (c.narrative || c.detail);
+    body.appendChild(nb);
+  }
+  document.getElementById('modal').classList.add('visible');
+};
+window.closeDetail = function() {
+  document.getElementById('modal').classList.remove('visible');
+};
+
+// ============= TAB SWITCHING =============
+window.switchTab = function(tab) {
+  ['map','data','biz'].forEach(function(t) {
+    document.getElementById('tab-'+t).classList.toggle('active', tab===t);
+  });
+  document.body.className = 'tab-' + tab;
+  document.getElementById('main').style.display = tab==='map' ? '' : 'none';
+  document.getElementById('data-view').classList.toggle('active', tab==='data');
+  document.getElementById('biz-view').classList.toggle('active', tab==='biz');
+  document.querySelector('#layer-tabs').style.display = tab==='map' ? '' : 'none';
+  if (tab === 'map') {
+    setTimeout(function() { map.invalidateSize(); }, 100);
+  }
+  if (tab === 'data') renderDataView();
+  if (tab === 'biz') renderBizView();
+};
+
+// ============= DATA VIEW =============
+function renderDataView() {
+  var bt = document.getElementById('bankrupt-table');
+  bt.innerHTML = BANKRUPT.map(function(c,i){
+    var d = formatDebt(c.debt);
+    return '<div class="ctable-row" onclick="openDetailFor(\'bankrupt\','+i+')"><div class="ctable-date">'+c.date+'</div><div class="ctable-info"><div class="ctable-name">'+(c.form||'')+' '+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div>'+(d?'<div class="ctable-debt">'+d+'</div>':'<div class="ctable-debt nodata">未公表</div>')+'</div>';
+  }).join('');
+
+  var st = document.getElementById('steel-table');
+  st.innerHTML = STEEL.map(function(c,i){
+    return '<div class="ctable-row" onclick="openDetailFor(\'steel\','+i+')"><div class="ctable-date">'+(c.cat==='major'?'大手':'中堅')+'</div><div class="ctable-info"><div class="ctable-name">'+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div></div>';
+  }).join('');
+
+  var dt = document.getElementById('distressed-table');
+  dt.innerHTML = DISTRESSED.map(function(c,i){
+    return '<div class="ctable-row" onclick="openDetailFor(\'distressed\','+i+')"><div class="ctable-date" style="color:#e88820">⚠</div><div class="ctable-info"><div class="ctable-name">'+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div><div class="ctable-debt" style="color:#e88820;font-size:10px">'+c.status+'</div></div>';
+  }).join('');
+}
+
+// ============= BIZ VIEW (RADAR CHART) =============
+function renderBizView() {
+  drawRadarChart();
+}
+
+function drawRadarChart() {
+  var svg = document.getElementById('radar-svg');
+  if (!svg) return;
+  var cx = 200, cy = 170, R = 110;
+  var axes = [
+    {label:'倒産発生率', sub:'%×100', vals:{iwate:0.423, tokyo:0.283, osaka:0.350, hokkaido:0.250, fukuoka:0.230}, max:0.5 },
+    {label:'倒産件数増減率', sub:'%/前年', vals:{iwate:6.6, tokyo:12, osaka:15, hokkaido:0, fukuoka:19}, max:25 },
+    {label:'高リスク企業比', sub:'%', vals:{iwate:10.3, tokyo:9.0, osaka:10.5, hokkaido:9.5, fukuoka:8.5}, max:12 },
+    {label:'求人減少率', sub:'%（絶対値）', vals:{iwate:13.6, tokyo:5, osaka:7, hokkaido:10, fukuoka:3}, max:20 }
+  ];
+  var prefs = [
+    {key:'iwate', color:'#d2453e', strokeOpacity:1, fillOpacity:0.25},
+    {key:'tokyo', color:'#2a5a8a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'osaka', color:'#3a8a4a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'hokkaido', color:'#c47a1a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'fukuoka', color:'#7050a0', strokeOpacity:0.7, fillOpacity:0.08}
+  ];
+
+  function ax(i) { return -Math.PI/2 + i * Math.PI*2 / axes.length; }
+  function pt(i, ratio) {
+    var a = ax(i);
+    return [cx + Math.cos(a)*R*ratio, cy + Math.sin(a)*R*ratio];
+  }
+
+  var html = '';
+  // Grid
+  for (var lv = 1; lv <= 4; lv++) {
+    var pts = [];
+    for (var i = 0; i < axes.length; i++) {
+      var p = pt(i, lv/4);
+      pts.push(p[0].toFixed(1)+','+p[1].toFixed(1));
+    }
+    html += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8dfd0" stroke-width="1" />';
+  }
+  // Axes
+  for (var i = 0; i < axes.length; i++) {
+    var p = pt(i, 1);
+    html += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#d8c4a8" stroke-width="1" />';
+    // labels
+    var lp = pt(i, 1.20);
+    var anchor = 'middle';
+    if (Math.abs(Math.cos(ax(i))) > 0.5) anchor = Math.cos(ax(i)) > 0 ? 'start' : 'end';
+    html += '<text x="'+lp[0].toFixed(1)+'" y="'+lp[1].toFixed(1)+'" text-anchor="'+anchor+'" font-size="11" font-weight="700" fill="#3a2a28">'+axes[i].label+'</text>';
+    html += '<text x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+12).toFixed(1)+'" text-anchor="'+anchor+'" font-size="8" fill="#8a6f5a">'+axes[i].sub+'</text>';
+  }
+  // Data polygons (reverse order so iwate on top)
+  for (var k = prefs.length - 1; k >= 0; k--) {
+    var pref = prefs[k];
+    var pts = [];
+    for (var i = 0; i < axes.length; i++) {
+      var v = axes[i].vals[pref.key];
+      var ratio = Math.min(v / axes[i].max, 1);
+      var p = pt(i, ratio);
+      pts.push(p[0].toFixed(1)+','+p[1].toFixed(1));
+    }
+    html += '<polygon points="'+pts.join(' ')+'" fill="'+pref.color+'" fill-opacity="'+pref.fillOpacity+'" stroke="'+pref.color+'" stroke-width="'+(pref.key==='iwate'?2.5:1.5)+'" stroke-opacity="'+pref.strokeOpacity+'" />';
+    // points
+    for (var i = 0; i < axes.length; i++) {
+      var v = axes[i].vals[pref.key];
+      var ratio = Math.min(v / axes[i].max, 1);
+      var p = pt(i, ratio);
+      html += '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(pref.key==='iwate'?3:2)+'" fill="'+pref.color+'" />';
+    }
+  }
+  svg.innerHTML = html;
+}
+
+// ============= START =============
+window.beginApp = function() {
+  document.getElementById('start').classList.add('hidden');
+  // データ読込を試みてからマップ初期化
+  loadData().finally(function(){
+    setTimeout(function() {
+      initMap();
+      document.getElementById('counter-total').textContent = BANKRUPT.length;
+      // NEW バッジ用CSS追加
+      addNewBadges();
+    }, 300);
+  });
+};
+
+function addNewBadges() {
+  // 直近7日以内の新規倒産マーカーに NEW バッジを付与（情報カードで表示）
+  // マーカー自体には DOM 操作不可なので、選択時の表示で対応
+}
+
+// ============= SIDE PANEL (PC) =============
+function buildSidePanel() {
+  var sp = document.getElementById('side-panel');
+  if (!sp) return;
+  // Mini analysis on PC
+  sp.innerHTML =
+    '<div class="bi-banner" style="margin-bottom:14px"><div class="t">岩手</div><div class="h">倒産発生率<br>全国WORST 1位</div><div class="d">0.423%（2024年度）／2025年通年81件</div></div>' +
+    '<div class="sv-section"><div class="sv-title">業界強弱比較 <span class="sub">4軸レーダー</span></div><div class="radar-wrap"><svg class="radar-svg" viewBox="0 0 400 340" id="radar-svg-side"></svg><div class="radar-legend"><div class="ll"><div class="lb" style="background:#d2453e"></div>岩手</div><div class="ll"><div class="lb" style="background:#2a5a8a"></div>東京</div><div class="ll"><div class="lb" style="background:#3a8a4a"></div>大阪</div><div class="ll"><div class="lb" style="background:#c47a1a"></div>北海道</div><div class="ll"><div class="lb" style="background:#7050a0"></div>福岡</div></div></div></div>' +
+    '<div class="sv-section"><div class="sv-title">業種別 高リスク企業数 <span class="sub">TDB 2025/6</span></div><div class="bar-chart"><div class="bar-row"><div class="bar-label">建設業</div><div class="bar-container"><div class="bar-fill bad" style="width:100%"></div></div><div class="bar-value">375</div></div><div class="bar-row"><div class="bar-label">製造業 ⚠</div><div class="bar-container"><div class="bar-fill bad" style="width:93%"></div></div><div class="bar-value">347 (+46)</div></div><div class="bar-row"><div class="bar-label">小売業</div><div class="bar-container"><div class="bar-fill warn" style="width:84%"></div></div><div class="bar-value">316</div></div><div class="bar-row"><div class="bar-label">運輸通信</div><div class="bar-container"><div class="bar-fill" style="width:34%;background:#a89280"></div></div><div class="bar-value">129</div></div></div></div>' +
+    '<div class="sv-section"><div class="sv-title">倒産発生率 5都道府県比較 <span class="sub">2024年度</span></div><div class="bar-chart"><div class="cmp-bar-row"><div class="pref">岩手</div><div class="ttrack"><div class="tfill bar-fill bad" style="width:100%"></div></div><div class="tv" style="color:#d2453e">0.423%</div></div><div class="cmp-bar-row"><div class="pref">大阪</div><div class="ttrack"><div class="tfill bar-fill warn" style="width:82%"></div></div><div class="tv">0.350%</div></div><div class="cmp-bar-row"><div class="pref">東京</div><div class="ttrack"><div class="tfill bar-fill warn" style="width:67%"></div></div><div class="tv">0.283%</div></div><div class="cmp-bar-row"><div class="pref">北海道</div><div class="ttrack"><div class="tfill" style="width:59%;background:#a89280;height:100%"></div></div><div class="tv">0.250%</div></div><div class="cmp-bar-row"><div class="pref">福岡</div><div class="ttrack"><div class="tfill bar-fill ok" style="width:54%"></div></div><div class="tv">0.230%</div></div></div></div>' +
+    '<div class="insight info"><div class="it">💡 INSIGHT</div><div class="ib">岩手は全国平均（0.282%）の<strong>1.5倍</strong>、福岡の<strong>1.8倍</strong>。製造業の高リスク企業が半年で<strong>46社増（最大の伸び）</strong>＝協力会社の与信判断に直結。</div></div>';
+  // Draw radar in side panel too
+  setTimeout(drawRadarChartSide, 100);
+}
+function drawRadarChartSide() {
+  var svg = document.getElementById('radar-svg-side');
+  if (!svg) return;
+  drawRadarInto(svg);
+}
+function drawRadarInto(svg) {
+  // duplicate of drawRadarChart but into specific svg
+  var cx = 200, cy = 170, R = 110;
+  var axes = [
+    {label:'倒産発生率', sub:'%', vals:{iwate:0.423, tokyo:0.283, osaka:0.350, hokkaido:0.250, fukuoka:0.230}, max:0.5 },
+    {label:'件数増減', sub:'%/前年', vals:{iwate:6.6, tokyo:12, osaka:15, hokkaido:0, fukuoka:19}, max:25 },
+    {label:'高リスク比', sub:'%', vals:{iwate:10.3, tokyo:9.0, osaka:10.5, hokkaido:9.5, fukuoka:8.5}, max:12 },
+    {label:'求人減少', sub:'%絶対値', vals:{iwate:13.6, tokyo:5, osaka:7, hokkaido:10, fukuoka:3}, max:20 }
+  ];
+  var prefs = [
+    {key:'iwate', color:'#d2453e', strokeOpacity:1, fillOpacity:0.25},
+    {key:'tokyo', color:'#2a5a8a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'osaka', color:'#3a8a4a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'hokkaido', color:'#c47a1a', strokeOpacity:0.7, fillOpacity:0.08},
+    {key:'fukuoka', color:'#7050a0', strokeOpacity:0.7, fillOpacity:0.08}
+  ];
+  function ax(i) { return -Math.PI/2 + i * Math.PI*2 / axes.length; }
+  function pt(i, ratio) { var a = ax(i); return [cx + Math.cos(a)*R*ratio, cy + Math.sin(a)*R*ratio]; }
+  var html = '';
+  for (var lv = 1; lv <= 4; lv++) {
+    var pts = [];
+    for (var i = 0; i < axes.length; i++) { var p = pt(i, lv/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    html += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8dfd0" stroke-width="1" />';
+  }
+  for (var i = 0; i < axes.length; i++) {
+    var p = pt(i, 1);
+    html += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#d8c4a8" stroke-width="1" />';
+    var lp = pt(i, 1.20);
+    var anchor = 'middle';
+    if (Math.abs(Math.cos(ax(i))) > 0.5) anchor = Math.cos(ax(i)) > 0 ? 'start' : 'end';
+    html += '<text x="'+lp[0].toFixed(1)+'" y="'+lp[1].toFixed(1)+'" text-anchor="'+anchor+'" font-size="11" font-weight="700" fill="#3a2a28">'+axes[i].label+'</text>';
+    html += '<text x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+12).toFixed(1)+'" text-anchor="'+anchor+'" font-size="8" fill="#8a6f5a">'+axes[i].sub+'</text>';
+  }
+  for (var k = prefs.length - 1; k >= 0; k--) {
+    var pref = prefs[k];
+    var pts = [];
+    for (var i = 0; i < axes.length; i++) {
+      var v = axes[i].vals[pref.key];
+      var ratio = Math.min(v / axes[i].max, 1);
+      var p = pt(i, ratio);
+      pts.push(p[0].toFixed(1)+','+p[1].toFixed(1));
+    }
+    html += '<polygon points="'+pts.join(' ')+'" fill="'+pref.color+'" fill-opacity="'+pref.fillOpacity+'" stroke="'+pref.color+'" stroke-width="'+(pref.key==='iwate'?2.5:1.5)+'" stroke-opacity="'+pref.strokeOpacity+'" />';
+    for (var i = 0; i < axes.length; i++) {
+      var v = axes[i].vals[pref.key];
+      var ratio = Math.min(v / axes[i].max, 1);
+      var p = pt(i, ratio);
+      html += '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(pref.key==='iwate'?3:2)+'" fill="'+pref.color+'" />';
+    }
+  }
+  svg.innerHTML = html;
+}
+
+// ============= STARTUP =============
+document.body.className = 'tab-map';
+// Build side panel on PC
+if (window.innerWidth >= 1024) {
+  buildSidePanel();
+}
+
+})();
+</script>
+</body>
+</html>
