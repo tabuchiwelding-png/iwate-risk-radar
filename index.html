@@ -18,7 +18,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 /* ===== TOP TABS ===== */
 #top { position:fixed; top:0; left:0; right:0; background:#fff; border-bottom:1px solid #e8dfd0; z-index:1000; }
 #tabs { display:flex; background:#f4ead8; }
-.tab { flex:1; padding:11px 2px; text-align:center; font-size:13px; font-weight:700; color:#8a6f5a; letter-spacing:0.06em; border-bottom:3px solid transparent; transition:all 0.2s; }
+.tab { flex:1; padding:11px 2px; text-align:center; font-size:11.5px; font-weight:700; color:#8a6f5a; letter-spacing:0.04em; border-bottom:3px solid transparent; transition:all 0.2s; }
 .tab.active { color:#d2453e; background:#fff; border-bottom-color:#d2453e; }
 #brand-row { padding:6px 14px 8px; display:flex; align-items:center; justify-content:space-between; }
 #brand { font-size:10px; font-weight:700; color:#8a6f5a; letter-spacing:0.15em; }
@@ -251,8 +251,115 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 #start .lg-diamond { width:10px; height:10px; transform:rotate(45deg); }
 #start .src { font-family:'JetBrains Mono'; font-size:8.5px; color:#8a6f5a; letter-spacing:0.06em; margin-top:6px; line-height:1.6; }
 
-/* ===== PC DUAL PANE LAYOUT ===== */
-@media (min-width:1024px) {
+/* Risk score badges */
+.rs-badge { display:inline-block; font-family:'JetBrains Mono'; font-size:10px; font-weight:700; color:#fff; padding:2px 6px; border-radius:10px; margin-left:5px; vertical-align:middle; min-width:24px; text-align:center; }
+
+/* Risk calculator */
+.rs-tool { background:#fff; border:1px solid #e8dfd0; border-radius:8px; padding:12px; }
+.rs-tool label { display:block; margin-bottom:8px; font-size:11.5px; font-weight:700; color:#3a2a28; }
+.rs-tool input, .rs-tool select { width:100%; padding:8px 10px; font-size:13px; border:1px solid #d8c4a8; border-radius:4px; margin-top:4px; font-family:inherit; background:#fff; -webkit-appearance:none; }
+.rs-tool .rs-btn { width:100%; padding:11px; font-size:14px; font-weight:700; color:#fff; background:#d2453e; border:none; border-radius:6px; margin-top:6px; cursor:pointer; font-family:inherit; }
+.rs-tool .rs-btn:active { background:#b03a32; }
+.rs-row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.rs-result { margin-top:14px; padding:14px; background:#fbf6e8; border-radius:8px; border:2px solid #d8c4a8; }
+.rs-result.danger { background:#fde0dc; border-color:#d2453e; }
+.rs-result.warn { background:#fdeed0; border-color:#c47a1a; }
+.rs-result.caution { background:#faf2d8; border-color:#b89030; }
+.rs-result.safe { background:#dfeedf; border-color:#3a8a4a; }
+.rs-result-score { font-family:'JetBrains Mono'; font-size:42px; font-weight:700; line-height:1; }
+.rs-result-level { display:inline-block; font-size:11px; font-weight:700; color:#fff; padding:3px 10px; border-radius:12px; margin-left:8px; vertical-align:middle; }
+.rs-result-msg { font-size:13px; color:#3a2a28; margin-top:6px; line-height:1.5; }
+.rs-factors { margin-top:10px; font-size:11px; color:#6b5444; }
+.rs-factor-row { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed #d8c4a8; }
+.rs-factor-row:last-child { border-bottom:none; }
+
+/* Partner cards */
+.partner-card { background:#fff; border:1px solid #e8dfd0; border-radius:8px; padding:11px 13px; margin-bottom:8px; }
+.partner-card.bm { border-left:3px solid #d2453e; }
+.partner-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.partner-card-name { font-size:14px; font-weight:700; color:#2a1f1c; flex:1; line-height:1.3; }
+.partner-card-meta { font-size:10.5px; color:#6b5444; margin-top:3px; }
+.partner-card-tags { display:flex; gap:5px; margin-top:6px; flex-wrap:wrap; align-items:center; }
+.partner-relation { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:3px; background:#fbf6e8; color:#6b5444; }
+.partner-volume { font-family:'JetBrains Mono'; font-size:10.5px; color:#3a2a28; }
+.partner-card-actions { display:flex; gap:6px; align-items:center; }
+.partner-icon-btn { font-size:18px; padding:4px 6px; background:none; border:none; cursor:pointer; color:#8a6f5a; }
+.partner-icon-btn.active { color:#d2453e; }
+.partner-note { font-size:11px; color:#6b5444; margin-top:6px; padding:6px 8px; background:#fbf6e8; border-radius:4px; line-height:1.5; max-height:60px; overflow:hidden; position:relative; }
+.partner-note::after { content:''; position:absolute; bottom:0; left:0; right:0; height:14px; background:linear-gradient(transparent, #fbf6e8); pointer-events:none; }
+.partner-empty-section { background:#fff; border:1px dashed #d8c4a8; border-radius:6px; padding:14px; text-align:center; color:#8a6f5a; font-size:11.5px; }
+
+/* News filters */
+.news-filter { padding:6px 10px; font-size:11px; font-weight:700; color:#6b5444; background:#fff; border:1px solid #d8c4a8; border-radius:14px; cursor:pointer; white-space:nowrap; }
+.news-filter.active { background:#d2453e; color:#fff; border-color:#d2453e; }
+.news-item { background:#fff; border-radius:6px; border:1px solid #e8dfd0; padding:11px 13px; margin-bottom:8px; }
+.news-item .ndate { font-family:'JetBrains Mono'; font-size:10px; color:#8a6f5a; margin-bottom:3px; }
+.news-item .ncat { display:inline-block; font-size:9px; font-weight:700; padding:1px 6px; border-radius:3px; margin-right:5px; vertical-align:middle; }
+.news-item .ncat.倒産 { background:#fde0dc; color:#a01010; }
+.news-item .ncat.廃業 { background:#eee; color:#666; }
+.news-item .ncat.業績悪化 { background:#fdeed0; color:#8a5410; }
+.news-item .ncat.統計 { background:#dde6f0; color:#1a3a6a; }
+.news-item .ncat.業界動向 { background:#e0d8f0; color:#5040a0; }
+.news-item .ncat.公共工事 { background:#d0e8d0; color:#2a6a3a; }
+.news-item .ncat.政策 { background:#e8e0d0; color:#6a5a3a; }
+.news-item .ncat.成長 { background:#d0e8d8; color:#1a6a3a; }
+.news-item .ncat\.M\&A { background:#e0d0e8; color:#6a1a8a; }
+.news-item .ntitle { font-size:13px; font-weight:700; color:#2a1f1c; line-height:1.4; margin-bottom:5px; }
+.news-item .ntags { display:flex; flex-wrap:wrap; gap:3px; margin-bottom:5px; }
+.news-item .ntag { font-size:9.5px; padding:1px 5px; background:#fbf6e8; border:1px solid #e8dfd0; border-radius:3px; color:#3a2a28; }
+.news-item .nsum { font-size:11.5px; color:#3a2a28; line-height:1.5; margin-bottom:6px; }
+.news-item .nimpl { font-size:11px; color:#6b5444; line-height:1.5; padding:6px 8px; background:#fbf6e8; border-left:3px solid #d2453e; border-radius:0 4px 4px 0; }
+.news-item .nimpl::before { content:'💼 '; }
+.news-item .nsource { font-size:9.5px; color:#8a6f5a; margin-top:5px; font-family:'JetBrains Mono'; }
+.news-item .nimpact { display:inline-block; font-size:9px; font-weight:700; margin-left:4px; padding:1px 5px; border-radius:2px; }
+.news-item .nimpact.high { background:#d2453e; color:#fff; }
+.news-item .nimpact.medium { background:#c47a1a; color:#fff; }
+.news-item .nimpact.low { background:#a89280; color:#fff; }
+
+/* Macro indicator */
+.macro-ind { background:#fff; border-radius:6px; border:1px solid #e8dfd0; padding:10px 12px; margin-bottom:8px; }
+.macro-ind-name { font-size:11px; font-weight:700; color:#6b5444; margin-bottom:3px; }
+.macro-ind-val { font-family:'JetBrains Mono'; font-size:20px; font-weight:700; line-height:1; }
+.macro-ind-val.up { color:#d2453e; }
+.macro-ind-val.down { color:#3a8a4a; }
+.macro-ind-val.flat { color:#8a6f5a; }
+.macro-ind-val .u { font-family:'Noto Sans JP'; font-size:11px; margin-left:3px; font-weight:500; color:#6b5444; }
+.macro-ind-context { font-size:10px; color:#8a6f5a; margin-top:4px; line-height:1.4; }
+.macro-ind-period { font-family:'JetBrains Mono'; font-size:9px; color:#a89280; margin-top:3px; }
+.macro-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+/* Monitoring links */
+.mlink { display:block; padding:8px 11px; background:#fff; border:1px solid #e8dfd0; border-radius:4px; margin-bottom:6px; text-decoration:none; }
+.mlink-name { font-size:12px; font-weight:700; color:#2a5a8a; }
+.mlink-url { font-size:9.5px; color:#8a6f5a; font-family:'JetBrains Mono'; margin-top:2px; word-break:break-all; }
+.mlink-freq { display:inline-block; font-size:9px; padding:1px 5px; background:#f4ead8; color:#6b5444; border-radius:2px; margin-left:5px; }
+
+/* Extended modal sections */
+.modal-section { margin-top:14px; padding:11px 12px; background:#fbf6e8; border-radius:6px; }
+.modal-section-title { font-size:11px; font-weight:700; color:#d2453e; letter-spacing:0.08em; margin-bottom:8px; padding-bottom:4px; border-bottom:1px dashed #d8c4a8; }
+.ind-row { display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; border-bottom:1px solid #e8dfd0; font-size:11.5px; }
+.ind-row:last-child { border-bottom:none; }
+.ind-name { font-weight:700; color:#2a1f1c; }
+.ind-val { font-family:'JetBrains Mono'; color:#d2453e; font-weight:700; }
+.sub-list { font-size:10.5px; color:#6b5444; margin-top:4px; padding-left:8px; line-height:1.6; }
+.sub-list li { list-style:none; }
+.sub-list li::before { content:'└ '; color:#a89280; }
+.sub-list .sub-name { font-weight:600; color:#3a2a28; }
+.region-row { padding:7px 0; border-bottom:1px solid #e8dfd0; }
+.region-row:last-child { border-bottom:none; }
+.region-name { font-weight:700; font-size:12px; color:#2a1f1c; }
+.region-cities { font-size:10px; color:#8a6f5a; margin-top:1px; }
+.region-stats { font-family:'JetBrains Mono'; font-size:10.5px; color:#d2453e; margin-top:3px; }
+.region-risk { font-size:10.5px; color:#3a2a28; margin-top:4px; line-height:1.5; padding:4px 6px; background:#fff; border-radius:3px; }
+.factor-row { padding:7px 0; border-bottom:1px solid #e8dfd0; }
+.factor-row:last-child { border-bottom:none; }
+.factor-name { font-weight:700; font-size:12px; color:#2a1f1c; display:flex; justify-content:space-between; align-items:baseline; }
+.factor-count { font-family:'JetBrains Mono'; font-size:10px; color:#d2453e; }
+.factor-ind { font-size:10.5px; color:#6b5444; margin-top:3px; line-height:1.5; }
+.factor-ex { font-size:10px; color:#8a6f5a; margin-top:2px; font-style:italic; }
+.bullet-list { font-size:11.5px; color:#3a2a28; line-height:1.7; padding-left:14px; }
+.bullet-list li { list-style:disc; margin-bottom:2px; }
+
   body { font-size:15px; }
   #main { flex-direction:row; }
   #map-view { flex:0 0 60%; max-width:60%; }
@@ -270,9 +377,12 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 
 <div id="top">
   <div id="tabs">
-    <button class="tab active" id="tab-map" onclick="switchTab('map')">マップ</button>
+    <button class="tab active" id="tab-map" onclick="switchTab('map')">地図</button>
     <button class="tab" id="tab-data" onclick="switchTab('data')">データ</button>
-    <button class="tab" id="tab-biz" onclick="switchTab('biz')">ビジネス活用</button>
+    <button class="tab" id="tab-partner" onclick="switchTab('partner')">取引先</button>
+    <button class="tab" id="tab-biz" onclick="switchTab('biz')">活用</button>
+    <button class="tab" id="tab-news" onclick="switchTab('news')">ニュース</button>
+    <button class="tab" id="tab-settings" onclick="openSettings()" style="flex:0 0 38px;font-size:18px">⚙</button>
   </div>
   <div id="brand-row">
     <div id="brand"><span class="accent">岩手</span> 倒産企業BIマップ 2026</div>
@@ -313,6 +423,10 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 
 <!-- ====== DATA VIEW ====== -->
 <div id="data-view" class="scroll-view">
+  <div class="sv-section" style="margin-bottom:14px">
+    <input id="data-search" type="search" placeholder="🔍 企業名・地域・業種で検索..." style="width:100%;padding:11px 14px;font-size:14px;border:1.5px solid #d8c4a8;border-radius:8px;background:#fff;font-family:inherit;-webkit-appearance:none" oninput="globalSearch(this.value)">
+    <div id="search-stats" style="font-size:10px;color:#8a6f5a;margin-top:5px;font-family:'JetBrains Mono'"></div>
+  </div>
   <div class="sv-section">
     <div class="sv-title">サマリー <span class="sub">SUMMARY</span></div>
     <div class="summary-grid">
@@ -518,22 +632,414 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
   </div>
 
   <!-- 機会 -->
-  <div class="sv-section" style="margin-bottom:40px">
+  <div class="sv-section">
     <div class="sv-title">機会の側面 <span class="sub">OPPORTUNITIES</span></div>
     <div class="insight good">
       <div class="it">💡 攻めの視点</div>
       <div class="ih">倒産・廃業の進展は受注機会の再分配局面でもある</div>
       <div class="ib">特に建設・工事系で<strong>沿岸4社倒産＝復興特需崩落エリア</strong>と<strong>県南3社倒産＝公共発注減エリア</strong>では、健全な受注余力のある事業者にとってシェア拡大の機会。倒産企業の従業員獲得（特に熟練工）も中期戦略として有効。鉄鋼関連は釜石・北上に集積（28社）し、自動車・半導体クラスター（北上・金ケ崎）は引き続き堅調。</div>
     </div>
+    <div class="insight good">
+      <div class="it">🎯 JFE協力会社視点の3つの機会</div>
+      <div class="ib">
+        <strong>(1) 熟練工獲得</strong>：倒産・廃業企業の溶接・溶断・機械加工人材を戦略的にスカウト。ハウスM21の21名解雇など、即戦力候補が継続的に発生中。<br><br>
+        <strong>(2) 設備譲渡</strong>：廃業企業の中古機械（旋盤・溶接機・プレス機）が市場価格より低コストで入手可能。豊田木材・大東冷熱クラスは設備譲渡対象。<br><br>
+        <strong>(3) 元請けからの仕事流動化</strong>：金属製品製造54社・機械器具47社のうち淘汰された分の受注は健全な協力会社に再配分される。シェア拡大の構造的チャンス。
+      </div>
+    </div>
+  </div>
+
+  <!-- 倒産リスク予測ツール -->
+  <div class="sv-section">
+    <div class="sv-title">🎯 倒産リスク予測ツール <span class="sub">RULE-BASED AI</span></div>
+    <div style="font-size:11.5px;color:#6b5444;margin-bottom:10px;line-height:1.6">取引先・取引候補の情報を入力すると、リスクスコア（0〜100）と判定根拠が表示されます。岩手県の倒産パターン15社＋業績懸念6グループの実例から構築したルールベース。</div>
+    <div class="rs-tool">
+      <label>業種
+        <select id="rs-industry">
+          <option value="">-- 選択 --</option>
+          <option value="住宅建築">住宅建築・木造</option>
+          <option value="土木工事">土木・公共工事</option>
+          <option value="設備工事">設備工事（管・電気）</option>
+          <option value="屋根工事">屋根・内装工事</option>
+          <option value="宿泊">宿泊業（旅館・ホテル）</option>
+          <option value="貨物">運輸（貨物・タクシー）</option>
+          <option value="木材">木材・製材</option>
+          <option value="酒類卸">酒類卸・小売</option>
+          <option value="書店">書店・出版</option>
+          <option value="飲食">飲食業</option>
+          <option value="農業">農業</option>
+          <option value="金属">金属製品製造</option>
+          <option value="機械">機械器具</option>
+          <option value="製造">その他製造業</option>
+          <option value="電子部品">電子部品</option>
+          <option value="小売">小売業</option>
+          <option value="サービス">サービス業</option>
+          <option value="IT">IT・通信</option>
+          <option value="医療">医療・調剤</option>
+          <option value="銀行">銀行・金融</option>
+        </select>
+      </label>
+      <label>所在地
+        <select id="rs-region">
+          <option value="">-- 選択 --</option>
+          <option value="沿岸">沿岸（大船渡・宮古・釜石・久慈・洋野・陸前高田）</option>
+          <option value="県北">県北（二戸・軽米・九戸・一戸）</option>
+          <option value="県央">県央（盛岡・滝沢・紫波・矢巾・雫石）</option>
+          <option value="県南">県南（北上・花巻・奥州・金ケ崎・一関）</option>
+        </select>
+      </label>
+      <div class="rs-row2">
+        <label>設立<input id="rs-founded" type="number" placeholder="例: 1990" inputmode="numeric"></label>
+        <label>従業員数<input id="rs-employees" type="number" placeholder="例: 15" inputmode="numeric"></label>
+      </div>
+      <div class="rs-row2">
+        <label>直近売上(万円)<input id="rs-recent" type="number" placeholder="例: 5000" inputmode="numeric"></label>
+        <label>ピーク売上(万円)<input id="rs-peak" type="number" placeholder="例: 20000" inputmode="numeric"></label>
+      </div>
+      <label>直近の業績
+        <select id="rs-profit">
+          <option value="0">黒字</option>
+          <option value="15">営業赤字</option>
+          <option value="25">2期連続赤字</option>
+        </select>
+      </label>
+      <label>経営者年齢
+        <select id="rs-ceoage">
+          <option value="0">60代以下</option>
+          <option value="5">60代（後継者あり）</option>
+          <option value="10">70代以上 / 後継者不在</option>
+        </select>
+      </label>
+      <label>元請依存度
+        <select id="rs-dep">
+          <option value="0">分散（最大顧客50%以下）</option>
+          <option value="8">中（50〜80%）</option>
+          <option value="15">高（80%以上の1社依存）</option>
+        </select>
+      </label>
+      <label>公共発注依存度
+        <select id="rs-pub">
+          <option value="0">なし or 20%未満</option>
+          <option value="8">中（20〜80%）</option>
+          <option value="15">高（80%以上）</option>
+        </select>
+      </label>
+      <button class="rs-btn" onclick="runRiskCalc()">▶ スコア計算</button>
+    </div>
+    <div id="rs-output"></div>
+  </div>
+
+  <!-- マクロ指標 -->
+  <div class="sv-section">
+    <div class="sv-title">マクロ指標ダッシュボード <span class="sub">公開統計</span></div>
+    <div class="macro-grid" id="macro-grid"></div>
+  </div>
+
+  <!-- 鉄鋼・溶接業界特化パネル -->
+  <div class="sv-section">
+    <div class="sv-title">⚙ 鉄鋼・溶接業界 専用パネル <span class="sub">JFE協力会社向け</span></div>
+    <div class="insight" style="background:#1a2a3a;color:#fff;padding:13px 14px;border-radius:8px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;opacity:0.7;letter-spacing:0.1em;margin-bottom:5px">JFEホールディングス</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:8px">元請けの動向は死活問題。月1回のIR確認は最低限。</div>
+      <a href="https://www.jfe-holdings.co.jp/investor/" target="_blank" rel="noopener" class="mlink" style="background:#fff;color:#1a2a3a;margin-bottom:5px;display:block">
+        <div class="mlink-name" style="color:#1a2a3a">JFEホールディングス IR ↗ <span class="mlink-freq">四半期</span></div>
+        <div class="mlink-url">jfe-holdings.co.jp/investor/</div>
+      </a>
+      <a href="https://www.jfe-steel.co.jp/release/" target="_blank" rel="noopener" class="mlink" style="background:#fff;color:#1a2a3a;margin-bottom:5px;display:block">
+        <div class="mlink-name" style="color:#1a2a3a">JFEスチール ニュースリリース ↗ <span class="mlink-freq">随時</span></div>
+        <div class="mlink-url">jfe-steel.co.jp/release/</div>
+      </a>
+      <a href="https://finance.yahoo.co.jp/quote/5411.T" target="_blank" rel="noopener" class="mlink" style="background:#fff;color:#1a2a3a;display:block">
+        <div class="mlink-name" style="color:#1a2a3a">JFEHD株価 (5411) ↗ <span class="mlink-freq">日次</span></div>
+        <div class="mlink-url">finance.yahoo.co.jp/quote/5411.T</div>
+      </a>
+    </div>
+
     <div class="insight info">
-      <div class="it">🔍 月次モニタリング推奨</div>
+      <div class="it">📊 鋼材価格・市況</div>
+      <div class="ib">
+        ・<a href="https://www.meti.go.jp/statistics/tyo/seidou/result-1.html" target="_blank" rel="noopener" style="color:#2a5a8a">経産省 鉄鋼生産月報 ↗</a>（月次・無料）<br>
+        ・<a href="https://www.jisf.or.jp/data/index.html" target="_blank" rel="noopener" style="color:#2a5a8a">日本鉄鋼連盟 統計データ ↗</a>（月次・無料）<br>
+        ・<a href="https://www.jisf.or.jp/business/statistics/kyokyu/index.html" target="_blank" rel="noopener" style="color:#2a5a8a">鋼材需要動向 ↗</a><br>
+        ・<a href="https://www.tex-report.co.jp/" target="_blank" rel="noopener" style="color:#2a5a8a">テックスレポート（業界紙）↗</a>
+      </div>
+    </div>
+
+    <div class="insight info">
+      <div class="it">🏭 業界団体・規格・技術情報</div>
+      <div class="ib">
+        ・<a href="https://www.nikkokyo.org/" target="_blank" rel="noopener" style="color:#2a5a8a">日本鉄鋼工業会 ↗</a><br>
+        ・<a href="https://www-it.jwes.or.jp/" target="_blank" rel="noopener" style="color:#2a5a8a">日本溶接協会 ↗</a><br>
+        ・<a href="https://www.jweld.jp/" target="_blank" rel="noopener" style="color:#2a5a8a">日本溶接学会 ↗</a><br>
+        ・<a href="https://www.jsps.go.jp/" target="_blank" rel="noopener" style="color:#2a5a8a">日本産業規格 (JIS) 検索 ↗</a><br>
+        ・<a href="https://www.jisc.go.jp/site/data/index.html" target="_blank" rel="noopener" style="color:#2a5a8a">JISC 規格データベース ↗</a>
+      </div>
+    </div>
+
+    <div class="insight good">
+      <div class="it">🎯 鉄鋼関連の有望市場</div>
+      <div class="ib">
+        <strong>(1) 洋上風力発電</strong>：東北沖の促進区域指定が進行。基礎・タワー製造で鉄骨・溶接需要。三菱商事・東北電力連合の動向監視。<br><br>
+        <strong>(2) 半導体・自動車工場</strong>：キオクシア岩手・トヨタ系の新棟・拡張案件で鉄骨・配管需要。北上・金ケ崎エリアの建築発注をチェック。<br><br>
+        <strong>(3) 防潮堤・港湾</strong>：震災復興の継続案件＋老朽化更新。三陸沿岸の継続需要。<br><br>
+        <strong>(4) 橋梁更新</strong>：高度成長期建設のインフラ更新で橋梁の補修・架替案件が継続的に発生。
+      </div>
+    </div>
+  </div>
+
+  <!-- 連鎖倒産シミュレーター -->
+  <div class="sv-section">
+    <div class="sv-title">🔗 連鎖倒産シミュレーター <span class="sub">SCENARIO</span></div>
+    <div style="font-size:11.5px;color:#6b5444;margin-bottom:10px;line-height:1.6">「もし○○業種で△%倒産したら、自社にどう影響？」を試算。岩手県全体・取引先構成を仮定して連鎖リスクを可視化。</div>
+    <div class="rs-tool">
+      <label>シナリオ業種
+        <select id="sim-sector">
+          <option value="建設業">建設業（高リスク375社）</option>
+          <option value="製造業">製造業（高リスク347社・半年で+46）</option>
+          <option value="小売業">小売業（高リスク316社）</option>
+          <option value="運輸通信業">運輸通信業（高リスク129社）</option>
+          <option value="宿泊業">宿泊業（高リスク56社）</option>
+          <option value="金属製品製造">金属製品製造業（54社・JFE圏）</option>
+          <option value="機械器具製造">機械器具製造業（47社・鉄鋼関連）</option>
+        </select>
+      </label>
+      <label>倒産率シナリオ
+        <select id="sim-rate">
+          <option value="10">軽度（10%倒産・通常年）</option>
+          <option value="20">中度（20%倒産・不況期）</option>
+          <option value="30">重度（30%倒産・震災級ショック）</option>
+          <option value="50">壊滅（50%倒産・極端シナリオ）</option>
+        </select>
+      </label>
+      <label>自社の当業種への依存度
+        <select id="sim-exposure">
+          <option value="10">低（取引10%程度）</option>
+          <option value="30">中（取引30%程度）</option>
+          <option value="50">高（取引50%程度）</option>
+          <option value="80">極高（取引80%以上）</option>
+        </select>
+      </label>
+      <button class="rs-btn" onclick="runChainSim()">▶ 連鎖影響を試算</button>
+    </div>
+    <div id="sim-output"></div>
+  </div>
+
+  <!-- 偽装請負セルフチェック -->
+  <div class="sv-section">
+    <div class="sv-title">⚖ 偽装請負 セルフチェック <span class="sub">労務リスク自己診断</span></div>
+    <div style="font-size:11.5px;color:#6b5444;margin-bottom:10px;line-height:1.6">厚労省「労働者派遣事業と請負により行われる事業との区分に関する基準」(37号告示)＋一般的判例に基づくチェックリスト。元請けとの関係性を10項目で自己診断。</div>
+    <div class="rs-tool" id="gh-checklist">
+      <div style="font-weight:700;color:#3a2a28;margin-bottom:8px;font-size:12px">該当する項目をチェックしてください（複数選択可）</div>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="15" style="width:auto;margin-right:6px"> 元請けの担当者が直接、自社労働者に作業指示を出している</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="12" style="width:auto;margin-right:6px"> 元請けの始業・終業時刻に拘束されている</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="12" style="width:auto;margin-right:6px"> 元請けの指示で残業・休日出勤が決まる</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="10" style="width:auto;margin-right:6px"> 元請け施設の設備・機材を主に使用している（無償または管理料無し）</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="10" style="width:auto;margin-right:6px"> 業務処理に必要な資金を全額元請けが負担</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="8" style="width:auto;margin-right:6px"> 自社の責任者が現場にいない、または形式的にのみ存在</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="8" style="width:auto;margin-right:6px"> 業務の遂行方法を自社で決められない（仕様書のみで完結しない）</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="8" style="width:auto;margin-right:6px"> 元請けから労働者の人数・配置の指定がある</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="7" style="width:auto;margin-right:6px"> 業務遂行上の専門性・技術が自社独自と言えない</label>
+      <label style="font-weight:400"><input type="checkbox" class="gh-check" data-w="10" style="width:auto;margin-right:6px"> 業務完成への成果責任を負っていない（時間単価ベース報酬）</label>
+      <button class="rs-btn" onclick="runGisoCheck()">▶ リスク診断</button>
+    </div>
+    <div id="gh-output"></div>
+  </div>
+
+  <!-- 公共工事・営業機会 -->
+  <div class="sv-section">
+    <div class="sv-title">公共工事・営業機会の情報源 <span class="sub">無料アクセス可</span></div>
+    <div class="insight info">
+      <div class="it">🏗 公共工事の継続発注</div>
+      <div class="ib">県内の公共工事発注は、国交省東北地方整備局・岩手県県土整備部・各市町村から継続的に発注。<strong>2026年度入札公告は4月から開始</strong>。建設・土木関連の健全な受注機会。</div>
+    </div>
+    <div id="monitoring-links"></div>
+  </div>
+
+  <!-- 補助金・公的支援情報 -->
+  <div class="sv-section">
+    <div class="sv-title">💰 補助金・公的支援情報 <span class="sub">中小製造業向け</span></div>
+    <a href="https://www.jgrants-portal.go.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">J-Grants 補助金電子申請ポータル ↗ <span class="mlink-freq">随時</span></div>
+      <div class="mlink-url">jgrants-portal.go.jp</div>
+    </a>
+    <a href="https://www.chusho.meti.go.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">中小企業庁 ↗ <span class="mlink-freq">随時</span></div>
+      <div class="mlink-url">chusho.meti.go.jp</div>
+    </a>
+    <a href="https://portal.monodukuri-hojo.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">ものづくり補助金（最大1,250万円） ↗ <span class="mlink-freq">年4回</span></div>
+      <div class="mlink-url">portal.monodukuri-hojo.jp</div>
+    </a>
+    <a href="https://it-shienhojo.smrj.go.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">IT導入補助金 ↗ <span class="mlink-freq">年複数回</span></div>
+      <div class="mlink-url">it-shienhojo.smrj.go.jp</div>
+    </a>
+    <a href="https://jigyou-saikouchiku.go.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">事業再構築補助金 ↗ <span class="mlink-freq">年複数回</span></div>
+      <div class="mlink-url">jigyou-saikouchiku.go.jp</div>
+    </a>
+    <a href="https://www.pref.iwate.jp/sangyoukoyou/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">岩手県 産業・雇用支援 ↗ <span class="mlink-freq">随時</span></div>
+      <div class="mlink-url">pref.iwate.jp/sangyoukoyou/</div>
+    </a>
+    <a href="https://www.iwate-ssz.jp/" target="_blank" rel="noopener" class="mlink">
+      <div class="mlink-name">いわて産業振興センター ↗ <span class="mlink-freq">随時</span></div>
+      <div class="mlink-url">iwate-ssz.jp</div>
+    </a>
+  </div>
+
+  <!-- データソース -->
+  <div class="sv-section" style="margin-bottom:40px">
+    <div class="sv-title">月次モニタリング推奨 <span class="sub">MONITORING</span></div>
+    <div class="insight info">
+      <div class="it">🔍 定期チェック対象</div>
       <div class="ib">
         ① TSR盛岡支店「月次倒産集計」（翌月上旬）<br>
         ② 帝国データバンク盛岡支店 速報<br>
         ③ 岩手日報・岩手日日 経済欄（事業停止・申請準備段階）<br>
         ④ 官報の破産手続開始決定公告<br>
-        ⑤ TSR「岩手県 倒産リスク」分析（半年毎）
+        ⑤ TSR「岩手県 倒産リスク」分析（半年毎）<br>
+        ⑥ EDINET 上場企業の四半期決算（金融庁・無料）<br>
+        ⑦ 国交省・岩手県の公共工事発注情報
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== NEWS VIEW ====== -->
+<div id="news-view" class="scroll-view">
+  <div class="sv-section" style="margin-bottom:14px">
+    <input id="news-search" type="search" placeholder="🔍 ニュース検索（キーワード・企業名・タグ）..." style="width:100%;padding:11px 14px;font-size:14px;border:1.5px solid #d8c4a8;border-radius:8px;background:#fff;font-family:inherit;-webkit-appearance:none" oninput="newsSearch(this.value)">
+  </div>
+  <div class="sv-section">
+    <div class="sv-title">岩手企業ニュース <span class="sub" id="news-count">—</span></div>
+    <div id="news-filters" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+      <button class="news-filter active" data-cat="all" onclick="filterNews('all')">すべて</button>
+      <button class="news-filter" data-cat="倒産" onclick="filterNews('倒産')">🔴 倒産</button>
+      <button class="news-filter" data-cat="廃業" onclick="filterNews('廃業')">⚪ 廃業</button>
+      <button class="news-filter" data-cat="業績悪化" onclick="filterNews('業績悪化')">🔶 業績悪化</button>
+      <button class="news-filter" data-cat="統計" onclick="filterNews('統計')">📊 統計</button>
+      <button class="news-filter" data-cat="業界動向" onclick="filterNews('業界動向')">📈 業界</button>
+      <button class="news-filter" data-cat="公共工事" onclick="filterNews('公共工事')">🏗 公共工事</button>
+      <button class="news-filter" data-cat="政策" onclick="filterNews('政策')">📜 政策</button>
+      <button class="news-filter" data-cat="成長" onclick="filterNews('成長')">🟢 成長</button>
+      <button class="news-filter" data-cat="M&A" onclick="filterNews('M&A')">🔀 M&A</button>
+    </div>
+    <div id="news-list"></div>
+  </div>
+</div>
+
+<!-- ====== PARTNER VIEW (個人取引先管理) ====== -->
+<div id="partner-view" class="scroll-view">
+  <div class="sv-section" style="margin-bottom:14px">
+    <button class="rs-btn" onclick="openEditPartner()" style="width:100%;background:#3a8a4a">+ 取引先を新規追加</button>
+  </div>
+  <div class="sv-section" style="margin-bottom:14px">
+    <input id="partner-search" type="search" placeholder="🔍 取引先を検索..." style="width:100%;padding:11px 14px;font-size:14px;border:1.5px solid #d8c4a8;border-radius:8px;background:#fff;font-family:inherit;-webkit-appearance:none" oninput="renderPartnerView()">
+  </div>
+  <div class="sv-section">
+    <div class="sv-title">サマリー <span class="sub">PORTFOLIO</span></div>
+    <div class="summary-grid" id="partner-summary">
+      <div class="sg-card"><div class="l">登録社数</div><div class="n">0<span class="u">社</span></div></div>
+      <div class="sg-card"><div class="l">与信枠合計</div><div class="n">0<span class="u">万円</span></div></div>
+      <div class="sg-card"><div class="l">平均リスク</div><div class="n">—</div></div>
+      <div class="sg-card"><div class="l">要警戒</div><div class="n">0<span class="u">社</span></div></div>
+    </div>
+  </div>
+  <div class="sv-section">
+    <div class="sv-title">📌 ブックマーク <span class="sub" id="bm-count">0 件</span></div>
+    <div id="bookmark-list"></div>
+  </div>
+  <div class="sv-section" style="margin-bottom:40px">
+    <div class="sv-title">🤝 取引先一覧 <span class="sub" id="partner-count">0 社</span></div>
+    <div id="partner-list"></div>
+    <div id="partner-empty" style="display:none;text-align:center;padding:30px 14px;color:#8a6f5a;font-size:12px;line-height:1.6;background:#fff;border:1px dashed #d8c4a8;border-radius:8px">
+      取引先がまだ登録されていません。<br>「+ 取引先を新規追加」から始めてください。<br><br>取引関係・与信枠・メモが記録でき、リスクスコアと連動します。
+    </div>
+  </div>
+</div>
+
+<!-- ====== EDIT PARTNER MODAL ====== -->
+<div id="edit-modal" class="modal-overlay" onclick="closeEditPartner(event)">
+  <div class="modal-card" onclick="event.stopPropagation()" style="max-width:520px">
+    <div class="modal-head">
+      <div id="edit-tag" class="modal-tag">取引先 編集</div>
+      <button class="modal-close" onclick="closeEditPartner()">×</button>
+    </div>
+    <div class="modal-body" style="padding-top:8px">
+      <div class="rs-tool" style="border:none;padding:0">
+        <input type="hidden" id="ep-id">
+        <label>会社名（必須）<input id="ep-name" type="text" placeholder="例: 株式会社山田製作所"></label>
+        <div class="rs-row2">
+          <label>所在地<input id="ep-city" type="text" placeholder="例: 北上市"></label>
+          <label>業種<input id="ep-industry" type="text" placeholder="例: 金属加工"></label>
+        </div>
+        <label>関係<select id="ep-relation"><option value="">未設定</option><option value="元請け">元請け</option><option value="下請け">下請け</option><option value="顧客">顧客</option><option value="仕入先">仕入先</option><option value="競合">競合</option><option value="その他">その他</option></select></label>
+        <div class="rs-row2">
+          <label>月商規模(万円)<input id="ep-volume" type="number" inputmode="numeric" placeholder="例: 500"></label>
+          <label>支払条件<input id="ep-terms" type="text" placeholder="例: 末締翌々月"></label>
+        </div>
+        <label>連絡先(担当者・電話・メール)<input id="ep-contact" type="text" placeholder="例: 田中部長 / 019-xxx-xxxx"></label>
+        <label>カスタムリスクスコア(0-100、空欄で自動算出)<input id="ep-score" type="number" inputmode="numeric" placeholder="自動: 業種・地域から計算"></label>
+        <label>メモ（自由記入）<textarea id="ep-notes" rows="4" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:inherit;background:#fff;resize:vertical" placeholder="面談内容・気づいた点・要観察事項など"></textarea></label>
+        <div class="rs-row2" style="margin-top:8px">
+          <button class="rs-btn" onclick="savePartner()" style="background:#3a8a4a">💾 保存</button>
+          <button class="rs-btn" onclick="deletePartner()" style="background:#a89280" id="ep-delete-btn">🗑 削除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SETTINGS MODAL ====== -->
+<div id="settings-modal" class="modal-overlay" onclick="closeSettings(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-tag" style="background:#dde6f0;color:#1a3a6a">⚙ 設定 / データ管理</div>
+      <button class="modal-close" onclick="closeSettings()">×</button>
+    </div>
+    <div class="modal-body" style="padding-top:8px">
+      <div class="modal-section">
+        <div class="modal-section-title">データバックアップ</div>
+        <div style="font-size:11.5px;line-height:1.6;color:#3a2a28;margin-bottom:10px">取引先・メモ・ブックマークを全てJSONファイルとして書き出し / 取り込めます。iPhoneのみで完結します。</div>
+        <button class="rs-btn" onclick="exportData()" style="background:#3a8a4a;margin-bottom:8px">📤 全データを書き出す (Export)</button>
+        <label class="rs-btn" style="background:#2a5a8a;display:block;text-align:center;cursor:pointer;margin-bottom:8px">
+          📥 データを取り込む (Import)
+          <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+        </label>
+        <button class="rs-btn" onclick="clearAllData()" style="background:#a89280">🗑 全データを削除</button>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">自社プロフィール（ベンチマーク用）</div>
+        <div style="font-size:11.5px;line-height:1.6;color:#3a2a28;margin-bottom:8px">自社情報を入れると、業界平均との比較ができるようになります（次フェーズ機能）。</div>
+        <div class="rs-tool" style="border:none;padding:0">
+          <label>自社名<input id="self-name" type="text" placeholder="例: タブチ溶接工業"></label>
+          <div class="rs-row2">
+            <label>所在地<input id="self-city" type="text" placeholder="例: 北上市"></label>
+            <label>業種<input id="self-industry" type="text" placeholder="例: 金属加工・溶接"></label>
+          </div>
+          <div class="rs-row2">
+            <label>従業員数<input id="self-employees" type="number" inputmode="numeric"></label>
+            <label>年商(万円)<input id="self-revenue" type="number" inputmode="numeric"></label>
+          </div>
+          <button class="rs-btn" onclick="saveSelfProfile()">💾 自社情報を保存</button>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">ストレージ状況</div>
+        <div id="storage-status" style="font-size:11.5px;line-height:1.7;color:#3a2a28;font-family:'JetBrains Mono'"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">🔍 キーワードハイライト</div>
+        <div style="font-size:11.5px;line-height:1.6;color:#3a2a28;margin-bottom:8px">登録したキーワード（自社名・取引先名・関心業種など）が、ニュース・データ・モーダルに出てきたら自動でハイライト表示します。</div>
+        <div class="rs-tool" style="border:none;padding:0">
+          <label>ハイライトキーワード（カンマ区切り、最大20件）
+            <textarea id="hl-keywords" rows="3" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:inherit;background:#fff;resize:vertical" placeholder="例: 北日本機械, JFE, 北上, 溶接, トヨタ"></textarea>
+          </label>
+          <button class="rs-btn" onclick="saveHighlights()" style="background:#c47a1a">🎨 ハイライト保存</button>
+        </div>
+      </div>
+      <div style="margin-top:14px;font-size:10px;color:#8a6f5a;text-align:center;line-height:1.5">データは全て iPhone 内（LocalStorage）に保存されます。<br>クラウド送信なし。アンインストールで消えます。<br>大切なデータは定期的に Export してください。</div>
     </div>
   </div>
 </div>
@@ -638,9 +1144,11 @@ function loadData() {
   return Promise.all([
     fetchJSON('./data/bankruptcies.json').catch(function(){ return null; }),
     fetchJSON('./data/steel.json').catch(function(){ return null; }),
-    fetchJSON('./data/distressed.json').catch(function(){ return null; })
+    fetchJSON('./data/distressed.json').catch(function(){ return null; }),
+    fetchJSON('./data/news.json').catch(function(){ return null; }),
+    fetchJSON('./data/macro.json').catch(function(){ return null; })
   ]).then(function(results){
-    var bk = results[0], st = results[1], ds = results[2];
+    var bk = results[0], st = results[1], ds = results[2], nw = results[3], mc = results[4];
     if (bk && bk.companies) {
       LAST_UPDATED = bk.last_updated;
       BANKRUPT = bk.companies.map(convertBankruptEntry).sort(function(a,b){
@@ -658,6 +1166,14 @@ function loadData() {
     if (ds && ds.companies) {
       DISTRESSED = ds.companies;
       console.log('[data] distressed.json: '+DISTRESSED.length+' 社 読込');
+    }
+    if (nw && nw.articles) {
+      NEWS = nw.articles.slice().sort(function(a,b){ return b.date.localeCompare(a.date); });
+      console.log('[data] news.json: '+NEWS.length+' 件 読込');
+    }
+    if (mc && mc.indicators) {
+      MACRO = mc;
+      console.log('[data] macro.json: '+MACRO.indicators.length+' 指標 読込');
     }
     DATA_LOADED = true;
     updateStatusBadge();
@@ -683,6 +1199,8 @@ function updateStatusBadge() {
 }
 
 // ============= DATA (FALLBACK - JSON読込失敗時のみ使用) =============
+var NEWS = [];
+var MACRO = { indicators:[], monitoring_links:[] };
 var BANKRUPT = [
   { date:'01.16', m:1, name:'タカユウ', form:'(有)', loc:'矢巾町白沢', lat:39.6112, lng:141.1393, industry:'屋根工事業', debt:5283, capital:600, founded:1992, ceo:'寺沢義秋', peakRev:17505, peakYear:'1997年2月期', court:'盛岡地裁', decisionDate:'2026.01.16', narrative:'1992年設立。顧客の要望に応じて内装工事も手がけ業績を伸ばし、ピークの1997年2月期に売上高1億7,505万円を計上していた。' },
   { date:'01.20', m:1, name:'ハウスM21', form:'(株)', loc:'盛岡市', lat:39.7036, lng:141.1527, industry:'住宅建築販売', debt:115500, capital:5100, founded:1994, peakRev:369727, peakYear:'2014年3月期', recentRev:117721, recentYear:'2025年3月期', recentLoss:2400, employees:21, court:'盛岡地裁', decisionDate:'2026.01.20', narrative:'1994年7月設立。住宅建築販売・リフォーム・不動産。震災復興需要で2014年3月期売上36.97億円ピークも、特需終息＋コロナで2025年3月期11.77億円・損失2,400万円。1月20日従業員21人全員解雇、同日盛岡地裁に破産申請し即日開始決定。岩手2026年最大規模。' },
@@ -980,9 +1498,20 @@ window.openDetailFor = function(layer, i) {
     tag.style.background = '#fdeed0'; tag.style.color = '#8a5410';
   }
   document.getElementById('modal-name').textContent = (c.form||'') + ' ' + c.name;
-  document.getElementById('modal-loc').textContent = c.loc;
+  document.getElementById('modal-loc').textContent = c.loc || c.city || '';
   var body = document.getElementById('modal-body');
   body.innerHTML = '';
+  // Bookmark star + risk score at top
+  var r = calcRiskScore(c);
+  var rc = riskClass(r.score);
+  var bmTopBar = document.createElement('div');
+  bmTopBar.style.cssText = 'margin-bottom:10px;display:flex;justify-content:flex-end';
+  bmTopBar.innerHTML = '<button id="modal-star" class="partner-icon-btn'+(isBookmarked(layer,i)?' active':'')+'" onclick="toggleBookmark(\''+layer+'\','+i+')" style="font-size:22px">'+(isBookmarked(layer,i)?'⭐':'☆')+'</button>';
+  body.appendChild(bmTopBar);
+  var rsBlock = document.createElement('div');
+  rsBlock.style.cssText = 'margin-bottom:14px;padding:11px 13px;background:'+rc.color+'15;border:2px solid '+rc.color+';border-radius:8px;display:flex;align-items:center;gap:11px';
+  rsBlock.innerHTML = '<div style="font-family:JetBrains Mono;font-size:32px;font-weight:700;line-height:1;color:'+rc.color+'">'+r.score+'</div><div><div style="font-size:10px;font-weight:700;color:#6b5444;letter-spacing:0.1em">RISK SCORE</div><div style="font-size:14px;font-weight:700;color:'+rc.color+';margin-top:2px">'+rc.level+'</div></div>';
+  body.appendChild(rsBlock);
   function addF(k, v, cls) {
     if (!v && v !== 0) return;
     var f = document.createElement('div');
@@ -1013,6 +1542,10 @@ window.openDetailFor = function(layer, i) {
     addF('業種', c.industry);
     if (c.code) addF('証券コード', c.code);
     if (c.revCur) addF('直近売上', (c.revCur/10000).toFixed(2) + ' 億円');
+    if (c.tags && c.tags.length) {
+      var tagsHtml = c.tags.map(function(t){ return '<span class="ntag">'+t+'</span>'; }).join(' ');
+      addF('タグ', tagsHtml);
+    }
   }
   if (c.narrative || c.detail) {
     var nb = document.createElement('div');
@@ -1020,6 +1553,132 @@ window.openDetailFor = function(layer, i) {
     nb.innerHTML = '<div class="nt">背景・経緯</div>' + (c.narrative || c.detail);
     body.appendChild(nb);
   }
+  // Extended data for distressed entries
+  if (layer === 'distressed' && c.extended) {
+    // 業種別ブレイクダウン
+    if (c.industry_breakdown) {
+      var sec = document.createElement('div');
+      sec.className = 'modal-section';
+      var html = '<div class="modal-section-title">業種別ブレイクダウン</div>';
+      c.industry_breakdown.forEach(function(ind){
+        html += '<div class="ind-row"><div><span class="ind-name">'+ind.sector+'</span> <span style="font-size:10px;color:#8a6f5a">'+(ind.share_pct?ind.share_pct+'%':'')+'</span></div><div class="ind-val">'+ind.total+'社 <span style="font-size:10px;color:#6b5444">'+(ind.diff?ind.diff:'')+'</span></div></div>';
+        if (ind.subcategories) {
+          html += '<ul class="sub-list">';
+          ind.subcategories.forEach(function(sub){
+            html += '<li><span class="sub-name">'+sub.name+'</span>: '+sub.count+'社'+(sub.note?'<br><span style="color:#8a6f5a">'+sub.note+'</span>':'')+'</li>';
+          });
+          html += '</ul>';
+        }
+      });
+      sec.innerHTML = html;
+      body.appendChild(sec);
+    }
+    // 地域別ブレイクダウン
+    if (c.regional_breakdown) {
+      var sec2 = document.createElement('div');
+      sec2.className = 'modal-section';
+      var html2 = '<div class="modal-section-title">地域別ブレイクダウン</div>';
+      c.regional_breakdown.forEach(function(r){
+        html2 += '<div class="region-row"><div class="region-name">'+r.region+'</div><div class="region-cities">'+r.cities+'</div><div class="region-stats">推計 '+r.est_count+'社 / '+r.share_pct+'%</div><div class="region-risk"><strong>主リスク:</strong> '+r.primary_risk+'<br>'+r.characteristic+'</div></div>';
+      });
+      sec2.innerHTML = html2;
+      body.appendChild(sec2);
+    }
+    // リスク要因別
+    if (c.risk_factor_breakdown) {
+      var sec3 = document.createElement('div');
+      sec3.className = 'modal-section';
+      var html3 = '<div class="modal-section-title">リスク要因別分類</div>';
+      c.risk_factor_breakdown.forEach(function(f){
+        html3 += '<div class="factor-row"><div class="factor-name"><span>'+f.factor+'</span><span class="factor-count">推計 '+f.est_count+'社 ('+f.share_pct+'%)</span></div><div class="factor-ind">判定: '+f.indicator+'</div><div class="factor-ex">例: '+f.example+'</div></div>';
+      });
+      sec3.innerHTML = html3;
+      body.appendChild(sec3);
+    }
+    // 重要インサイト
+    if (c.key_insight) {
+      var sec4 = document.createElement('div');
+      sec4.className = 'narrative';
+      sec4.innerHTML = '<div class="nt">💡 KEY INSIGHT</div>' + c.key_insight;
+      body.appendChild(sec4);
+    }
+    // ビジネス含意
+    if (c.business_implication) {
+      var sec5 = document.createElement('div');
+      sec5.className = 'narrative';
+      sec5.style.borderLeftColor = '#3a8a4a';
+      sec5.innerHTML = '<div class="nt" style="color:#3a8a4a">💼 ビジネス活用</div>' + c.business_implication;
+      body.appendChild(sec5);
+    }
+    // Phases (復興特需崩落型用)
+    if (c.phases) {
+      var sec6 = document.createElement('div');
+      sec6.className = 'modal-section';
+      var html6 = '<div class="modal-section-title">フェーズ分析</div>';
+      c.phases.forEach(function(p){
+        html6 += '<div class="region-row"><div class="region-name">'+p.phase+'</div><div class="region-risk">'+p['状況']+'</div></div>';
+      });
+      sec6.innerHTML = html6;
+      body.appendChild(sec6);
+    }
+    // Watchlist indicators
+    if (c.watchlist_indicators || c.watchlist_indicators_for_jfe) {
+      var sec7 = document.createElement('div');
+      sec7.className = 'modal-section';
+      var indicators = c.watchlist_indicators_for_jfe || c.watchlist_indicators;
+      var title = c.watchlist_indicators_for_jfe ? 'JFE協力会社圏 監視シグナル' : '監視すべきシグナル';
+      var html7 = '<div class="modal-section-title">'+title+'</div><ul class="bullet-list">';
+      indicators.forEach(function(ind){ html7 += '<li>'+ind+'</li>'; });
+      html7 += '</ul>';
+      sec7.innerHTML = html7;
+      body.appendChild(sec7);
+    }
+    // Key facts
+    if (c.key_facts) {
+      var sec8 = document.createElement('div');
+      sec8.className = 'modal-section';
+      var html8 = '<div class="modal-section-title">主要データ</div><ul class="bullet-list">';
+      c.key_facts.forEach(function(f){ html8 += '<li>'+f+'</li>'; });
+      html8 += '</ul>';
+      sec8.innerHTML = html8;
+      body.appendChild(sec8);
+    }
+    // Context
+    if (c.context) {
+      var sec9 = document.createElement('div');
+      sec9.className = 'modal-section';
+      sec9.innerHTML = '<div class="modal-section-title">補足コンテキスト</div><div style="font-size:11.5px;line-height:1.6;color:#3a2a28">'+c.context+'</div>';
+      body.appendChild(sec9);
+    }
+    // Affected companies examples
+    if (c.affected_companies_example) {
+      var sec10 = document.createElement('div');
+      sec10.className = 'modal-section';
+      sec10.innerHTML = '<div class="modal-section-title">該当事例</div><div style="font-size:11.5px;line-height:1.6;color:#3a2a28">'+c.affected_companies_example+'</div>';
+      body.appendChild(sec10);
+    }
+    // Source
+    if (c.source) {
+      var src = document.createElement('div');
+      src.style.cssText = 'margin-top:14px;font-size:10px;color:#8a6f5a;text-align:right;font-family:JetBrains Mono';
+      src.textContent = '出典: ' + c.source;
+      body.appendChild(src);
+    }
+  }
+  // Personal note section (always at bottom)
+  var noteSection = document.createElement('div');
+  noteSection.className = 'modal-section';
+  noteSection.style.borderTop = '2px solid #d8c4a8';
+  noteSection.style.marginTop = '18px';
+  var existingNote = ENTRY_NOTES[bookmarkKey(layer, i)];
+  var existingText = existingNote ? existingNote.text : '';
+  noteSection.innerHTML = '<div class="modal-section-title">📝 個人メモ</div>'
+    + '<textarea id="entry-note-input" rows="3" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:inherit;background:#fff;resize:vertical" placeholder="この企業についてのメモ（取引履歴・面談・気づき）">'+existingText.replace(/</g,'&lt;')+'</textarea>'
+    + '<button class="rs-btn" onclick="saveEntryNote(\''+layer+'\','+i+')" style="margin-top:8px;background:#3a8a4a">💾 メモを保存</button>'
+    + '<div id="entry-note-status" style="font-size:11px;color:#3a8a4a;margin-top:5px;text-align:right;min-height:14px"></div>'
+    + (existingNote ? '<div style="font-size:10px;color:#8a6f5a;text-align:right;margin-top:4px;font-family:JetBrains Mono">最終更新: '+existingNote.updatedAt.slice(0,16).replace('T',' ')+'</div>' : '');
+  body.appendChild(noteSection);
+
   document.getElementById('modal').classList.add('visible');
 };
 window.closeDetail = function() {
@@ -1028,44 +1687,684 @@ window.closeDetail = function() {
 
 // ============= TAB SWITCHING =============
 window.switchTab = function(tab) {
-  ['map','data','biz'].forEach(function(t) {
-    document.getElementById('tab-'+t).classList.toggle('active', tab===t);
+  ['map','data','biz','news','partner'].forEach(function(t) {
+    var el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', tab===t);
   });
   document.body.className = 'tab-' + tab;
   document.getElementById('main').style.display = tab==='map' ? '' : 'none';
   document.getElementById('data-view').classList.toggle('active', tab==='data');
   document.getElementById('biz-view').classList.toggle('active', tab==='biz');
+  document.getElementById('news-view').classList.toggle('active', tab==='news');
+  document.getElementById('partner-view').classList.toggle('active', tab==='partner');
   document.querySelector('#layer-tabs').style.display = tab==='map' ? '' : 'none';
   if (tab === 'map') {
     setTimeout(function() { map.invalidateSize(); }, 100);
   }
   if (tab === 'data') renderDataView();
   if (tab === 'biz') renderBizView();
+  if (tab === 'news') renderNewsView();
+  if (tab === 'partner') renderPartnerView();
+};
+
+// ============= NEWS VIEW =============
+var CURRENT_NEWS_FILTER = 'all';
+function renderNewsView() {
+  var countEl = document.getElementById('news-count');
+  if (countEl) countEl.textContent = NEWS.length + ' 件';
+  var list = document.getElementById('news-list');
+  if (!list) return;
+  var filtered = CURRENT_NEWS_FILTER === 'all' ? NEWS : NEWS.filter(function(n){ return n.category === CURRENT_NEWS_FILTER; });
+  if (NEWS_SEARCH) {
+    filtered = filtered.filter(function(n){
+      var hay = (n.title+' '+n.summary+' '+(n.tags||[]).join(' ')+' '+(n.business_implication||'')).toLowerCase();
+      return hay.indexOf(NEWS_SEARCH) >= 0;
+    });
+  }
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#8a6f5a;padding:30px 10px">該当ニュースなし</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(function(n) {
+    var tagsHtml = (n.tags||[]).map(function(t){ return '<span class="ntag">'+applyHighlights(t)+'</span>'; }).join('');
+    var implHtml = n.business_implication ? '<div class="nimpl">'+applyHighlights(n.business_implication)+'</div>' : '';
+    var impactHtml = n.impact ? '<span class="nimpact '+n.impact+'">'+(n.impact==='high'?'重要':(n.impact==='medium'?'注目':'参考'))+'</span>' : '';
+    var sourceHtml = n.source_url ? '<a href="'+n.source_url+'" target="_blank" rel="noopener" style="color:#2a5a8a">'+n.source+' ↗</a>' : n.source;
+    return '<div class="news-item"><div class="ndate">'+n.date+' <span class="ncat '+n.category+'">'+n.category+'</span>'+impactHtml+'</div><div class="ntitle">'+applyHighlights(n.title)+'</div><div class="ntags">'+tagsHtml+'</div><div class="nsum">'+applyHighlights(n.summary)+'</div>'+implHtml+'<div class="nsource">出典: '+sourceHtml+'</div></div>';
+  }).join('');
+}
+window.filterNews = function(cat) {
+  CURRENT_NEWS_FILTER = cat;
+  document.querySelectorAll('.news-filter').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.cat === cat);
+  });
+  renderNewsView();
+};
+
+// ============= LOCALSTORAGE (個人データ) =============
+var STORAGE_KEYS = {
+  PARTNERS: 'irr_partners_v1',
+  BOOKMARKS: 'irr_bookmarks_v1',
+  NOTES: 'irr_notes_v1',
+  SELF: 'irr_self_v1',
+  HIGHLIGHTS: 'irr_highlights_v1'
+};
+function loadLS(key, defaultVal) {
+  try {
+    var v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : defaultVal;
+  } catch(e) { return defaultVal; }
+}
+function saveLS(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e) { alert('保存失敗: ' + e.message); return false; }
+}
+var PARTNERS = loadLS(STORAGE_KEYS.PARTNERS, []);
+var BOOKMARKS = loadLS(STORAGE_KEYS.BOOKMARKS, []); // ['layer:idx', ...]
+var ENTRY_NOTES = loadLS(STORAGE_KEYS.NOTES, {});   // { 'layer:idx': '...', ... }
+var SELF = loadLS(STORAGE_KEYS.SELF, {});
+var HIGHLIGHTS = loadLS(STORAGE_KEYS.HIGHLIGHTS, []);
+
+// ============= HIGHLIGHT KEYWORDS =============
+window.saveHighlights = function() {
+  var text = document.getElementById('hl-keywords').value;
+  var kws = text.split(/[,、，]/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 0; }).slice(0, 20);
+  HIGHLIGHTS = kws;
+  saveLS(STORAGE_KEYS.HIGHLIGHTS, HIGHLIGHTS);
+  alert('ハイライト保存: ' + HIGHLIGHTS.length + ' キーワード\n\nニュース・データタブで自動的に黄色マーカーで強調されます。');
+  // refresh
+  if (typeof renderNewsView === 'function') renderNewsView();
+  if (typeof renderDataView === 'function') renderDataView();
+};
+function applyHighlights(text) {
+  if (!HIGHLIGHTS || HIGHLIGHTS.length === 0 || !text) return text;
+  var result = text;
+  HIGHLIGHTS.forEach(function(kw){
+    if (!kw) return;
+    var safe = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var re = new RegExp('('+safe+')', 'gi');
+    result = result.replace(re, '<mark style="background:#fff080;color:#3a2a1c;padding:0 2px;border-radius:2px;font-weight:600">$1</mark>');
+  });
+  return result;
+}
+
+// ============= PARTNER CRUD =============
+function genId() { return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+window.openEditPartner = function(id) {
+  document.getElementById('ep-id').value = id || '';
+  var p = id ? PARTNERS.find(function(x){ return x.id===id; }) : null;
+  document.getElementById('ep-name').value = p ? p.name : '';
+  document.getElementById('ep-city').value = p ? (p.city||'') : '';
+  document.getElementById('ep-industry').value = p ? (p.industry||'') : '';
+  document.getElementById('ep-relation').value = p ? (p.relation||'') : '';
+  document.getElementById('ep-volume').value = p ? (p.volume||'') : '';
+  document.getElementById('ep-terms').value = p ? (p.terms||'') : '';
+  document.getElementById('ep-contact').value = p ? (p.contact||'') : '';
+  document.getElementById('ep-score').value = p ? (p.customScore||'') : '';
+  document.getElementById('ep-notes').value = p ? (p.notes||'') : '';
+  document.getElementById('ep-delete-btn').style.display = id ? '' : 'none';
+  document.getElementById('edit-tag').textContent = id ? '取引先 編集' : '+ 新規追加';
+  document.getElementById('edit-modal').classList.add('visible');
+};
+window.closeEditPartner = function(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('edit-modal').classList.remove('visible');
+};
+window.savePartner = function() {
+  var name = document.getElementById('ep-name').value.trim();
+  if (!name) { alert('会社名は必須です'); return; }
+  var id = document.getElementById('ep-id').value;
+  var data = {
+    id: id || genId(),
+    name: name,
+    city: document.getElementById('ep-city').value.trim(),
+    industry: document.getElementById('ep-industry').value.trim(),
+    relation: document.getElementById('ep-relation').value,
+    volume: parseFloat(document.getElementById('ep-volume').value) || 0,
+    terms: document.getElementById('ep-terms').value.trim(),
+    contact: document.getElementById('ep-contact').value.trim(),
+    customScore: document.getElementById('ep-score').value ? parseInt(document.getElementById('ep-score').value, 10) : null,
+    notes: document.getElementById('ep-notes').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+  if (id) {
+    var idx = PARTNERS.findIndex(function(x){ return x.id===id; });
+    if (idx >= 0) PARTNERS[idx] = data;
+  } else {
+    data.createdAt = data.updatedAt;
+    PARTNERS.push(data);
+  }
+  saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
+  closeEditPartner();
+  renderPartnerView();
+};
+window.deletePartner = function() {
+  var id = document.getElementById('ep-id').value;
+  if (!id) return;
+  if (!confirm('この取引先を削除しますか？\n（取り消せません）')) return;
+  PARTNERS = PARTNERS.filter(function(x){ return x.id!==id; });
+  saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
+  closeEditPartner();
+  renderPartnerView();
+};
+
+// ============= BOOKMARKS =============
+function bookmarkKey(layer, idx) { return layer + ':' + idx; }
+function isBookmarked(layer, idx) { return BOOKMARKS.indexOf(bookmarkKey(layer, idx)) >= 0; }
+window.toggleBookmark = function(layer, idx, evt) {
+  if (evt) evt.stopPropagation();
+  var k = bookmarkKey(layer, idx);
+  var i = BOOKMARKS.indexOf(k);
+  if (i >= 0) BOOKMARKS.splice(i, 1);
+  else BOOKMARKS.push(k);
+  saveLS(STORAGE_KEYS.BOOKMARKS, BOOKMARKS);
+  // Refresh active views
+  if (document.body.className === 'tab-data') renderDataView();
+  if (document.body.className === 'tab-partner') renderPartnerView();
+  // Update modal star if visible
+  var star = document.getElementById('modal-star');
+  if (star) star.textContent = isBookmarked(layer, idx) ? '⭐' : '☆';
+};
+
+// ============= NOTES on entries =============
+window.saveEntryNote = function(layer, idx) {
+  var k = bookmarkKey(layer, idx);
+  var val = document.getElementById('entry-note-input').value.trim();
+  if (val) ENTRY_NOTES[k] = { text: val, updatedAt: new Date().toISOString() };
+  else delete ENTRY_NOTES[k];
+  saveLS(STORAGE_KEYS.NOTES, ENTRY_NOTES);
+  var status = document.getElementById('entry-note-status');
+  if (status) { status.textContent = '✓ 保存しました ' + (new Date()).toTimeString().slice(0,5); setTimeout(function(){ status.textContent=''; }, 3000); }
+};
+
+// ============= PARTNER VIEW =============
+function partnerRiskScore(p) {
+  if (p.customScore != null) return p.customScore;
+  // Use built-in calc
+  var fake = { industry: p.industry, city: p.city, loc: p.city };
+  return calcRiskScore(fake).score;
+}
+function renderPartnerView() {
+  var q = (document.getElementById('partner-search') ? document.getElementById('partner-search').value : '').trim().toLowerCase();
+  var filtered = q ? PARTNERS.filter(function(p){
+    return (p.name+' '+(p.city||'')+' '+(p.industry||'')+' '+(p.notes||'')+' '+(p.relation||'')).toLowerCase().indexOf(q) >= 0;
+  }) : PARTNERS.slice();
+
+  // Summary
+  var totalVolume = PARTNERS.reduce(function(s,p){ return s+(p.volume||0); }, 0);
+  var scores = PARTNERS.map(partnerRiskScore);
+  var avgScore = scores.length ? Math.round(scores.reduce(function(a,b){return a+b;}, 0) / scores.length) : 0;
+  var warnCount = scores.filter(function(s){ return s >= 51; }).length;
+  var summary = document.getElementById('partner-summary');
+  summary.innerHTML = '<div class="sg-card"><div class="l">登録社数</div><div class="n">'+PARTNERS.length+'<span class="u">社</span></div></div>'
+    + '<div class="sg-card"><div class="l">月商規模合計</div><div class="n">'+(totalVolume>=10000?(totalVolume/10000).toFixed(2):totalVolume.toLocaleString())+'<span class="u">'+(totalVolume>=10000?'億':'万')+'円</span></div></div>'
+    + '<div class="sg-card"><div class="l">平均リスク</div><div class="n">'+(PARTNERS.length?avgScore:'—')+'</div><div class="s">'+(PARTNERS.length?riskClass(avgScore).level:'—')+'</div></div>'
+    + '<div class="sg-card"><div class="l">要警戒(51以上)</div><div class="n" style="color:'+(warnCount?'#d2453e':'inherit')+'">'+warnCount+'<span class="u">社</span></div></div>';
+
+  // Bookmarks
+  var bm = document.getElementById('bookmark-list');
+  document.getElementById('bm-count').textContent = BOOKMARKS.length + ' 件';
+  if (BOOKMARKS.length === 0) {
+    bm.innerHTML = '<div class="partner-empty-section">企業をブックマークすると、ここに表示されます。<br>データタブで各エントリ右上の ☆ をタップ。</div>';
+  } else {
+    bm.innerHTML = BOOKMARKS.map(function(k) {
+      var parts = k.split(':');
+      var layer = parts[0], idx = parseInt(parts[1], 10);
+      var list = layer==='bankrupt'?BANKRUPT:(layer==='steel'?STEEL:DISTRESSED);
+      var c = list[idx];
+      if (!c) return '';
+      var rc = riskClass(calcRiskScore(c).score);
+      var layerLabel = layer==='bankrupt'?'🔴 倒産':(layer==='steel'?'⬛ 鉄鋼':'🔶 業績懸念');
+      return '<div class="partner-card bm" onclick="openDetailFor(\''+layer+'\','+idx+')" style="cursor:pointer"><div class="partner-card-head"><div><div class="partner-card-name">'+(c.form||'')+' '+c.name+' '+riskBadge(c)+'</div><div class="partner-card-meta">'+layerLabel+' / '+(c.city||c.loc||'')+' / '+(c.industry||'')+'</div></div><button class="partner-icon-btn active" onclick="toggleBookmark(\''+layer+'\','+idx+',event)">⭐</button></div></div>';
+    }).join('');
+  }
+
+  // Partner list
+  document.getElementById('partner-count').textContent = filtered.length + ' / ' + PARTNERS.length + ' 社';
+  var list = document.getElementById('partner-list');
+  var empty = document.getElementById('partner-empty');
+  if (PARTNERS.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="partner-empty-section">検索条件に一致する取引先がありません。</div>';
+    } else {
+      list.innerHTML = filtered.map(function(p){
+        var sc = partnerRiskScore(p);
+        var rc = riskClass(sc);
+        var scoreBadge = '<span class="rs-badge" style="background:'+rc.color+'">'+sc+'</span>';
+        var relTag = p.relation ? '<span class="partner-relation">'+p.relation+'</span>' : '';
+        var volTag = p.volume ? '<span class="partner-volume">月 '+(p.volume>=10000?(p.volume/10000).toFixed(1)+'億':p.volume.toLocaleString()+'万')+'円</span>' : '';
+        var noteHtml = p.notes ? '<div class="partner-note">'+p.notes.replace(/\n/g,'<br>')+'</div>' : '';
+        return '<div class="partner-card"><div class="partner-card-head"><div style="flex:1"><div class="partner-card-name">'+p.name+' '+scoreBadge+'</div><div class="partner-card-meta">'+(p.city||'')+(p.industry?' / '+p.industry:'')+(p.contact?' / '+p.contact:'')+'</div></div><div class="partner-card-actions"><button class="partner-icon-btn" onclick="openEditPartner(\''+p.id+'\')">✎</button></div></div><div class="partner-card-tags">'+relTag+volTag+(p.terms?'<span class="partner-volume">'+p.terms+'</span>':'')+'</div>'+noteHtml+'</div>';
+      }).join('');
+    }
+  }
+}
+
+// ============= SETTINGS =============
+window.openSettings = function() {
+  document.getElementById('self-name').value = SELF.name || '';
+  document.getElementById('self-city').value = SELF.city || '';
+  document.getElementById('self-industry').value = SELF.industry || '';
+  document.getElementById('self-employees').value = SELF.employees || '';
+  document.getElementById('self-revenue').value = SELF.revenue || '';
+  var hlEl = document.getElementById('hl-keywords');
+  if (hlEl) hlEl.value = (HIGHLIGHTS||[]).join(', ');
+  // Storage status
+  var bytes = 0;
+  Object.keys(STORAGE_KEYS).forEach(function(k){
+    var v = localStorage.getItem(STORAGE_KEYS[k]);
+    bytes += v ? v.length : 0;
+  });
+  var status = document.getElementById('storage-status');
+  status.innerHTML = '取引先: '+PARTNERS.length+' 社<br>'
+    + 'ブックマーク: '+BOOKMARKS.length+' 件<br>'
+    + 'メモ: '+Object.keys(ENTRY_NOTES).length+' 件<br>'
+    + 'ハイライト: '+HIGHLIGHTS.length+' キーワード<br>'
+    + '使用容量: '+(bytes/1024).toFixed(1)+' KB';
+  document.getElementById('settings-modal').classList.add('visible');
+};
+window.closeSettings = function(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('settings-modal').classList.remove('visible');
+};
+window.saveSelfProfile = function() {
+  SELF = {
+    name: document.getElementById('self-name').value.trim(),
+    city: document.getElementById('self-city').value.trim(),
+    industry: document.getElementById('self-industry').value.trim(),
+    employees: parseInt(document.getElementById('self-employees').value, 10) || 0,
+    revenue: parseFloat(document.getElementById('self-revenue').value) || 0,
+    updatedAt: new Date().toISOString()
+  };
+  saveLS(STORAGE_KEYS.SELF, SELF);
+  alert('自社情報を保存しました');
+};
+window.exportData = function() {
+  var data = {
+    schema: 'irr_export_v2',
+    exportedAt: new Date().toISOString(),
+    self: SELF,
+    partners: PARTNERS,
+    bookmarks: BOOKMARKS,
+    notes: ENTRY_NOTES,
+    highlights: HIGHLIGHTS
+  };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'iwate-risk-radar-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 100);
+  alert('書き出し完了。iCloudやメール添付で保管してください。');
+};
+window.importData = function(e) {
+  var f = e.target.files[0];
+  if (!f) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var data = JSON.parse(ev.target.result);
+      if (!confirm('現在のデータを上書きしてインポートしますか？\n（取引先・ブックマーク・メモ・ハイライトが置き換わります）')) return;
+      if (data.partners) PARTNERS = data.partners;
+      if (data.bookmarks) BOOKMARKS = data.bookmarks;
+      if (data.notes) ENTRY_NOTES = data.notes;
+      if (data.self) SELF = data.self;
+      if (data.highlights) HIGHLIGHTS = data.highlights;
+      saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
+      saveLS(STORAGE_KEYS.BOOKMARKS, BOOKMARKS);
+      saveLS(STORAGE_KEYS.NOTES, ENTRY_NOTES);
+      saveLS(STORAGE_KEYS.SELF, SELF);
+      saveLS(STORAGE_KEYS.HIGHLIGHTS, HIGHLIGHTS);
+      alert('インポート成功！\n取引先 '+PARTNERS.length+' 社\nブックマーク '+BOOKMARKS.length+' 件\nハイライト '+HIGHLIGHTS.length+' KW');
+      closeSettings();
+      renderPartnerView();
+    } catch(err) {
+      alert('インポート失敗: ' + err.message);
+    }
+  };
+  reader.readAsText(f);
+};
+window.clearAllData = function() {
+  if (!confirm('全データを削除しますか？\n（取引先・ブックマーク・メモ・自社情報・ハイライト、全て消えます。取り消せません）')) return;
+  if (!confirm('本当に削除しますか？最終確認です。')) return;
+  Object.keys(STORAGE_KEYS).forEach(function(k){ localStorage.removeItem(STORAGE_KEYS[k]); });
+  PARTNERS = []; BOOKMARKS = []; ENTRY_NOTES = {}; SELF = {}; HIGHLIGHTS = [];
+  alert('全データを削除しました');
+  closeSettings();
+  renderPartnerView();
+};
+
+// ============= GLOBAL SEARCH =============
+var SEARCH_QUERY = '';
+var NEWS_SEARCH = '';
+window.globalSearch = function(q) {
+  SEARCH_QUERY = (q||'').trim().toLowerCase();
+  renderDataView();
+};
+window.newsSearch = function(q) {
+  NEWS_SEARCH = (q||'').trim().toLowerCase();
+  renderNewsView();
+};
+function matchesSearch(text) {
+  if (!SEARCH_QUERY) return true;
+  return (text||'').toLowerCase().indexOf(SEARCH_QUERY) >= 0;
+}
+
+// ============= RISK SCORING (ルールベース予測) =============
+// 業種別リスク係数（高いほど危険）
+var INDUSTRY_RISK = {
+  '住宅建築': 30, '木造建築': 28, '土木工事': 28, '設備工事': 25, '電気工事': 22, '屋根工事': 22, '建設': 20, '工事業': 22,
+  '宿泊': 30, '旅館': 30, 'ホテル': 30,
+  '貨物': 22, '運輸': 22,
+  '木材': 25, '製材': 25,
+  '酒類卸': 22, '書店': 28, '出版': 28,
+  '飲食': 22, '農業': 20,
+  '製造': 15, '金属': 15, '機械': 15, '電子部品': 12,
+  '小売': 15, 'サービス': 12,
+  '医療': 5, '銀行': 0, '金融': 2, 'IT': 10, 'IoT': 15
+};
+function calcRiskScore(company) {
+  // 破産済みは即100
+  if (company.decisionDate || company.date) return { score: 100, factors: [{ k:'破産開始決定済み', v:'+100', tag:'critical' }] };
+  var score = 0;
+  var factors = [];
+  // 業種
+  var indKey = null, indVal = 0;
+  for (var k in INDUSTRY_RISK) {
+    if ((company.industry||'').indexOf(k) >= 0 && INDUSTRY_RISK[k] > indVal) {
+      indKey = k; indVal = INDUSTRY_RISK[k];
+    }
+  }
+  if (indKey) { score += indVal; factors.push({ k:'業種('+indKey+')', v:'+'+indVal }); }
+  // 地域
+  var city = (company.city||company.loc||'')+'';
+  if (/大船渡|陸前高田|釜石|宮古|久慈|洋野|田野畑|普代|野田|山田|大槌|住田/.test(city)) {
+    score += 15; factors.push({ k:'沿岸エリア', v:'+15' });
+  } else if (/二戸|軽米|九戸|一戸|岩手町|葛巻/.test(city)) {
+    score += 10; factors.push({ k:'県北エリア', v:'+10' });
+  } else if (/北上|花巻|奥州|金ケ崎|一関/.test(city)) {
+    score -= 5; factors.push({ k:'県南製造集積', v:'-5' });
+  }
+  // 売上ピーク比
+  if (company.peakRev && company.recentRev) {
+    var ratio = company.recentRev / company.peakRev;
+    if (ratio < 0.3) { score += 30; factors.push({ k:'売上ピーク比-70%超', v:'+30' }); }
+    else if (ratio < 0.5) { score += 25; factors.push({ k:'売上ピーク比-50%超', v:'+25' }); }
+    else if (ratio < 0.7) { score += 15; factors.push({ k:'売上ピーク比-30%超', v:'+15' }); }
+  }
+  // 直近赤字
+  if (company.recentLoss && company.recentLoss > 0) {
+    score += 15; factors.push({ k:'直近営業赤字', v:'+15' });
+  }
+  // 業績懸念タグ
+  if (company.status && /赤字|懸念|リスク|警戒/.test(company.status)) {
+    score += 20; factors.push({ k:'業績懸念ステータス', v:'+20' });
+  }
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  return { score: score, factors: factors };
+}
+function riskClass(score) {
+  if (score >= 71) return { level:'危険', cls:'risk-danger', color:'#d2453e' };
+  if (score >= 51) return { level:'警戒', cls:'risk-warn', color:'#c47a1a' };
+  if (score >= 31) return { level:'注意', cls:'risk-caution', color:'#b89030' };
+  return { level:'健全', cls:'risk-safe', color:'#3a8a4a' };
+}
+function riskBadge(company) {
+  var r = calcRiskScore(company);
+  var c = riskClass(r.score);
+  return '<span class="rs-badge '+c.cls+'" style="background:'+c.color+'">'+r.score+'</span>';
+}
+
+// Interactive risk calculator (ユーザー入力フォーム用)
+window.runRiskCalc = function() {
+  var ind = document.getElementById('rs-industry').value;
+  var region = document.getElementById('rs-region').value;
+  var founded = parseInt(document.getElementById('rs-founded').value, 10);
+  var employees = parseInt(document.getElementById('rs-employees').value, 10);
+  var recent = parseFloat(document.getElementById('rs-recent').value);
+  var peak = parseFloat(document.getElementById('rs-peak').value);
+  var profitAdd = parseInt(document.getElementById('rs-profit').value, 10) || 0;
+  var ceoAdd = parseInt(document.getElementById('rs-ceoage').value, 10) || 0;
+  var depAdd = parseInt(document.getElementById('rs-dep').value, 10) || 0;
+  var pubAdd = parseInt(document.getElementById('rs-pub').value, 10) || 0;
+
+  var score = 0;
+  var factors = [];
+
+  // 業種
+  if (ind && INDUSTRY_RISK[ind] != null) {
+    score += INDUSTRY_RISK[ind];
+    factors.push({ k:'業種('+ind+')', v:'+'+INDUSTRY_RISK[ind] });
+  }
+  // 地域
+  if (region === '沿岸') { score += 15; factors.push({ k:'沿岸エリア(復興特需崩落)', v:'+15' }); }
+  else if (region === '県北') { score += 10; factors.push({ k:'県北エリア(人口減少)', v:'+10' }); }
+  else if (region === '県南') { score -= 5; factors.push({ k:'県南製造集積(相対安定)', v:'-5' }); }
+  // 設立(若年企業ほど危険、長寿は安定)
+  if (founded) {
+    var age = 2026 - founded;
+    if (age < 5) { score += 8; factors.push({ k:'若年企業（設立5年未満）', v:'+8' }); }
+    else if (age < 10) { score += 5; factors.push({ k:'若年企業（10年未満）', v:'+5' }); }
+    else if (age > 50) { score -= 5; factors.push({ k:'老舗企業（50年超）', v:'-5' }); }
+  }
+  // 従業員数（小規模ほど脆弱）
+  if (employees) {
+    if (employees < 5) { score += 8; factors.push({ k:'極小規模（従業員5人未満）', v:'+8' }); }
+    else if (employees < 20) { score += 3; factors.push({ k:'小規模（従業員20人未満）', v:'+3' }); }
+    else if (employees > 100) { score -= 3; factors.push({ k:'中規模以上（100人超）', v:'-3' }); }
+  }
+  // 売上ピーク比
+  if (peak && recent && peak > 0) {
+    var ratio = recent / peak;
+    if (ratio < 0.3) { score += 30; factors.push({ k:'売上ピーク比-70%超', v:'+30' }); }
+    else if (ratio < 0.5) { score += 25; factors.push({ k:'売上ピーク比-50%超', v:'+25' }); }
+    else if (ratio < 0.7) { score += 15; factors.push({ k:'売上ピーク比-30%超', v:'+15' }); }
+    else if (ratio > 1.1) { score -= 5; factors.push({ k:'売上成長中（+10%超）', v:'-5' }); }
+  }
+  // 業績・経営者・依存度
+  if (profitAdd) { score += profitAdd; factors.push({ k:'業績（'+(profitAdd===15?'赤字':'2期連続赤字')+'）', v:'+'+profitAdd }); }
+  if (ceoAdd) { score += ceoAdd; factors.push({ k:'経営者状況', v:'+'+ceoAdd }); }
+  if (depAdd) { score += depAdd; factors.push({ k:'元請依存度', v:'+'+depAdd }); }
+  if (pubAdd) { score += pubAdd; factors.push({ k:'公共発注依存度', v:'+'+pubAdd }); }
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  var rc = riskClass(score);
+  var msg = score >= 71 ? '与信枠は最小限に。前払い・現金取引推奨。短期で破綻可能性。' :
+            score >= 51 ? '与信枠を制限し、定期的な業績確認が必要。新規取引は慎重に。' :
+            score >= 31 ? '通常取引可だが、年1-2回の業績モニタリング推奨。' :
+            '健全。通常取引で問題なし。ただし業界全体の動向は継続注視。';
+
+  var html = '<div class="rs-result '+rc.cls.replace('risk-','')+'">';
+  html += '<div><span class="rs-result-score" style="color:'+rc.color+'">'+score+'</span><span class="rs-result-level" style="background:'+rc.color+'">'+rc.level+'</span></div>';
+  html += '<div class="rs-result-msg"><strong>判定:</strong> '+msg+'</div>';
+  html += '<div class="rs-factors"><strong style="color:#3a2a28">加算根拠（'+factors.length+'項目）:</strong>';
+  factors.forEach(function(f){
+    html += '<div class="rs-factor-row"><span>'+f.k+'</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+(f.v.charAt(0)==='-'?'#3a8a4a':'#d2453e')+'">'+f.v+'</span></div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:10px;font-size:10.5px;color:#8a6f5a;line-height:1.5">※ ルールベース判定。最終的な与信判断は、決算書・取引履歴・経営者面談などと合わせて行ってください。</div>';
+  html += '</div>';
+  document.getElementById('rs-output').innerHTML = html;
 };
 
 // ============= DATA VIEW =============
 function renderDataView() {
+  var bFilter = BANKRUPT.filter(function(c){ return matchesSearch((c.form||'')+c.name+' '+(c.loc||'')+' '+(c.industry||'')); });
+  var sFilter = STEEL.filter(function(c){ return matchesSearch(c.name+' '+(c.loc||'')+' '+(c.industry||'')); });
+  var dFilter = DISTRESSED.filter(function(c){ return matchesSearch(c.name+' '+(c.city||c.loc||'')+' '+(c.industry||'')+' '+(c.tags||[]).join(' ')); });
+
+  var stats = document.getElementById('search-stats');
+  if (stats) {
+    if (SEARCH_QUERY) {
+      stats.innerHTML = '検索 "'+SEARCH_QUERY+'" → 倒産 '+bFilter.length+' / 鉄鋼 '+sFilter.length+' / 業績懸念 '+dFilter.length+' 件';
+    } else {
+      stats.innerHTML = '';
+    }
+  }
+
   var bt = document.getElementById('bankrupt-table');
-  bt.innerHTML = BANKRUPT.map(function(c,i){
+  bt.innerHTML = bFilter.length ? bFilter.map(function(c){
+    var i = BANKRUPT.indexOf(c);
     var d = formatDebt(c.debt);
-    return '<div class="ctable-row" onclick="openDetailFor(\'bankrupt\','+i+')"><div class="ctable-date">'+c.date+'</div><div class="ctable-info"><div class="ctable-name">'+(c.form||'')+' '+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div>'+(d?'<div class="ctable-debt">'+d+'</div>':'<div class="ctable-debt nodata">未公表</div>')+'</div>';
-  }).join('');
+    var bm = isBookmarked('bankrupt', i) ? '⭐' : '☆';
+    return '<div class="ctable-row" onclick="openDetailFor(\'bankrupt\','+i+')"><div class="ctable-date">'+c.date+'</div><div class="ctable-info"><div class="ctable-name">'+(c.form||'')+' '+c.name+' '+riskBadge(c)+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div>'+(d?'<div class="ctable-debt">'+d+'</div>':'<div class="ctable-debt nodata">未公表</div>')+'<button class="partner-icon-btn'+(bm==='⭐'?' active':'')+'" onclick="toggleBookmark(\'bankrupt\','+i+',event)" style="margin-left:4px;font-size:14px">'+bm+'</button></div>';
+  }).join('') : '<div style="padding:20px;text-align:center;color:#8a6f5a;font-size:12px">該当なし</div>';
 
   var st = document.getElementById('steel-table');
-  st.innerHTML = STEEL.map(function(c,i){
-    return '<div class="ctable-row" onclick="openDetailFor(\'steel\','+i+')"><div class="ctable-date">'+(c.cat==='major'?'大手':'中堅')+'</div><div class="ctable-info"><div class="ctable-name">'+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div></div>';
-  }).join('');
+  st.innerHTML = sFilter.length ? sFilter.map(function(c){
+    var i = STEEL.indexOf(c);
+    var bm = isBookmarked('steel', i) ? '⭐' : '☆';
+    return '<div class="ctable-row" onclick="openDetailFor(\'steel\','+i+')"><div class="ctable-date">'+(c.cat==='major'?'大手':'中堅')+'</div><div class="ctable-info"><div class="ctable-name">'+c.name+' '+riskBadge(c)+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div><button class="partner-icon-btn'+(bm==='⭐'?' active':'')+'" onclick="toggleBookmark(\'steel\','+i+',event)" style="margin-left:4px;font-size:14px">'+bm+'</button></div>';
+  }).join('') : '<div style="padding:20px;text-align:center;color:#8a6f5a;font-size:12px">該当なし</div>';
 
   var dt = document.getElementById('distressed-table');
-  dt.innerHTML = DISTRESSED.map(function(c,i){
-    return '<div class="ctable-row" onclick="openDetailFor(\'distressed\','+i+')"><div class="ctable-date" style="color:#e88820">⚠</div><div class="ctable-info"><div class="ctable-name">'+c.name+'</div><div class="ctable-meta">'+c.loc+' ／ '+c.industry+'</div></div><div class="ctable-debt" style="color:#e88820;font-size:10px">'+c.status+'</div></div>';
-  }).join('');
+  dt.innerHTML = dFilter.length ? dFilter.map(function(c){
+    var i = DISTRESSED.indexOf(c);
+    var bm = isBookmarked('distressed', i) ? '⭐' : '☆';
+    return '<div class="ctable-row" onclick="openDetailFor(\'distressed\','+i+')"><div class="ctable-date" style="color:#e88820">⚠</div><div class="ctable-info"><div class="ctable-name">'+c.name+' '+riskBadge(c)+'</div><div class="ctable-meta">'+(c.city||c.loc||'')+' ／ '+c.industry+'</div></div><div class="ctable-debt" style="color:#e88820;font-size:10px">'+c.status+'</div><button class="partner-icon-btn'+(bm==='⭐'?' active':'')+'" onclick="toggleBookmark(\'distressed\','+i+',event)" style="margin-left:4px;font-size:14px">'+bm+'</button></div>';
+  }).join('') : '<div style="padding:20px;text-align:center;color:#8a6f5a;font-size:12px">該当なし</div>';
 }
 
 // ============= BIZ VIEW (RADAR CHART) =============
 function renderBizView() {
   drawRadarChart();
+  renderMacroGrid();
+  renderMonitoringLinks();
 }
+
+function renderMacroGrid() {
+  var grid = document.getElementById('macro-grid');
+  if (!grid || !MACRO.indicators) return;
+  grid.innerHTML = MACRO.indicators.slice(0, 12).map(function(ind) {
+    var trendCls = ind.trend || 'flat';
+    var valDisplay = typeof ind.value === 'number'
+      ? (ind.value > 0 && ind.unit !== '%' ? ind.value.toLocaleString() : ind.value)
+      : ind.value;
+    var unitDisplay = ind.unit ? '<span class="u">'+ind.unit+'</span>' : '';
+    var rankBadge = ind.rank_national ? '<span style="display:inline-block;font-size:9px;font-weight:700;color:#fff;background:#d2453e;padding:1px 5px;border-radius:2px;margin-left:5px">'+ind.rank_national+'</span>' : '';
+    return '<div class="macro-ind">'
+      + '<div class="macro-ind-name">'+ind.name+rankBadge+'</div>'
+      + '<div class="macro-ind-val '+trendCls+'">'+valDisplay+unitDisplay+'</div>'
+      + (ind.context ? '<div class="macro-ind-context">'+ind.context+'</div>' : '')
+      + '<div class="macro-ind-period">'+ind.period+' / '+ind.source+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderMonitoringLinks() {
+  var box = document.getElementById('monitoring-links');
+  if (!box || !MACRO.monitoring_links) return;
+  box.innerHTML = MACRO.monitoring_links.map(function(l) {
+    return '<a class="mlink" href="'+l.url+'" target="_blank" rel="noopener"><div class="mlink-name">'+l.name+' ↗ <span class="mlink-freq">'+l.frequency+'</span></div><div class="mlink-url">'+l.url+'</div></a>';
+  }).join('');
+}
+
+// ============= 連鎖倒産シミュレーター =============
+window.runChainSim = function() {
+  var sector = document.getElementById('sim-sector').value;
+  var rate = parseInt(document.getElementById('sim-rate').value, 10);
+  var exposure = parseInt(document.getElementById('sim-exposure').value, 10);
+
+  // セクター別の高リスク社数（distressed.jsonから）
+  var sectorData = {
+    '建設業': { total: 375, label: '建設業全体' },
+    '製造業': { total: 347, label: '製造業全体' },
+    '小売業': { total: 316, label: '小売業全体' },
+    '運輸通信業': { total: 129, label: '運輸通信業全体' },
+    '宿泊業': { total: 56, label: '宿泊業' },
+    '金属製品製造': { total: 54, label: '金属製品製造業（JFE圏）' },
+    '機械器具製造': { total: 47, label: '機械器具製造業（鉄鋼関連）' }
+  };
+  var sd = sectorData[sector] || sectorData['建設業'];
+  var affectedCompanies = Math.round(sd.total * rate / 100);
+  
+  // 自社への影響
+  var revImpactPct = (rate / 100) * (exposure / 100) * 100;
+  var direct_impact_level = revImpactPct >= 30 ? '極大' : revImpactPct >= 15 ? '大' : revImpactPct >= 5 ? '中' : '小';
+  var direct_color = revImpactPct >= 30 ? '#d2453e' : revImpactPct >= 15 ? '#c47a1a' : revImpactPct >= 5 ? '#b89030' : '#3a8a4a';
+  
+  // 連鎖の波及
+  var secondaryRipple = Math.round(revImpactPct * 1.5); // 取引先倒産の二次波及
+  var laborMarket = rate >= 30 ? '熟練工大量解放（採用チャンス）' : rate >= 20 ? '熟練工が市場流出開始' : '通常';
+  var pricePressure = rate >= 30 ? '激しい価格競争（残存者間でシェア争奪）' : rate >= 20 ? '価格下落圧力（生き残り企業が値下げ）' : '通常';
+  var opportunity = rate >= 20 ? '健全な自社にとっては設備譲渡・人材獲得・シェア拡大の絶好機' : '通常の市場サイクル';
+
+  var html = '<div class="rs-result" style="background:'+direct_color+'15;border:2px solid '+direct_color+'">';
+  html += '<div style="font-size:11px;font-weight:700;color:#6b5444;letter-spacing:0.1em;margin-bottom:6px">SIMULATION RESULT</div>';
+  html += '<div style="font-size:14px;font-weight:700;color:#2a1f1c;margin-bottom:10px">'+sd.label+'で'+rate+'%倒産・自社依存度'+exposure+'%</div>';
+  html += '<div class="rs-factors">';
+  html += '<div class="rs-factor-row"><span>影響を受ける企業数</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+direct_color+'">'+affectedCompanies+' 社</span></div>';
+  html += '<div class="rs-factor-row"><span>自社への直接的売上影響（推計）</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+direct_color+'">-'+revImpactPct.toFixed(1)+'%</span></div>';
+  html += '<div class="rs-factor-row"><span>直接影響レベル</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+direct_color+'">'+direct_impact_level+'</span></div>';
+  html += '<div class="rs-factor-row"><span>二次波及（取引先連鎖）</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+direct_color+'">+'+secondaryRipple+'%</span></div>';
+  html += '<div class="rs-factor-row"><span>労働市場の変化</span><span style="font-size:11px">'+laborMarket+'</span></div>';
+  html += '<div class="rs-factor-row"><span>価格圧力</span><span style="font-size:11px">'+pricePressure+'</span></div>';
+  html += '</div>';
+  html += '<div class="rs-result-msg" style="background:#fff;padding:10px;border-radius:4px;margin-top:10px"><strong>戦略的含意:</strong><br>'+opportunity+'</div>';
+  if (revImpactPct >= 15) {
+    html += '<div class="rs-result-msg" style="background:#fde0dc;padding:10px;border-radius:4px;margin-top:8px;color:#a01010"><strong>⚠ 対策推奨:</strong><br>取引先分散・新規業界開拓・現預金確保・与信枠縮小を計画的に進めるべきレベル。</div>';
+  }
+  html += '<div style="margin-top:10px;font-size:10.5px;color:#8a6f5a;line-height:1.5">※ TDB高リスク企業数を母数とした概算。実際の影響は取引契約・支払い条件・在庫水準に依存します。</div>';
+  html += '</div>';
+  document.getElementById('sim-output').innerHTML = html;
+};
+
+// ============= 偽装請負セルフチェック =============
+window.runGisoCheck = function() {
+  var checks = document.querySelectorAll('.gh-check:checked');
+  var totalScore = 0;
+  var checkedItems = [];
+  checks.forEach(function(c){
+    var w = parseInt(c.dataset.w, 10);
+    totalScore += w;
+    checkedItems.push({ label: c.parentNode.textContent.trim(), w: w });
+  });
+  // 0=安全, 1-20=軽微, 21-40=注意, 41-60=警戒, 61+=高リスク
+  var level, color, msg, action;
+  if (totalScore >= 61) {
+    level = '高リスク'; color = '#d2453e';
+    msg = '偽装請負と認定される可能性が極めて高い。すぐに契約・運用の見直しが必要。';
+    action = '【即対応】(1) 弁護士・社労士に相談、(2) 元請けとの契約書見直し、(3) 業務指示系統の明確化、(4) 自社責任者の常駐配置、(5) 必要に応じて派遣許可の取得検討。';
+  } else if (totalScore >= 41) {
+    level = '警戒'; color = '#c47a1a';
+    msg = '偽装請負に該当する複数要素あり。是正対応を計画的に進める必要。';
+    action = '【1〜3ヶ月】(1) 該当項目から優先順位を決めて是正、(2) 元請けと協議の上で運用ルール改善、(3) 自社責任者の権限明確化。';
+  } else if (totalScore >= 21) {
+    level = '注意'; color = '#b89030';
+    msg = '一部の項目で改善余地あり。グレーゾーンに該当する可能性。';
+    action = '【3〜6ヶ月】(1) 該当項目を文書化、(2) 元請けの担当者教育、(3) 自社の業務遂行手順書整備。';
+  } else if (totalScore > 0) {
+    level = '軽微'; color = '#8a9a4a';
+    msg = '基本的に請負として成立しているが、注意項目あり。';
+    action = '【継続監視】定期的にチェックリストで自己点検。文書化を進める。';
+  } else {
+    level = '安全'; color = '#3a8a4a';
+    msg = '偽装請負には該当しない健全な請負関係。';
+    action = '【現状維持】継続的なモニタリングを年1回実施推奨。';
+  }
+
+  var html = '<div class="rs-result" style="background:'+color+'15;border:2px solid '+color+'">';
+  html += '<div><span class="rs-result-score" style="color:'+color+'">'+totalScore+'</span><span class="rs-result-level" style="background:'+color+'">'+level+'</span></div>';
+  html += '<div class="rs-result-msg"><strong>判定:</strong> '+msg+'</div>';
+  html += '<div class="rs-result-msg" style="background:#fff;padding:10px;border-radius:4px;margin-top:8px"><strong>推奨アクション:</strong><br>'+action+'</div>';
+  if (checkedItems.length > 0) {
+    html += '<div class="rs-factors"><strong style="color:#3a2a28">該当項目（'+checkedItems.length+'件）:</strong>';
+    checkedItems.forEach(function(c){
+      html += '<div class="rs-factor-row"><span style="font-size:10.5px">'+c.label+'</span><span style="font-family:JetBrains Mono;font-weight:700;color:'+color+'">+'+c.w+'</span></div>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="margin-top:10px;font-size:10.5px;color:#8a6f5a;line-height:1.5">※ 厚労省37号告示＋一般判例に基づく目安。最終的な判定は労働基準監督署・弁護士・社労士の専門家判断が必要です。匿名で公益通報を行う場合は労働基準監督署（電話0120-811-610）または法務省人権相談窓口へ。</div>';
+  html += '</div>';
+  document.getElementById('gh-output').innerHTML = html;
+};
 
 function drawRadarChart() {
   var svg = document.getElementById('radar-svg');
