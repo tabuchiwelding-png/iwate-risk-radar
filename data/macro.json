@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "last_updated": "2026-05-26",
+  "note": "岩手県マクロ経済指標。公開情報ベース（経産省・国交省・厚労省・日銀・岩手県）。",
+  "indicators": [
+    {
+      "name": "県内倒産発生率",
+      "value": 0.423,
+      "unit": "%",
+      "period": "2024年度",
+      "trend": "up",
+      "rank_national": "WORST 1位",
+      "context": "全国平均0.282%の1.5倍",
+      "source": "TSR"
+    },
+    {
+      "name": "県内年間倒産件数",
+      "value": 81,
+      "unit": "件",
+      "period": "2025年通年",
+      "trend": "up",
+      "context": "震災以降最多、16年ぶり80件超",
+      "source": "TSR"
+    },
+    {
+      "name": "県内年間負債総額",
+      "value": 98.45,
+      "unit": "億円",
+      "period": "2025年度",
+      "trend": "up",
+      "context": "震災以降2番目の規模",
+      "source": "TSR"
+    },
+    {
+      "name": "県内休廃業・解散件数",
+      "value": 511,
+      "unit": "件",
+      "period": "2025年",
+      "trend": "up",
+      "context": "過去10年最多、倒産の6倍",
+      "source": "TDB"
+    },
+    {
+      "name": "黒字休廃業の割合",
+      "value": 34.6,
+      "unit": "%",
+      "period": "2025年",
+      "trend": "down",
+      "context": "調査開始来初の4割未満。後継者不在問題が深刻化",
+      "source": "TDB"
+    },
+    {
+      "name": "高リスク企業数",
+      "value": 1428,
+      "unit": "社",
+      "period": "2025年6月",
+      "trend": "up",
+      "context": "県内企業の10.3%。製造業が半年で+46社（最大伸び）",
+      "source": "TDB"
+    },
+    {
+      "name": "新規求人前年比（全産業）",
+      "value": -13.6,
+      "unit": "%",
+      "period": "2025年8月",
+      "trend": "down",
+      "context": "業界縮小サイン",
+      "source": "岩手労働局"
+    },
+    {
+      "name": "新規求人前年比（建設業）",
+      "value": -15.7,
+      "unit": "%",
+      "period": "2025年8月",
+      "trend": "down",
+      "source": "岩手労働局"
+    },
+    {
+      "name": "新規求人前年比（製造業）",
+      "value": -14.0,
+      "unit": "%",
+      "period": "2025年8月",
+      "trend": "down",
+      "source": "岩手労働局"
+    },
+    {
+      "name": "新規求人前年比（運輸郵便）",
+      "value": -11.0,
+      "unit": "%",
+      "period": "2025年8月",
+      "trend": "down",
+      "source": "岩手労働局"
+    },
+    {
+      "name": "設備投資計画（製造業）",
+      "value": "増加",
+      "unit": "",
+      "period": "2025年度",
+      "trend": "up",
+      "context": "EV関連・省力化投資・工場集約。製造業のみプラス",
+      "source": "日銀短観（岩手県）"
+    },
+    {
+      "name": "個人消費基調",
+      "value": "緩やかに回復",
+      "unit": "",
+      "period": "2025年",
+      "trend": "up",
+      "source": "岩手労働局"
+    },
+    {
+      "name": "県人口減少率（推計）",
+      "value": -1.2,
+      "unit": "%/年",
+      "period": "2025年推計",
+      "trend": "down",
+      "context": "全国平均-0.5%の約2倍の速度",
+      "source": "県統計"
+    },
+    {
+      "name": "鉄鋼PPI",
+      "value": 141.5,
+      "unit": "",
+      "period": "2026年3月",
+      "trend": "flat",
+      "context": "前年同月比-7.5pt、前月比+0.2ptで3ヶ月連続上昇。底打ち傾向",
+      "source": "日銀企業物価統計"
+    }
+  ],
+  "monitoring_links": [
+    {"name": "TSR 倒産情報（東北）", "url": "https://www.tsr-net.co.jp/news/tsr/area3/iwate/", "frequency": "毎月"},
+    {"name": "TDB 倒産・休廃業情報", "url": "https://www.tdb.co.jp/report/", "frequency": "毎月"},
+    {"name": "EDINET（金融庁）上場企業開示", "url": "https://disclosure.edinet-fsa.go.jp/", "frequency": "随時"},
+    {"name": "国交省東北地整 入札公告", "url": "https://www.thr.mlit.go.jp/nyusatu/top.htm", "frequency": "随時"},
+    {"name": "岩手河川国道事務所 入札情報", "url": "https://www.thr.mlit.go.jp/iwate/jimusho/nyuusatu/index.htm", "frequency": "随時"},
+    {"name": "e-bisc 電子入札システム", "url": "https://www.e-bisc.go.jp/", "frequency": "随時"},
+    {"name": "PPI 入札情報サービス", "url": "https://www.i-ppi.jp/IPPI/SearchServices/Web/Index.htm", "frequency": "随時"},
+    {"name": "岩手県 入札・契約情報", "url": "https://www.pref.iwate.jp/kendozukuri/kensetsu/nyuusatsu/", "frequency": "随時"},
+    {"name": "岩手日報 経済欄", "url": "https://www.iwate-np.co.jp/", "frequency": "毎日"},
+    {"name": "IBC岩手放送 経済ニュース", "url": "https://news.ibc.co.jp/", "frequency": "随時"},
+    {"name": "JC-NET 東北倒産速報", "url": "https://n-seikei.jp/webpages/touhoku.html", "frequency": "毎日"},
+    {"name": "岩手労働局 月例経済", "url": "https://jsite.mhlw.go.jp/iwate-roudoukyoku/", "frequency": "毎月"},
+    {"name": "日銀盛岡事務所 短観", "url": "https://www3.boj.or.jp/morioka/", "frequency": "四半期"},
+    {"name": "日刊鉄鋼新聞 市場価格", "url": "https://www.japanmetaldaily.com/list/market/details", "frequency": "毎日"}
+  ]
+}
