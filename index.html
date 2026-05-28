@@ -358,9 +358,11 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 .factor-ind { font-size:10.5px; color:#6b5444; margin-top:3px; line-height:1.5; }
 .factor-ex { font-size:10px; color:#8a6f5a; margin-top:2px; font-style:italic; }
 .bullet-list { font-size:11.5px; color:#3a2a28; line-height:1.7; padding-left:14px; }
-.bullet-list li { list-style:disc; margin-bottom:2px; }
+..bullet-list li { list-style:disc; margin-bottom:2px; }
 
+@media (min-width:1024px) {
   body { font-size:15px; }
+
   #main { flex-direction:row; }
   #map-view { flex:0 0 60%; max-width:60%; }
   #side-panel { display:block; flex:1; background:#fbf8f2; overflow-y:auto; border-left:1px solid #e8dfd0; padding:16px; }
