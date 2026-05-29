@@ -358,11 +358,125 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 .factor-ind { font-size:10.5px; color:#6b5444; margin-top:3px; line-height:1.5; }
 .factor-ex { font-size:10px; color:#8a6f5a; margin-top:2px; font-style:italic; }
 .bullet-list { font-size:11.5px; color:#3a2a28; line-height:1.7; padding-left:14px; }
-..bullet-list li { list-style:disc; margin-bottom:2px; }
+.bullet-list li { list-style:disc; margin-bottom:2px; }
+
+/* ============= AI SEARCH ============= */
+#ai-fab {
+  position: fixed; bottom: 16px; right: 16px; z-index: 998;
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, #d2453e 0%, #b03a32 100%);
+  color: #fff; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(210,69,62,0.4), 0 2px 4px rgba(0,0,0,0.1);
+  font-family: inherit;
+  transition: transform 0.15s ease;
+}
+#ai-fab:active { transform: scale(0.92); }
+
+.ai-overlay {
+  position: fixed; inset: 0; background: rgba(20,15,12,0.65); z-index: 999;
+  display: none; align-items: flex-end; justify-content: center;
+}
+.ai-overlay.visible { display: flex; }
+.ai-panel {
+  width: 100%; max-width: 720px; max-height: 92vh;
+  background: #fbf6e8; border-radius: 16px 16px 0 0;
+  display: flex; flex-direction: column;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+}
+.ai-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid #e8dfd0;
+}
+.ai-title { font-size: 14px; font-weight: 700; color: #2a1f1c; }
+.ai-sub { font-size: 10px; color: #8a6f5a; font-family: 'JetBrains Mono'; margin-top: 2px; }
+.ai-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #f0e8d8; color: #6b5444; border: none; cursor: pointer;
+  font-size: 14px; font-weight: 700;
+}
+
+.ai-body {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  background: #fff;
+}
+.ai-tip {
+  background: #faf2d8; border-radius: 8px; padding: 11px 13px; margin-bottom: 10px;
+}
+.ai-tip-title { font-size: 11px; font-weight: 700; color: #6b5444; margin-bottom: 6px; letter-spacing: 0.05em; }
+.ai-suggest {
+  background: #fff; border: 1px solid #e8dfd0; border-radius: 16px;
+  padding: 7px 13px; margin-bottom: 5px; font-size: 12px; color: #2a1f1c;
+  cursor: pointer; line-height: 1.4;
+}
+.ai-suggest:active { background: #faf2d8; }
+.ai-suggest::before { content: '💬 '; opacity: 0.5; }
+
+.ai-msg {
+  margin-bottom: 12px; padding: 10px 13px; border-radius: 8px; font-size: 13px; line-height: 1.6;
+}
+.ai-msg.user {
+  background: #d2453e; color: #fff; margin-left: 24px;
+  border-radius: 12px 12px 2px 12px;
+}
+.ai-msg.assistant {
+  background: #f4ead8; color: #2a1f1c; margin-right: 24px;
+  border-radius: 12px 12px 12px 2px;
+}
+.ai-msg.assistant strong { color: #b03a32; }
+.ai-msg.assistant ul, .ai-msg.assistant ol { padding-left: 18px; margin: 6px 0; }
+.ai-msg.assistant li { margin-bottom: 3px; }
+.ai-msg.assistant code { background: #2a1f1c; color: #fbf6e8; padding: 1px 4px; border-radius: 3px; font-size: 11.5px; }
+.ai-msg.error { background: #fde0dc; color: #a01010; border: 1px solid #d2453e; }
+.ai-msg.loading {
+  background: #faf2d8; color: #6b5444; font-style: italic;
+}
+.ai-msg.loading::after {
+  content: '...'; display: inline-block; animation: ai-loading 1.2s infinite;
+}
+@keyframes ai-loading {
+  0%, 33% { opacity: 0.3; } 66%, 100% { opacity: 1; }
+}
+
+.ai-input-row {
+  display: flex; gap: 8px; padding: 10px 12px; background: #fbf6e8;
+  border-top: 1px solid #e8dfd0;
+}
+#ai-input {
+  flex: 1; padding: 10px 12px; font-size: 14px; font-family: inherit;
+  border: 1.5px solid #d8c4a8; border-radius: 8px; resize: none;
+  background: #fff; -webkit-appearance: none;
+}
+.ai-send {
+  width: 48px; min-width: 48px; background: #d2453e; color: #fff;
+  border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer;
+}
+.ai-send:active { background: #b03a32; }
+.ai-send:disabled { background: #c0a89c; cursor: not-allowed; }
+
+.ai-footer {
+  display: flex; gap: 16px; justify-content: center; padding: 8px 12px 12px;
+  background: #fbf6e8; font-size: 10px; color: #8a6f5a;
+}
+.ai-footer span { cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+.ai-footer span:active { background: #f0e8d8; }
+
+/* AI provider settings */
+.ai-prov-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px;
+}
+.ai-prov-btn {
+  padding: 9px 6px; font-size: 11.5px; font-weight: 700;
+  border: 1.5px solid #d8c4a8; border-radius: 6px; background: #fff; cursor: pointer;
+  font-family: inherit; text-align: center;
+}
+.ai-prov-btn.active { background: #d2453e; color: #fff; border-color: #d2453e; }
+.ai-prov-btn .pl-name { display: block; font-size: 12px; }
+.ai-prov-btn .pl-price { display: block; font-size: 9px; opacity: 0.7; margin-top: 2px; }
 
 @media (min-width:1024px) {
   body { font-size:15px; }
-
   #main { flex-direction:row; }
   #map-view { flex:0 0 60%; max-width:60%; }
   #side-panel { display:block; flex:1; background:#fbf8f2; overflow-y:auto; border-left:1px solid #e8dfd0; padding:16px; }
@@ -386,6 +500,47 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <button class="tab" id="tab-news" onclick="switchTab('news')">ニュース</button>
     <button class="tab" id="tab-settings" onclick="openSettings()" style="flex:0 0 38px;font-size:18px">⚙</button>
   </div>
+
+<!-- AI Search Floating Button -->
+<button id="ai-fab" onclick="openAISearch()" title="AI検索">
+  <span style="font-size:18px">✨</span>
+  <span style="font-size:9px;font-weight:700;letter-spacing:0.05em">AI検索</span>
+</button>
+
+<!-- AI Search Modal -->
+<div id="ai-modal" class="ai-overlay" onclick="if(event.target===this)closeAISearch()">
+  <div class="ai-panel">
+    <div class="ai-header">
+      <div>
+        <div class="ai-title">✨ AI ビジネスアシスタント</div>
+        <div class="ai-sub" id="ai-provider-status">プロバイダ未設定</div>
+      </div>
+      <button class="ai-close" onclick="closeAISearch()">✕</button>
+    </div>
+    <div class="ai-body" id="ai-body">
+      <div class="ai-tip">
+        <div class="ai-tip-title">💡 質問例</div>
+        <div class="ai-suggest" onclick="askAI('沿岸エリアで倒産リスク高い業種を分析して')">沿岸エリアで倒産リスク高い業種を分析して</div>
+        <div class="ai-suggest" onclick="askAI('JFE関連で今月特に注視すべき動きは？')">JFE関連で今月特に注視すべき動きは？</div>
+        <div class="ai-suggest" onclick="askAI('北上市の取引先候補で健全そうな業種を教えて')">北上市の取引先候補で健全そうな業種を教えて</div>
+        <div class="ai-suggest" onclick="askAI('鉄鋼業界の現在の調達コスト動向は？')">鉄鋼業界の現在の調達コスト動向は？</div>
+        <div class="ai-suggest" onclick="askAI('うちの取引先で要注意な兆候のある会社は？')">うちの取引先で要注意な兆候のある会社は？</div>
+        <div class="ai-suggest" onclick="askAI('今月の岩手の倒産から見える業界トレンドを3行で')">今月の倒産から見える業界トレンドを3行で</div>
+        <div class="ai-suggest" onclick="askAI('偽装請負リスクを下げるための具体策5つ')">偽装請負リスクを下げるための具体策5つ</div>
+        <div class="ai-suggest" onclick="askAI('鉄骨溶接で新規受注先を開拓するなら？')">鉄骨溶接で新規受注先を開拓するなら？</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <textarea id="ai-input" placeholder="質問・指示を入力... (例: 沿岸の倒産リスクを業種別で分析して)" rows="2"></textarea>
+      <button class="ai-send" onclick="sendAIQuery()" id="ai-send-btn">▶</button>
+    </div>
+    <div class="ai-footer">
+      <span id="ai-history-toggle" onclick="toggleAIHistory()">🕐 履歴</span>
+      <span onclick="clearAIChat()">🗑 クリア</span>
+      <span onclick="openSettings()">⚙ 設定</span>
+    </div>
+  </div>
+</div>
   <div id="brand-row">
     <div id="brand"><span class="accent">岩手</span> 倒産企業BIマップ 2026</div>
     <div style="font-family:'JetBrains Mono';font-size:10px;color:#8a6f5a">WORST1 / 0.423%</div>
@@ -1030,6 +1185,37 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
       <div class="modal-section">
         <div class="modal-section-title">ストレージ状況</div>
         <div id="storage-status" style="font-size:11.5px;line-height:1.7;color:#3a2a28;font-family:'JetBrains Mono'"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">✨ AI アシスタント設定</div>
+        <div style="font-size:11.5px;line-height:1.6;color:#3a2a28;margin-bottom:10px">AIプロバイダを選んでAPIキーを設定すると、全画面右下の「✨AI検索」ボタンから自然言語で分析を依頼できます。</div>
+        <div class="ai-prov-row">
+          <button class="ai-prov-btn" id="ai-prov-gemini" onclick="setAIProvider('gemini')">
+            <span class="pl-name">Gemini</span>
+            <span class="pl-price">無料</span>
+          </button>
+          <button class="ai-prov-btn" id="ai-prov-claude" onclick="setAIProvider('claude')">
+            <span class="pl-name">Claude</span>
+            <span class="pl-price">$0.001〜</span>
+          </button>
+          <button class="ai-prov-btn" id="ai-prov-openai" onclick="setAIProvider('openai')">
+            <span class="pl-name">ChatGPT</span>
+            <span class="pl-price">$0.001〜</span>
+          </button>
+        </div>
+        <label style="display:block;margin-bottom:6px;font-size:11.5px;font-weight:700;color:#3a2a28">APIキー
+          <input id="ai-apikey" type="password" placeholder="APIキーを貼り付け..." style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:'JetBrains Mono';background:#fff;margin-top:4px">
+        </label>
+        <div style="font-size:10px;color:#8a6f5a;line-height:1.5;margin-bottom:8px">
+          <strong>無料で始める：</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:#2a5a8a">Google AI Studio</a> で Gemini API キー取得（1日1,500クエリ無料）<br>
+          <strong>Claude：</strong> <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:#2a5a8a">Anthropic Console</a>（$5 無料クレジット）<br>
+          <strong>ChatGPT：</strong> <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" style="color:#2a5a8a">OpenAI Platform</a>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="rs-btn" onclick="saveAIConfig()" style="background:#3a5a8a;flex:1">💾 保存</button>
+          <button class="rs-btn" onclick="testAIConfig()" style="background:#3a8a4a;flex:1">🧪 接続テスト</button>
+        </div>
+        <div id="ai-test-result" style="font-size:11px;margin-top:6px"></div>
       </div>
       <div class="modal-section">
         <div class="modal-section-title">🔍 キーワードハイライト</div>
@@ -1749,7 +1935,9 @@ var STORAGE_KEYS = {
   BOOKMARKS: 'irr_bookmarks_v1',
   NOTES: 'irr_notes_v1',
   SELF: 'irr_self_v1',
-  HIGHLIGHTS: 'irr_highlights_v1'
+  HIGHLIGHTS: 'irr_highlights_v1',
+  AI_CONFIG: 'irr_ai_config_v1',
+  AI_HISTORY: 'irr_ai_history_v1'
 };
 function loadLS(key, defaultVal) {
   try {
@@ -1766,6 +1954,9 @@ var BOOKMARKS = loadLS(STORAGE_KEYS.BOOKMARKS, []); // ['layer:idx', ...]
 var ENTRY_NOTES = loadLS(STORAGE_KEYS.NOTES, {});   // { 'layer:idx': '...', ... }
 var SELF = loadLS(STORAGE_KEYS.SELF, {});
 var HIGHLIGHTS = loadLS(STORAGE_KEYS.HIGHLIGHTS, []);
+var AI_CONFIG = loadLS(STORAGE_KEYS.AI_CONFIG, { provider: 'gemini', apiKey: '' });
+var AI_HISTORY = loadLS(STORAGE_KEYS.AI_HISTORY, []);
+var AI_CHAT = []; // current session
 
 // ============= HIGHLIGHT KEYWORDS =============
 window.saveHighlights = function() {
@@ -1788,6 +1979,306 @@ function applyHighlights(text) {
     result = result.replace(re, '<mark style="background:#fff080;color:#3a2a1c;padding:0 2px;border-radius:2px;font-weight:600">$1</mark>');
   });
   return result;
+}
+
+// ============= AI ASSISTANT =============
+window.openAISearch = function() {
+  document.getElementById('ai-modal').classList.add('visible');
+  updateAIProviderStatus();
+  renderAIChat();
+  setTimeout(function(){ document.getElementById('ai-input').focus(); }, 100);
+};
+window.closeAISearch = function() {
+  document.getElementById('ai-modal').classList.remove('visible');
+};
+function updateAIProviderStatus() {
+  var el = document.getElementById('ai-provider-status');
+  if (!el) return;
+  var providers = { gemini: 'Gemini (Google・無料)', claude: 'Claude (Anthropic)', openai: 'ChatGPT (OpenAI)' };
+  if (!AI_CONFIG.apiKey) {
+    el.innerHTML = '<span style="color:#d2453e">⚠ APIキー未設定</span> — 設定タブで設定してください';
+  } else {
+    el.textContent = '✓ ' + (providers[AI_CONFIG.provider] || AI_CONFIG.provider) + ' 接続中';
+  }
+}
+window.setAIProvider = function(p) {
+  AI_CONFIG.provider = p;
+  ['gemini','claude','openai'].forEach(function(x){
+    var btn = document.getElementById('ai-prov-'+x);
+    if (btn) btn.classList.toggle('active', x === p);
+  });
+};
+window.saveAIConfig = function() {
+  AI_CONFIG.apiKey = document.getElementById('ai-apikey').value.trim();
+  saveLS(STORAGE_KEYS.AI_CONFIG, AI_CONFIG);
+  document.getElementById('ai-test-result').innerHTML = '<span style="color:#3a8a4a">✓ 保存しました</span>';
+  updateAIProviderStatus();
+};
+window.testAIConfig = function() {
+  var el = document.getElementById('ai-test-result');
+  el.innerHTML = '<span style="color:#8a6f5a">テスト中...</span>';
+  callAIAPI('こんにちは、テスト接続中です。「接続成功」と一言だけ返してください。', '').then(function(res){
+    el.innerHTML = '<span style="color:#3a8a4a">✓ 成功: ' + res.substring(0, 100) + '</span>';
+  }).catch(function(err){
+    el.innerHTML = '<span style="color:#d2453e">✗ 失敗: ' + err.message + '</span>';
+  });
+};
+window.askAI = function(q) {
+  document.getElementById('ai-input').value = q;
+  sendAIQuery();
+};
+window.sendAIQuery = function() {
+  var input = document.getElementById('ai-input');
+  var query = input.value.trim();
+  if (!query) return;
+  if (!AI_CONFIG.apiKey) {
+    alert('APIキーが未設定です。\n\n設定（⚙）→ AIアシスタント設定 から登録してください。\n\n推奨：Gemini API（無料・1日1500クエリ）\nhttps://aistudio.google.com/app/apikey');
+    closeAISearch();
+    openSettings();
+    return;
+  }
+  input.value = '';
+  AI_CHAT.push({ role: 'user', content: query });
+  AI_CHAT.push({ role: 'assistant', content: '__LOADING__' });
+  renderAIChat();
+  var btn = document.getElementById('ai-send-btn');
+  btn.disabled = true;
+  var context = buildAIContext(query);
+  callAIAPI(query, context).then(function(answer){
+    AI_CHAT[AI_CHAT.length-1] = { role: 'assistant', content: answer };
+    // Save to history
+    AI_HISTORY.unshift({ q: query, a: answer.substring(0, 200), ts: Date.now() });
+    if (AI_HISTORY.length > 50) AI_HISTORY = AI_HISTORY.slice(0, 50);
+    saveLS(STORAGE_KEYS.AI_HISTORY, AI_HISTORY);
+    renderAIChat();
+    btn.disabled = false;
+  }).catch(function(err){
+    AI_CHAT[AI_CHAT.length-1] = { role: 'assistant', content: '⚠ エラー: ' + err.message + '\n\nAPIキーが正しいか、接続を確認してください。設定（⚙）でテストできます。', isError: true };
+    renderAIChat();
+    btn.disabled = false;
+  });
+};
+function buildAIContext(query) {
+  // Smart context selection: include relevant data based on keywords in query
+  var q = query.toLowerCase();
+  var ctx = [];
+  ctx.push('# 岩手リスクレーダー アプリ内データ');
+  ctx.push('現在日: ' + (new Date()).toISOString().substring(0,10));
+  ctx.push('');
+
+  // ユーザープロファイル
+  if (SELF && (SELF.companyName || SELF.industry)) {
+    ctx.push('## ユーザー企業プロファイル');
+    if (SELF.companyName) ctx.push('- 会社名: ' + SELF.companyName);
+    if (SELF.industry) ctx.push('- 業種: ' + SELF.industry);
+    if (SELF.location) ctx.push('- 所在地: ' + SELF.location);
+    if (SELF.employees) ctx.push('- 従業員: ' + SELF.employees);
+    if (SELF.note) ctx.push('- メモ: ' + SELF.note);
+    ctx.push('');
+  } else {
+    ctx.push('## ユーザー企業');
+    ctx.push('- 岩手県の製造業（溶接・JFE協力会社想定）');
+    ctx.push('');
+  }
+  // 倒産情報（常に含める・15社程度なら問題なし）
+  ctx.push('## 倒産企業（'+BANKRUPT.length+'社）');
+  BANKRUPT.forEach(function(c){
+    ctx.push('- ' + (c.form||'') + c.name + ' / ' + (c.loc||'') + ' / ' + (c.industry||'') + ' / 負債' + (c.debt?(c.debt/10000).toFixed(2)+'億':'非公表') + ' / ' + (c.date||'') + (c.narrative?' / '+c.narrative.substring(0,80):''));
+  });
+  ctx.push('');
+  // 業績懸念
+  ctx.push('## 業績懸念・高リスク企業群（'+DISTRESSED.length+'件）');
+  DISTRESSED.forEach(function(d){
+    ctx.push('- ' + d.name + ' / ' + (d.city||d.loc||'') + ' / ' + (d.industry||'') + ' / ' + (d.status||'') + (d.detail?' / '+d.detail.substring(0,150):''));
+  });
+  ctx.push('');
+  // 鉄鋼関連（質問に鉄鋼関連の語句があれば詳しく）
+  if (/鉄|鋼|JFE|溶接|金属|建設|機械|工事/.test(q) || STEEL.length < 20) {
+    ctx.push('## 鉄鋼関連企業（'+STEEL.length+'社）');
+    STEEL.forEach(function(s){
+      ctx.push('- ' + s.name + ' / ' + (s.loc||'') + ' / ' + (s.industry||'') + ' / ' + (s.cat==='major'?'大手':'中堅・地元'));
+    });
+    ctx.push('');
+  }
+  // ニュース（最新10件）
+  if (NEWS && NEWS.length > 0) {
+    ctx.push('## 最新ニュース（直近）');
+    NEWS.slice(0, 15).forEach(function(n){
+      ctx.push('- ['+n.date+'] ['+n.category+'] '+n.title+' / '+(n.summary||'').substring(0, 100)+(n.business_implication?' / 含意: '+n.business_implication.substring(0,80):''));
+    });
+    ctx.push('');
+  }
+  // マクロ指標
+  if (MACRO && MACRO.indicators && MACRO.indicators.length > 0) {
+    ctx.push('## マクロ指標');
+    MACRO.indicators.forEach(function(m){
+      ctx.push('- ' + m.name + ': ' + m.value + (m.unit||'') + ' ('+m.period+') ' + (m.context||''));
+    });
+    ctx.push('');
+  }
+  // 取引先（関連あれば全件）
+  if (PARTNERS && PARTNERS.length > 0 && /取引|与信|顧客|パートナー|取引先|社員|venture/.test(q)) {
+    ctx.push('## 登録取引先（'+PARTNERS.length+'社）');
+    PARTNERS.forEach(function(p){
+      ctx.push('- ' + p.name + ' / ' + (p.location||'') + ' / ' + (p.industry||'') + ' / ' + (p.relation||'') + ' / リスク' + (p.scoreOverride||'-') + (p.memo?' / メモ: '+p.memo.substring(0,80):''));
+    });
+    ctx.push('');
+  }
+
+  return ctx.join('\n');
+}
+function callAIAPI(query, context) {
+  var provider = AI_CONFIG.provider;
+  var apiKey = AI_CONFIG.apiKey;
+  if (!apiKey) return Promise.reject(new Error('APIキー未設定'));
+
+  var systemPrompt = 'あなたは岩手県の製造業（特にJFE協力会社・溶接業界）の経営者向けビジネスインテリジェンスアシスタントです。提供されたデータに基づき、具体的・実用的・行動可能な助言を提供してください。\n\n回答スタイル：\n- 簡潔・箇条書き優先\n- 数字とデータを引用\n- 経営判断につながる具体的アクションを提案\n- 不確かな点は「データ不足」と明示\n- 岩手・東北の地域特性を考慮\n- 鉄鋼・溶接・製造業の業界知識を活用';
+
+  if (provider === 'gemini') {
+    return callGemini(apiKey, systemPrompt, context, query);
+  } else if (provider === 'claude') {
+    return callClaude(apiKey, systemPrompt, context, query);
+  } else if (provider === 'openai') {
+    return callOpenAI(apiKey, systemPrompt, context, query);
+  }
+  return Promise.reject(new Error('不明なプロバイダ: ' + provider));
+}
+function callGemini(apiKey, sys, ctx, query) {
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(apiKey);
+  var body = {
+    systemInstruction: { parts: [{ text: sys }] },
+    contents: [{
+      role: 'user',
+      parts: [{ text: '【参考データ】\n' + ctx + '\n\n【質問】\n' + query }]
+    }],
+    generationConfig: { temperature: 0.4, maxOutputTokens: 2048 }
+  };
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r){
+    if (!r.ok) return r.text().then(function(t){ throw new Error('Gemini HTTP '+r.status+': '+t.substring(0, 200)); });
+    return r.json();
+  }).then(function(j){
+    if (j.error) throw new Error(j.error.message || 'API error');
+    if (!j.candidates || !j.candidates[0]) throw new Error('No response');
+    return j.candidates[0].content.parts.map(function(p){ return p.text; }).join('');
+  });
+}
+function callClaude(apiKey, sys, ctx, query) {
+  return fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5',
+      max_tokens: 2048,
+      system: sys,
+      messages: [{ role: 'user', content: '【参考データ】\n' + ctx + '\n\n【質問】\n' + query }]
+    })
+  }).then(function(r){
+    if (!r.ok) return r.text().then(function(t){ throw new Error('Claude HTTP '+r.status+': '+t.substring(0, 200)); });
+    return r.json();
+  }).then(function(j){
+    if (j.error) throw new Error(j.error.message || 'API error');
+    return j.content.map(function(b){ return b.text || ''; }).join('');
+  });
+}
+function callOpenAI(apiKey, sys, ctx, query) {
+  return fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      max_tokens: 2048,
+      messages: [
+        { role: 'system', content: sys },
+        { role: 'user', content: '【参考データ】\n' + ctx + '\n\n【質問】\n' + query }
+      ]
+    })
+  }).then(function(r){
+    if (!r.ok) return r.text().then(function(t){ throw new Error('OpenAI HTTP '+r.status+': '+t.substring(0, 200)); });
+    return r.json();
+  }).then(function(j){
+    if (j.error) throw new Error(j.error.message || 'API error');
+    return j.choices[0].message.content;
+  });
+}
+function renderAIChat() {
+  var body = document.getElementById('ai-body');
+  if (AI_CHAT.length === 0) {
+    // show suggestions (default)
+    return;
+  }
+  var html = '';
+  AI_CHAT.forEach(function(m){
+    if (m.role === 'user') {
+      html += '<div class="ai-msg user">'+escapeHtml(m.content)+'</div>';
+    } else if (m.content === '__LOADING__') {
+      html += '<div class="ai-msg loading">分析中</div>';
+    } else if (m.isError) {
+      html += '<div class="ai-msg error">'+escapeHtml(m.content)+'</div>';
+    } else {
+      html += '<div class="ai-msg assistant">'+formatAIResponse(m.content)+'</div>';
+    }
+  });
+  body.innerHTML = html;
+  body.scrollTop = body.scrollHeight;
+}
+function escapeHtml(s) {
+  return (s||'').replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function formatAIResponse(text) {
+  // Simple markdown-ish formatting
+  var html = escapeHtml(text);
+  // Bold
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Lists
+  html = html.replace(/^[-・]\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*?<\/li>(\n|$))+/gs, function(m){ return '<ul>'+m+'</ul>'; });
+  // Numbered lists
+  html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+  // Headers
+  html = html.replace(/^###\s+(.+)$/gm, '<div style="font-weight:700;color:#b03a32;margin-top:8px;margin-bottom:4px">$1</div>');
+  html = html.replace(/^##\s+(.+)$/gm, '<div style="font-weight:700;font-size:14px;color:#2a1f1c;margin-top:10px;margin-bottom:5px">$1</div>');
+  // Line breaks
+  html = html.replace(/\n\n/g, '</p><p style="margin:6px 0">');
+  html = '<p style="margin:0">' + html + '</p>';
+  return html;
+}
+window.clearAIChat = function() {
+  if (confirm('現在のチャット履歴をクリアしますか？')) {
+    AI_CHAT = [];
+    renderAIChat();
+    document.getElementById('ai-body').innerHTML = document.querySelector('#ai-modal .ai-tip').outerHTML;
+  }
+};
+window.toggleAIHistory = function() {
+  var body = document.getElementById('ai-body');
+  if (AI_HISTORY.length === 0) {
+    alert('履歴なし');
+    return;
+  }
+  var html = '<div style="font-size:11px;font-weight:700;color:#6b5444;margin-bottom:10px">📜 過去の質問（タップで再質問）</div>';
+  AI_HISTORY.slice(0, 30).forEach(function(h){
+    html += '<div class="ai-suggest" onclick="askAI(\''+escapeHtml(h.q).replace(/'/g, "\\'")+'\')">' + escapeHtml(h.q) + '<div style="font-size:9px;color:#8a6f5a;margin-top:2px">'+new Date(h.ts).toLocaleString('ja')+'</div></div>';
+  });
+  body.innerHTML = html;
+};
+// Load AI config on settings open
+function loadAIConfigToSettings() {
+  document.getElementById('ai-apikey').value = AI_CONFIG.apiKey || '';
+  setAIProvider(AI_CONFIG.provider || 'gemini');
 }
 
 // ============= PARTNER CRUD =============
@@ -1955,6 +2446,8 @@ window.openSettings = function() {
   document.getElementById('self-revenue').value = SELF.revenue || '';
   var hlEl = document.getElementById('hl-keywords');
   if (hlEl) hlEl.value = (HIGHLIGHTS||[]).join(', ');
+  // AI config
+  loadAIConfigToSettings();
   // Storage status
   var bytes = 0;
   Object.keys(STORAGE_KEYS).forEach(function(k){
