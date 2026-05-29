@@ -360,6 +360,15 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 .bullet-list { font-size:11.5px; color:#3a2a28; line-height:1.7; padding-left:14px; }
 .bullet-list li { list-style:disc; margin-bottom:2px; }
 
+/* ============= MODAL OVERLAY (settings, edit-partner) ============= */
+.modal-overlay { position:fixed; inset:0; background:rgba(13,10,12,0.7); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); z-index:2100; display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.visible { display:flex; }
+.modal-card { background:#fbf6e8; width:100%; max-width:720px; max-height:90vh; border-radius:14px 14px 0 0; overflow:hidden; display:flex; flex-direction:column; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+.modal-head { padding:14px 16px 12px; border-bottom:1px solid #f0e8d8; flex-shrink:0; position:relative; display:flex; justify-content:space-between; align-items:center; }
+.modal-tag { display:inline-block; font-size:11px; font-weight:700; padding:4px 10px; border-radius:3px; letter-spacing:0.08em; background:#fbe8e2; color:#d2453e; }
+.modal-close { width:36px; height:36px; border-radius:50%; background:#f4ead8; color:#3a2a28; font-size:18px; display:flex; align-items:center; justify-content:center; font-family:sans-serif; cursor:pointer; border:none; flex-shrink:0; }
+.modal-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 16px 30px; }
+
 /* ============= AI SEARCH ============= */
 #ai-fab {
   position: fixed; bottom: 16px; right: 16px; z-index: 998;
@@ -498,7 +507,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <button class="tab" id="tab-partner" onclick="switchTab('partner')">取引先</button>
     <button class="tab" id="tab-biz" onclick="switchTab('biz')">活用</button>
     <button class="tab" id="tab-news" onclick="switchTab('news')">ニュース</button>
-    <button class="tab" id="tab-settings" onclick="openSettings()" style="flex:0 0 38px;font-size:18px">⚙</button>
+    <button class="tab" id="tab-settings" onclick="openSettings()" style="flex:0 0 52px;font-size:22px;padding:11px 6px;margin-right:6px">⚙</button>
   </div>
 
 <!-- AI Search Floating Button -->
@@ -537,7 +546,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <div class="ai-footer">
       <span id="ai-history-toggle" onclick="toggleAIHistory()">🕐 履歴</span>
       <span onclick="clearAIChat()">🗑 クリア</span>
-      <span onclick="openSettings()">⚙ 設定</span>
+      <span onclick="closeAISearch();setTimeout(openSettings,150)">⚙ 設定</span>
     </div>
   </div>
 </div>
@@ -2034,7 +2043,7 @@ window.sendAIQuery = function() {
   if (!AI_CONFIG.apiKey) {
     alert('APIキーが未設定です。\n\n設定（⚙）→ AIアシスタント設定 から登録してください。\n\n推奨：Gemini API（無料・1日1500クエリ）\nhttps://aistudio.google.com/app/apikey');
     closeAISearch();
-    openSettings();
+    setTimeout(openSettings, 200);
     return;
   }
   input.value = '';
