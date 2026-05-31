@@ -1,0 +1,39 @@
+name: fetch-listed
+
+# 全国の上場企業データ(listed.json)をEDINETから取得してコミットする
+# 手動実行 + 月1回の自動更新
+
+on:
+  workflow_dispatch:        # 「Actions」タブから手動実行できる
+  schedule:
+    - cron: '0 20 1 * *'    # 毎月1日 20:00 UTC (= 日本時間 5:00) に自動更新
+
+permissions:
+  contents: write           # 生成した listed.json をコミットするため
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch listed companies from EDINET
+        run: python scraper/fetch_listed.py
+
+      - name: Commit listed.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/listed.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update listed companies (EDINET) [auto]"
+            git push
+          fi
