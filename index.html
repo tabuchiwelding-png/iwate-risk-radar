@@ -31,7 +31,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 
 /* ===== MAIN LAYOUT (mobile first) ===== */
 #main { position:fixed; top:108px; left:0; right:0; bottom:0; display:flex; flex-direction:column; }
-#map-view { flex:1; display:flex; flex-direction:column; }
+#map-view { flex:1; display:flex; flex-direction:column; position:relative; }
 #map { flex:1; min-height:0; width:100%; background:#e8dfd0; }
 #side-panel { display:none; }
 
@@ -371,10 +371,10 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 
 /* ============= GPS / FILTERS / SITES ============= */
 #gps-btn {
-  position: absolute; top: 80px; right: 12px; z-index: 500;
+  position: absolute; top: 12px; right: 12px; z-index: 500;
   width: 44px; height: 44px; border-radius: 22px;
   background: #fff; border: 2px solid #d2453e; color: #d2453e;
-  font-size: 20px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 20px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   display: flex; align-items: center; justify-content: center;
 }
 #gps-btn.active { background: #d2453e; color: #fff; }
@@ -382,10 +382,10 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 #nearby-btn {
-  position: absolute; top: 130px; right: 12px; z-index: 500;
+  position: absolute; top: 64px; right: 12px; z-index: 500;
   width: 44px; height: 44px; border-radius: 22px;
   background: #fff; border: 2px solid #3a8a4a; color: #3a8a4a;
-  font-size: 16px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 14px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   display: none; align-items: center; justify-content: center;
   font-weight: 700;
 }
@@ -439,6 +439,14 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .site-marker span { transform: rotate(-45deg); }
+
+/* Listed company marker (上場企業) */
+.listed-marker {
+  background: #2a5a8a; color: #fff; width: 18px; height: 18px;
+  border-radius: 3px; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; border: 1.5px solid #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
 
 /* GPS info bar */
 #gps-info {
@@ -668,6 +676,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <button class="layer-tab active" data-layer="bankrupt" onclick="switchLayer('bankrupt')">🔴 倒産企業 <span class="count">15</span></button>
     <button class="layer-tab" data-layer="steel" onclick="switchLayer('steel')">⬛ 鉄鋼関連 <span class="count">28</span></button>
     <button class="layer-tab" data-layer="distressed" onclick="switchLayer('distressed')">🔶 赤字・要注意 <span class="count">5</span></button>
+    <button class="layer-tab" data-layer="listed" onclick="switchLayer('listed')">🏢 上場企業 <span class="count" id="listed-count">—</span></button>
     <button class="layer-tab" data-layer="sites" onclick="switchLayer('sites')">🏗 現場 <span class="count" id="sites-count">0</span></button>
   </div>
   <div id="filter-bar">
@@ -1521,9 +1530,17 @@ function loadData() {
     fetchJSON('./data/steel.json').catch(function(){ return null; }),
     fetchJSON('./data/distressed.json').catch(function(){ return null; }),
     fetchJSON('./data/news.json').catch(function(){ return null; }),
-    fetchJSON('./data/macro.json').catch(function(){ return null; })
+    fetchJSON('./data/macro.json').catch(function(){ return null; }),
+    fetchJSON('./data/listed.json').catch(function(){ return null; })
   ]).then(function(results){
-    var bk = results[0], st = results[1], ds = results[2], nw = results[3], mc = results[4];
+    var bk = results[0], st = results[1], ds = results[2], nw = results[3], mc = results[4], li = results[5];
+    if (li && li.companies) {
+      LISTED = li.companies;
+      LISTED_META = { count: li.count, updated: li.last_updated, prefCounts: li.pref_counts || {} };
+      console.log('[data] listed.json: '+LISTED.length+' 上場企業 読込');
+    } else {
+      console.warn('[data] listed.json 未取得（Action実行で生成されます）');
+    }
     if (bk && bk.companies) {
       LAST_UPDATED = bk.last_updated;
       BANKRUPT = bk.companies.map(convertBankruptEntry).sort(function(a,b){
@@ -1642,7 +1659,7 @@ var DISTRESSED = [
 ];
 
 // ============= GLOBAL STATE =============
-var map, bankruptLayer, steelLayer, distressedLayer, sitesLayer, visitsLayer;
+var map, bankruptLayer, steelLayer, distressedLayer, sitesLayer, visitsLayer, listedLayer;
 var currentLayer = 'bankrupt';
 var currentIdx = -1;
 var autoPlay = false, autoTimer = null;
@@ -1651,6 +1668,9 @@ var markerMap = { bankrupt:{}, steel:{}, distressed:{} };
 var GPS_MARKER = null;
 var NEARBY_MODE = false;
 var NEARBY_RADIUS_KM = 20;
+var LISTED = [];                 // 全国上場企業（listed.jsonから）
+var LISTED_META = { count:0, updated:null, prefCounts:{} };
+var listedBuilt = false;         // 上場レイヤーの遅延構築フラグ
 
 // ============= INIT MAP =============
 function initMap() {
@@ -1745,6 +1765,27 @@ function rebuildMarkers() {
   });
 }
 
+// 上場企業マーカーは数が多い(約3,900)ので遅延構築。フィルタも反映。
+function buildListedMarkers() {
+  if (!map) return;
+  if (!listedLayer) {
+    listedLayer = L.markerClusterGroup({ disableClusteringAtZoom:12, maxClusterRadius:60, chunkedLoading:true });
+  }
+  listedLayer.clearLayers();
+  var shown = 0;
+  LISTED.forEach(function(c) {
+    if (!c.lat || !c.lng) return;
+    if (!entryMatchesFilters(c)) return;
+    var icon = L.divIcon({ className:'', html:'<div class="listed-marker">上</div>', iconSize:[18,18], iconAnchor:[9,9] });
+    var m = L.marker([c.lat, c.lng], {icon:icon});
+    m.bindPopup('<b>'+escapeHtml(c.name)+'</b><br>'+escapeHtml(c.prefecture||'')+' / '+escapeHtml(c.industry||'')+(c.sec_code?'<br>証券コード: '+escapeHtml(c.sec_code):'')+'<br><span style="color:#888;font-size:10px">'+escapeHtml(c.address||'')+'</span>');
+    listedLayer.addLayer(m);
+    shown++;
+  });
+  listedBuilt = true;
+  return shown;
+}
+
 function buildPopup(c, type) {
   var html = '<div class="pop-name">' + (c.form||'') + ' ' + c.name + '</div>';
   html += '<div class="pop-loc">' + c.loc + '</div>';
@@ -1771,10 +1812,18 @@ window.switchLayer = function(layer, force) {
   map.removeLayer(steelLayer);
   map.removeLayer(distressedLayer);
   map.removeLayer(sitesLayer);
+  if (listedLayer) map.removeLayer(listedLayer);
   if (layer === 'bankrupt') map.addLayer(bankruptLayer);
   else if (layer === 'steel') map.addLayer(steelLayer);
   else if (layer === 'distressed') map.addLayer(distressedLayer);
   else if (layer === 'sites') map.addLayer(sitesLayer);
+  else if (layer === 'listed') {
+    if (LISTED.length === 0) {
+      alert('上場企業データはまだ取得されていません。\nGitHub Actions の「fetch-listed」を実行すると全国の上場企業が読み込まれます。');
+    }
+    buildListedMarkers();
+    map.addLayer(listedLayer);
+  }
   currentIdx = -1;
   document.getElementById('info-card').classList.remove('visible');
   document.getElementById('counter-total').textContent = visibleCount();
@@ -1787,6 +1836,14 @@ window.switchLayer = function(layer, force) {
   if (layer === 'bankrupt') map.flyTo([39.5, 141.4], 8, {duration:1.2});
   else if (layer === 'steel') map.flyTo([39.3, 141.4], 9, {duration:1.2});
   else if (layer === 'sites') { if (SITES.length && SITES[0].lat) map.flyTo([SITES[0].lat, SITES[0].lng], 11, {duration:1.2}); }
+  else if (layer === 'listed') {
+    if (FILTERS.prefecture && PREFECTURE_BOUNDS[FILTERS.prefecture]) {
+      var b = PREFECTURE_BOUNDS[FILTERS.prefecture];
+      map.flyTo([(b[0]+b[1])/2, (b[2]+b[3])/2], 9, {duration:1.2});
+    } else {
+      map.flyTo([37.5, 138.0], 5, {duration:1.2}); // 全国表示
+    }
+  }
   else map.flyTo([39.5, 141.5], 8, {duration:1.2});
 };
 
@@ -2674,11 +2731,24 @@ function populatePrefectureFilter() {
 window.applyFilters = function() {
   var pref = document.getElementById('filter-prefecture');
   var ind = document.getElementById('filter-industry');
+  var prevPref = FILTERS.prefecture;
   FILTERS.prefecture = pref ? pref.value : '';
   FILTERS.industry = ind ? ind.value : '';
   saveLS(STORAGE_KEYS.FILTERS, FILTERS);
   updateFilterStatus();
   refreshMapLayer();
+  // 都道府県が新しく選択されたら、その県の中心へ地図を移動
+  if (FILTERS.prefecture && FILTERS.prefecture !== prevPref && map) {
+    var b = PREFECTURE_BOUNDS[FILTERS.prefecture];
+    if (b) {
+      var clat = (b[0] + b[1]) / 2;
+      var clng = (b[2] + b[3]) / 2;
+      map.flyTo([clat, clng], 9, { duration: 1.0 });
+    }
+  } else if (!FILTERS.prefecture && prevPref && map) {
+    // 全都道府県に戻したら全国が見えるズームへ
+    map.flyTo([38.0, 138.5], 5, { duration: 1.0 });
+  }
 };
 
 window.clearFilters = function() {
@@ -2743,6 +2813,7 @@ function entryMatchesFilters(entry) {
 function refreshMapLayer() {
   // Rebuild all markers honoring filters, then re-show current layer
   rebuildMarkers();
+  if (currentLayer === 'listed') buildListedMarkers();
   switchLayer(currentLayer, true);
   updateSitesCount();
 }
@@ -3646,6 +3717,8 @@ window.beginApp = function() {
       restoreFilterUI();                   // 保存済みフィルタを復元
       initMap();                           // フィルタ適用済みでマーカー構築
       document.getElementById('counter-total').textContent = visibleCount();
+      var lc = document.getElementById('listed-count');
+      if (lc) lc.textContent = LISTED.length > 0 ? (LISTED.length >= 1000 ? (LISTED.length/1000).toFixed(1)+'k' : LISTED.length) : '—';
       updateSitesCount();
       updateFilterStatus();
       addNewBadges();
