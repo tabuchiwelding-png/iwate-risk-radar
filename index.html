@@ -369,7 +369,117 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
 .modal-close { width:36px; height:36px; border-radius:50%; background:#f4ead8; color:#3a2a28; font-size:18px; display:flex; align-items:center; justify-content:center; font-family:sans-serif; cursor:pointer; border:none; flex-shrink:0; }
 .modal-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 16px 30px; }
 
-/* ============= AI SEARCH ============= */
+/* ============= GPS / FILTERS / SITES ============= */
+#gps-btn {
+  position: absolute; top: 80px; right: 12px; z-index: 500;
+  width: 44px; height: 44px; border-radius: 22px;
+  background: #fff; border: 2px solid #d2453e; color: #d2453e;
+  font-size: 20px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: center;
+}
+#gps-btn.active { background: #d2453e; color: #fff; }
+#gps-btn.locating { animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+#nearby-btn {
+  position: absolute; top: 130px; right: 12px; z-index: 500;
+  width: 44px; height: 44px; border-radius: 22px;
+  background: #fff; border: 2px solid #3a8a4a; color: #3a8a4a;
+  font-size: 16px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: none; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+#nearby-btn.visible { display: flex; }
+#nearby-btn.active { background: #3a8a4a; color: #fff; }
+
+#filter-bar {
+  display: flex; gap: 6px; padding: 6px 10px; background: #faf5e6;
+  border-bottom: 1px solid #e8dfd0; align-items: center;
+  flex-wrap: wrap;
+}
+.filter-select {
+  padding: 5px 8px; font-size: 11.5px; border: 1px solid #d8c4a8;
+  border-radius: 4px; background: #fff; font-family: inherit;
+  flex: 1; min-width: 110px;
+}
+.filter-clear {
+  padding: 5px 10px; font-size: 11px; border: 1px solid #d2453e;
+  border-radius: 4px; background: #fff; color: #d2453e; cursor: pointer;
+  font-weight: 700;
+}
+.filter-clear:active { background: #d2453e; color: #fff; }
+.filter-status {
+  font-size: 10.5px; color: #6b5444; padding: 4px 8px;
+  flex-basis: 100%; line-height: 1.4;
+}
+.filter-status .accent { color: #d2453e; font-weight: 700; }
+
+/* Current location marker */
+.gps-marker {
+  width: 18px; height: 18px; background: #2a8af0; border: 3px solid #fff;
+  border-radius: 50%; box-shadow: 0 0 0 8px rgba(42,138,240,0.2);
+  animation: gpsBlink 2s infinite;
+}
+@keyframes gpsBlink {
+  0%, 100% { box-shadow: 0 0 0 8px rgba(42,138,240,0.2); }
+  50% { box-shadow: 0 0 0 16px rgba(42,138,240,0.1); }
+}
+
+/* Visit/checkin markers */
+.visit-marker {
+  background: #3a8a4a; color: #fff; width: 24px; height: 24px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.site-marker {
+  background: #b87a3a; color: #fff; width: 28px; height: 28px;
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; border: 2px solid #fff; transform: rotate(45deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.site-marker span { transform: rotate(-45deg); }
+
+/* GPS info bar */
+#gps-info {
+  position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.95); padding: 6px 12px; border-radius: 16px;
+  font-size: 11px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); z-index: 500;
+  display: none;
+  max-width: 90%;
+}
+#gps-info.visible { display: block; }
+
+/* Site/Checkin list cards */
+.site-card, .checkin-card {
+  background: #fff; border: 1px solid #e8dfd0; border-radius: 8px;
+  padding: 11px 13px; margin-bottom: 8px;
+}
+.site-card .site-name { font-size: 13px; font-weight: 700; color: #2a1f1c; margin-bottom: 3px; }
+.site-card .site-meta { font-size: 10.5px; color: #6b5444; margin-bottom: 5px; }
+.site-card .site-status {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 10px; font-weight: 700; margin-right: 4px;
+}
+.site-status.active { background: #e8f5e9; color: #2a8a3a; }
+.site-status.completed { background: #f0e8d8; color: #6b5444; }
+.site-status.cancelled { background: #fde0dc; color: #a01010; }
+
+.checkin-card .ci-time { font-size: 11px; font-weight: 700; color: #2a1f1c; }
+.checkin-card .ci-loc { font-size: 10.5px; color: #6b5444; font-family: 'JetBrains Mono'; }
+.checkin-card .ci-note { font-size: 11.5px; color: #3a2a28; margin-top: 4px; line-height: 1.5; }
+
+/* Visit record in partner card */
+.visit-list { max-height: 200px; overflow-y: auto; margin-top: 8px; }
+.visit-item {
+  background: #f8f0e0; border-radius: 5px; padding: 7px 10px; margin-bottom: 5px;
+  font-size: 11px; line-height: 1.5;
+}
+.visit-item .v-date { font-weight: 700; color: #2a1f1c; }
+.visit-item .v-loc { color: #6b5444; font-size: 10px; font-family: 'JetBrains Mono'; }
+.visit-item .v-memo { color: #3a2a28; margin-top: 2px; }
+
+
 #ai-fab {
   position: fixed; bottom: 16px; right: 16px; z-index: 998;
   width: 64px; height: 64px; border-radius: 50%;
@@ -558,12 +668,43 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <button class="layer-tab active" data-layer="bankrupt" onclick="switchLayer('bankrupt')">🔴 倒産企業 <span class="count">15</span></button>
     <button class="layer-tab" data-layer="steel" onclick="switchLayer('steel')">⬛ 鉄鋼関連 <span class="count">28</span></button>
     <button class="layer-tab" data-layer="distressed" onclick="switchLayer('distressed')">🔶 赤字・要注意 <span class="count">5</span></button>
+    <button class="layer-tab" data-layer="sites" onclick="switchLayer('sites')">🏗 現場 <span class="count" id="sites-count">0</span></button>
+  </div>
+  <div id="filter-bar">
+    <select id="filter-prefecture" class="filter-select" onchange="applyFilters()">
+      <option value="">🗾 全都道府県</option>
+    </select>
+    <select id="filter-industry" class="filter-select" onchange="applyFilters()">
+      <option value="">🏭 全業種</option>
+      <option value="建設">建設業</option>
+      <option value="製造">製造業</option>
+      <option value="鉄鋼">鉄鋼・金属</option>
+      <option value="土木">土木・とび</option>
+      <option value="設備">設備工事</option>
+      <option value="運輸">運輸・物流</option>
+      <option value="卸売">卸売</option>
+      <option value="小売">小売</option>
+      <option value="飲食">飲食</option>
+      <option value="宿泊">宿泊</option>
+      <option value="サービス">サービス</option>
+      <option value="不動産">不動産</option>
+      <option value="情報">情報・通信</option>
+      <option value="医療">医療・福祉</option>
+      <option value="教育">教育</option>
+      <option value="農林漁業">農林漁業</option>
+      <option value="その他">その他</option>
+    </select>
+    <button class="filter-clear" onclick="clearFilters()">✕</button>
+    <div class="filter-status" id="filter-status"></div>
   </div>
 </div>
 
 <div id="main">
   <div id="map-view">
     <div id="map"></div>
+    <button id="gps-btn" onclick="toggleGPS()" title="現在地">📍</button>
+    <button id="nearby-btn" onclick="toggleNearby()" title="周辺企業">周辺</button>
+    <div id="gps-info"></div>
     <div id="info-card">
       <div id="info-card-inner">
         <div id="ic-tag">—</div>
@@ -1116,6 +1257,16 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
     <div class="sv-title">📌 ブックマーク <span class="sub" id="bm-count">0 件</span></div>
     <div id="bookmark-list"></div>
   </div>
+  <div class="sv-section" style="margin-bottom:14px">
+    <div class="sv-title">🏗 現場管理 <span class="sub" id="sites-count-display">0 件</span></div>
+    <button class="rs-btn" onclick="addSite()" style="width:100%;background:#b87a3a;margin-bottom:10px">+ 現場を追加</button>
+    <div id="sites-list"></div>
+  </div>
+  <div class="sv-section" style="margin-bottom:14px">
+    <div class="sv-title">📍 チェックイン履歴 <span class="sub" id="checkins-count">0 件</span></div>
+    <button class="rs-btn" onclick="checkInToSite(null)" style="width:100%;background:#3a8a4a;margin-bottom:10px">📍 今すぐチェックイン (現在地)</button>
+    <div id="checkins-list"></div>
+  </div>
   <div class="sv-section" style="margin-bottom:40px">
     <div class="sv-title">🤝 取引先一覧 <span class="sub" id="partner-count">0 社</span></div>
     <div id="partner-list"></div>
@@ -1137,15 +1288,22 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
         <input type="hidden" id="ep-id">
         <label>会社名（必須）<input id="ep-name" type="text" placeholder="例: 株式会社山田製作所"></label>
         <div class="rs-row2">
-          <label>所在地<input id="ep-city" type="text" placeholder="例: 北上市"></label>
-          <label>業種<input id="ep-industry" type="text" placeholder="例: 金属加工"></label>
+          <label>都道府県<select id="ep-prefecture">
+            <option value="">未設定</option>
+          </select></label>
+          <label>市区町村<input id="ep-city" type="text" placeholder="例: 北上市"></label>
         </div>
+        <label>業種<input id="ep-industry" type="text" placeholder="例: 金属加工 / 鋼構造物工事業"></label>
         <label>関係<select id="ep-relation"><option value="">未設定</option><option value="元請け">元請け</option><option value="下請け">下請け</option><option value="顧客">顧客</option><option value="仕入先">仕入先</option><option value="競合">競合</option><option value="その他">その他</option></select></label>
         <div class="rs-row2">
           <label>月商規模(万円)<input id="ep-volume" type="number" inputmode="numeric" placeholder="例: 500"></label>
           <label>支払条件<input id="ep-terms" type="text" placeholder="例: 末締翌々月"></label>
         </div>
-        <label>連絡先(担当者・電話・メール)<input id="ep-contact" type="text" placeholder="例: 田中部長 / 019-xxx-xxxx"></label>
+        <div class="rs-row2">
+          <label>電話番号<input id="ep-phone" type="tel" inputmode="tel" placeholder="例: 019-xxx-xxxx"></label>
+          <label>メール<input id="ep-email" type="email" inputmode="email" placeholder="例: info@xxx.co.jp"></label>
+        </div>
+        <label>連絡先(担当者・部署等)<input id="ep-contact" type="text" placeholder="例: 田中部長 / 営業部"></label>
         <label>カスタムリスクスコア(0-100、空欄で自動算出)<input id="ep-score" type="number" inputmode="numeric" placeholder="自動: 業種・地域から計算"></label>
         <label>メモ（自由記入）<textarea id="ep-notes" rows="4" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:inherit;background:#fff;resize:vertical" placeholder="面談内容・気づいた点・要観察事項など"></textarea></label>
         <div class="rs-row2" style="margin-top:8px">
@@ -1214,6 +1372,26 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; }
         </div>
         <label style="display:block;margin-bottom:6px;font-size:11.5px;font-weight:700;color:#3a2a28">APIキー
           <input id="ai-apikey" type="password" placeholder="APIキーを貼り付け..." style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #d8c4a8;border-radius:4px;font-family:'JetBrains Mono';background:#fff;margin-top:4px">
+        </label>
+        <label style="display:block;margin-bottom:8px;font-size:11px;color:#6b5444">モデル選択（空欄なら推奨モデル自動使用）
+          <select id="ai-model" style="width:100%;padding:7px 8px;font-size:12px;border:1px solid #d8c4a8;border-radius:4px;background:#fff;margin-top:4px;font-family:inherit">
+            <option value="">⚙ 自動（推奨）</option>
+            <optgroup label="Gemini（無料）">
+              <option value="gemini:gemini-2.5-flash">Gemini 2.5 Flash（無料・安定）</option>
+              <option value="gemini:gemini-3-flash-preview">Gemini 3 Flash Preview（無料・新）</option>
+              <option value="gemini:gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite（無料・最軽量）</option>
+            </optgroup>
+            <optgroup label="Claude（要API課金）">
+              <option value="claude:claude-haiku-4-5">Claude Haiku 4.5（安・速）</option>
+              <option value="claude:claude-sonnet-4-6">Claude Sonnet 4.6（中・高品質）</option>
+              <option value="claude:claude-opus-4-7">Claude Opus 4.7（最高品質）</option>
+            </optgroup>
+            <optgroup label="OpenAI（要API課金）">
+              <option value="openai:gpt-5.4-mini">GPT-5.4 mini（安・速）</option>
+              <option value="openai:gpt-5.4">GPT-5.4（中）</option>
+              <option value="openai:gpt-5.5">GPT-5.5（最新・高品質）</option>
+            </optgroup>
+          </select>
         </label>
         <div style="font-size:10px;color:#8a6f5a;line-height:1.5;margin-bottom:8px">
           <strong>無料で始める：</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:#2a5a8a">Google AI Studio</a> で Gemini API キー取得（1日1,500クエリ無料）<br>
@@ -1464,12 +1642,15 @@ var DISTRESSED = [
 ];
 
 // ============= GLOBAL STATE =============
-var map, bankruptLayer, steelLayer, distressedLayer;
+var map, bankruptLayer, steelLayer, distressedLayer, sitesLayer, visitsLayer;
 var currentLayer = 'bankrupt';
 var currentIdx = -1;
 var autoPlay = false, autoTimer = null;
 var EVENT_MS = 4500;
 var markerMap = { bankrupt:{}, steel:{}, distressed:{} };
+var GPS_MARKER = null;
+var NEARBY_MODE = false;
+var NEARBY_RADIUS_KM = 20;
 
 // ============= INIT MAP =============
 function initMap() {
@@ -1488,17 +1669,30 @@ function initMap() {
   bankruptLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
   steelLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
   distressedLayer = L.markerClusterGroup({ disableClusteringAtZoom:10, maxClusterRadius:40 });
+  sitesLayer = L.layerGroup();
+  visitsLayer = L.layerGroup();
+
+  rebuildMarkers();
+  map.addLayer(bankruptLayer);
+  map.addLayer(visitsLayer); // visits always visible
+}
+
+// Build (or rebuild) all markers honoring active filters
+function rebuildMarkers() {
+  if (!map) return;
+  bankruptLayer.clearLayers();
+  steelLayer.clearLayers();
+  distressedLayer.clearLayers();
+  sitesLayer.clearLayers();
+  visitsLayer.clearLayers();
+  markerMap = { bankrupt:{}, steel:{}, distressed:{} };
 
   // Bankrupt markers
   BANKRUPT.forEach(function(c, i) {
+    if (!entryMatchesFilters(c)) return;
     var debt = c.debt || 0;
     var sizeClass = debt > 50000 ? 'large' : (debt < 5000 && debt > 0 ? 'small' : '');
-    var icon = L.divIcon({
-      className: '',
-      html: '<div class="bankrupt-marker '+sizeClass+'"></div>',
-      iconSize: [24,24],
-      iconAnchor: [12,12]
-    });
+    var icon = L.divIcon({ className:'', html:'<div class="bankrupt-marker '+sizeClass+'"></div>', iconSize:[24,24], iconAnchor:[12,12] });
     var m = L.marker([c.lat, c.lng], {icon:icon});
     m.bindPopup(buildPopup(c, 'bankrupt'));
     m.on('click', function(){ selectMarker('bankrupt', i); });
@@ -1508,12 +1702,8 @@ function initMap() {
 
   // Steel markers
   STEEL.forEach(function(c, i) {
-    var icon = L.divIcon({
-      className: '',
-      html: '<div class="steel-marker '+(c.cat==='major'?'major':'')+'">鉄</div>',
-      iconSize: [22,22],
-      iconAnchor: [11,11]
-    });
+    if (!entryMatchesFilters(c)) return;
+    var icon = L.divIcon({ className:'', html:'<div class="steel-marker '+(c.cat==='major'?'major':'')+'">鉄</div>', iconSize:[22,22], iconAnchor:[11,11] });
     var m = L.marker([c.lat, c.lng], {icon:icon});
     m.bindPopup(buildPopup(c, 'steel'));
     m.on('click', function(){ selectMarker('steel', i); });
@@ -1523,12 +1713,8 @@ function initMap() {
 
   // Distressed markers
   DISTRESSED.forEach(function(c, i) {
-    var icon = L.divIcon({
-      className: '',
-      html: '<div class="distressed-marker"><span>!</span></div>',
-      iconSize: [22,22],
-      iconAnchor: [11,11]
-    });
+    if (!entryMatchesFilters(c)) return;
+    var icon = L.divIcon({ className:'', html:'<div class="distressed-marker"><span>!</span></div>', iconSize:[22,22], iconAnchor:[11,11] });
     var m = L.marker([c.lat, c.lng], {icon:icon});
     m.bindPopup(buildPopup(c, 'distressed'));
     m.on('click', function(){ selectMarker('distressed', i); });
@@ -1536,7 +1722,27 @@ function initMap() {
     distressedLayer.addLayer(m);
   });
 
-  map.addLayer(bankruptLayer);
+  // Site markers (現場) — honor prefecture/nearby filters
+  SITES.forEach(function(s) {
+    if (!s.lat || !s.lng) return;
+    if (!entryMatchesFilters({ lat:s.lat, lng:s.lng, prefecture:s.prefecture, loc:s.address, industry:'' })) return;
+    var icon = L.divIcon({ className:'', html:'<div class="site-marker"><span>🏗</span></div>', iconSize:[28,28], iconAnchor:[14,14] });
+    var m = L.marker([s.lat, s.lng], {icon:icon});
+    m.bindPopup('<b>🏗 '+escapeHtml(s.name)+'</b><br>'+escapeHtml(s.address||'')+'<br><span style="color:#888">'+(s.status==='active'?'稼働中':s.status==='completed'?'完了':'中止')+'</span>');
+    sitesLayer.addLayer(m);
+  });
+
+  // Visit markers (訪問履歴) — green dots from all partner visits
+  PARTNERS.forEach(function(p) {
+    if (!p.visits) return;
+    p.visits.forEach(function(v) {
+      if (!v.lat || !v.lng) return;
+      var icon = L.divIcon({ className:'', html:'<div class="visit-marker">✓</div>', iconSize:[24,24], iconAnchor:[12,12] });
+      var m = L.marker([v.lat, v.lng], {icon:icon});
+      m.bindPopup('<b>'+escapeHtml(p.name)+'</b><br>'+escapeHtml(v.date||'')+'<br>'+escapeHtml(v.memo||''));
+      visitsLayer.addLayer(m);
+    });
+  });
 }
 
 function buildPopup(c, type) {
@@ -1555,8 +1761,8 @@ function formatDebt(m) {
 }
 
 // ============= LAYER SWITCHING =============
-window.switchLayer = function(layer) {
-  if (currentLayer === layer) return;
+window.switchLayer = function(layer, force) {
+  if (currentLayer === layer && !force) return;
   currentLayer = layer;
   document.querySelectorAll('.layer-tab').forEach(function(el) {
     el.classList.toggle('active', el.dataset.layer === layer);
@@ -1564,29 +1770,37 @@ window.switchLayer = function(layer) {
   map.removeLayer(bankruptLayer);
   map.removeLayer(steelLayer);
   map.removeLayer(distressedLayer);
+  map.removeLayer(sitesLayer);
   if (layer === 'bankrupt') map.addLayer(bankruptLayer);
   else if (layer === 'steel') map.addLayer(steelLayer);
-  else map.addLayer(distressedLayer);
+  else if (layer === 'distressed') map.addLayer(distressedLayer);
+  else if (layer === 'sites') map.addLayer(sitesLayer);
   currentIdx = -1;
   document.getElementById('info-card').classList.remove('visible');
-  document.getElementById('counter-total').textContent = getCurrentList().length;
+  document.getElementById('counter-total').textContent = visibleCount();
   document.getElementById('counter-now').textContent = '—';
-  document.getElementById('play-btn').innerHTML = '▶ 自動再生';
+  var playBtn = document.getElementById('play-btn');
+  if (playBtn) playBtn.innerHTML = '▶ 自動再生';
   if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   autoPlay = false;
-  if (layer === 'bankrupt') {
-    map.flyTo([39.5, 141.4], 8, {duration:1.2});
-  } else if (layer === 'steel') {
-    map.flyTo([39.3, 141.4], 9, {duration:1.2});
-  } else {
-    map.flyTo([39.5, 141.5], 8, {duration:1.2});
-  }
+  if (force) return; // skip flyTo on filter refresh
+  if (layer === 'bankrupt') map.flyTo([39.5, 141.4], 8, {duration:1.2});
+  else if (layer === 'steel') map.flyTo([39.3, 141.4], 9, {duration:1.2});
+  else if (layer === 'sites') { if (SITES.length && SITES[0].lat) map.flyTo([SITES[0].lat, SITES[0].lng], 11, {duration:1.2}); }
+  else map.flyTo([39.5, 141.5], 8, {duration:1.2});
 };
 
 function getCurrentList() {
   if (currentLayer === 'bankrupt') return BANKRUPT;
   if (currentLayer === 'steel') return STEEL;
+  if (currentLayer === 'sites') return SITES;
   return DISTRESSED;
+}
+
+// Count of currently visible (filtered) entries for the active layer
+function visibleCount() {
+  if (currentLayer === 'sites') return SITES.length;
+  return getCurrentList().filter(entryMatchesFilters).length;
 }
 
 // ============= SELECT MARKER =============
@@ -1946,7 +2160,10 @@ var STORAGE_KEYS = {
   SELF: 'irr_self_v1',
   HIGHLIGHTS: 'irr_highlights_v1',
   AI_CONFIG: 'irr_ai_config_v1',
-  AI_HISTORY: 'irr_ai_history_v1'
+  AI_HISTORY: 'irr_ai_history_v1',
+  SITES: 'irr_sites_v1',
+  CHECKINS: 'irr_checkins_v1',
+  FILTERS: 'irr_filters_v1'
 };
 function loadLS(key, defaultVal) {
   try {
@@ -1966,6 +2183,10 @@ var HIGHLIGHTS = loadLS(STORAGE_KEYS.HIGHLIGHTS, []);
 var AI_CONFIG = loadLS(STORAGE_KEYS.AI_CONFIG, { provider: 'gemini', apiKey: '' });
 var AI_HISTORY = loadLS(STORAGE_KEYS.AI_HISTORY, []);
 var AI_CHAT = []; // current session
+var SITES = loadLS(STORAGE_KEYS.SITES, []); // 現場リスト
+var CHECKINS = loadLS(STORAGE_KEYS.CHECKINS, []); // チェックイン履歴
+var FILTERS = loadLS(STORAGE_KEYS.FILTERS, { prefecture: '', industry: '' });
+var CURRENT_GPS = null; // 現在地キャッシュ {lat, lng, accuracy, ts}
 
 // ============= HIGHLIGHT KEYWORDS =============
 window.saveHighlights = function() {
@@ -2019,6 +2240,19 @@ window.setAIProvider = function(p) {
 };
 window.saveAIConfig = function() {
   AI_CONFIG.apiKey = document.getElementById('ai-apikey').value.trim();
+  var modelSel = document.getElementById('ai-model').value;
+  if (modelSel) {
+    var parts = modelSel.split(':');
+    AI_CONFIG.provider = parts[0];
+    if (parts[0] === 'gemini') AI_CONFIG.geminiModel = parts[1];
+    if (parts[0] === 'claude') AI_CONFIG.claudeModel = parts[1];
+    if (parts[0] === 'openai') AI_CONFIG.openaiModel = parts[1];
+    // update visible provider buttons
+    ['gemini','claude','openai'].forEach(function(x){
+      var btn = document.getElementById('ai-prov-'+x);
+      if (btn) btn.classList.toggle('active', x === parts[0]);
+    });
+  }
   saveLS(STORAGE_KEYS.AI_CONFIG, AI_CONFIG);
   document.getElementById('ai-test-result').innerHTML = '<span style="color:#3a8a4a">✓ 保存しました</span>';
   updateAIProviderStatus();
@@ -2153,7 +2387,8 @@ function callAIAPI(query, context) {
   return Promise.reject(new Error('不明なプロバイダ: ' + provider));
 }
 function callGemini(apiKey, sys, ctx, query) {
-  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(apiKey);
+  var model = AI_CONFIG.geminiModel || 'gemini-2.5-flash';
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(apiKey);
   var body = {
     systemInstruction: { parts: [{ text: sys }] },
     contents: [{
@@ -2176,6 +2411,7 @@ function callGemini(apiKey, sys, ctx, query) {
   });
 }
 function callClaude(apiKey, sys, ctx, query) {
+  var model = AI_CONFIG.claudeModel || 'claude-haiku-4-5';
   return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -2185,7 +2421,7 @@ function callClaude(apiKey, sys, ctx, query) {
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5',
+      model: model,
       max_tokens: 2048,
       system: sys,
       messages: [{ role: 'user', content: '【参考データ】\n' + ctx + '\n\n【質問】\n' + query }]
@@ -2199,6 +2435,7 @@ function callClaude(apiKey, sys, ctx, query) {
   });
 }
 function callOpenAI(apiKey, sys, ctx, query) {
+  var model = AI_CONFIG.openaiModel || 'gpt-5.4-mini';
   return fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -2206,7 +2443,7 @@ function callOpenAI(apiKey, sys, ctx, query) {
       'Authorization': 'Bearer ' + apiKey
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: model,
       max_tokens: 2048,
       messages: [
         { role: 'system', content: sys },
@@ -2288,19 +2525,438 @@ window.toggleAIHistory = function() {
 function loadAIConfigToSettings() {
   document.getElementById('ai-apikey').value = AI_CONFIG.apiKey || '';
   setAIProvider(AI_CONFIG.provider || 'gemini');
+  // restore model selection
+  var modelSelectVal = '';
+  if (AI_CONFIG.provider === 'gemini' && AI_CONFIG.geminiModel) modelSelectVal = 'gemini:' + AI_CONFIG.geminiModel;
+  else if (AI_CONFIG.provider === 'claude' && AI_CONFIG.claudeModel) modelSelectVal = 'claude:' + AI_CONFIG.claudeModel;
+  else if (AI_CONFIG.provider === 'openai' && AI_CONFIG.openaiModel) modelSelectVal = 'openai:' + AI_CONFIG.openaiModel;
+  var sel = document.getElementById('ai-model');
+  if (sel) sel.value = modelSelectVal;
 }
 
-// ============= PARTNER CRUD =============
+// ============= GPS / GEOLOCATION =============
+window.toggleGPS = function() {
+  var btn = document.getElementById('gps-btn');
+  if (CURRENT_GPS && GPS_MARKER) {
+    // re-center on current location
+    map.setView([CURRENT_GPS.lat, CURRENT_GPS.lng], 12);
+    return;
+  }
+  btn.classList.add('locating');
+  if (!navigator.geolocation) {
+    alert('このブラウザは位置情報に対応していません');
+    btn.classList.remove('locating');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    CURRENT_GPS = {
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      accuracy: pos.coords.accuracy,
+      ts: Date.now()
+    };
+    showGPSOnMap();
+    btn.classList.remove('locating');
+    btn.classList.add('active');
+    document.getElementById('nearby-btn').classList.add('visible');
+    showGPSInfo();
+  }, function(err){
+    btn.classList.remove('locating');
+    var msg = '位置情報取得失敗：';
+    if (err.code === 1) msg += '権限が拒否されました。設定アプリ→Safari→位置情報を許可してください';
+    else if (err.code === 2) msg += '位置情報が利用できません';
+    else if (err.code === 3) msg += 'タイムアウト';
+    else msg += err.message;
+    alert(msg);
+  }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+};
+
+function showGPSOnMap() {
+  if (!CURRENT_GPS || !map) return;
+  if (GPS_MARKER) map.removeLayer(GPS_MARKER);
+  var icon = L.divIcon({
+    className: '',
+    html: '<div class="gps-marker"></div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9]
+  });
+  GPS_MARKER = L.marker([CURRENT_GPS.lat, CURRENT_GPS.lng], { icon: icon, zIndexOffset: 1000 }).addTo(map);
+  map.setView([CURRENT_GPS.lat, CURRENT_GPS.lng], 11);
+}
+
+function showGPSInfo() {
+  var el = document.getElementById('gps-info');
+  if (!CURRENT_GPS || !el) return;
+  var pref = lookupPrefecture(CURRENT_GPS.lat, CURRENT_GPS.lng);
+  el.innerHTML = '📍 ' + CURRENT_GPS.lat.toFixed(4) + ', ' + CURRENT_GPS.lng.toFixed(4) +
+    ' (±' + Math.round(CURRENT_GPS.accuracy) + 'm)' +
+    (pref ? ' / ' + pref : '');
+  el.classList.add('visible');
+  setTimeout(function(){ el.classList.remove('visible'); }, 5000);
+}
+
+window.toggleNearby = function() {
+  if (!CURRENT_GPS) {
+    alert('まず現在地ボタン(📍)で位置情報を取得してください');
+    return;
+  }
+  NEARBY_MODE = !NEARBY_MODE;
+  var btn = document.getElementById('nearby-btn');
+  btn.classList.toggle('active', NEARBY_MODE);
+  if (NEARBY_MODE) {
+    var r = prompt('半径(km)を入力 (1〜100)', String(NEARBY_RADIUS_KM));
+    var n = parseFloat(r);
+    if (n && n > 0 && n <= 100) NEARBY_RADIUS_KM = n;
+  }
+  applyFilters();
+};
+
+function distanceKm(lat1, lng1, lat2, lng2) {
+  var R = 6371;
+  var dLat = (lat2-lat1) * Math.PI / 180;
+  var dLng = (lng2-lng1) * Math.PI / 180;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180) *
+    Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ============= PREFECTURE LOOKUP =============
+var PREFECTURE_BOUNDS = {
+  '北海道': [41.3, 45.7, 139.3, 146.0], '青森県': [40.2, 41.6, 139.4, 141.7], '岩手県': [38.8, 40.5, 140.6, 142.1],
+  '宮城県': [37.7, 39.0, 140.2, 141.7], '秋田県': [38.8, 40.5, 139.6, 140.9], '山形県': [37.7, 39.2, 139.4, 140.7],
+  '福島県': [36.7, 38.0, 139.1, 141.1], '茨城県': [35.7, 37.0, 139.6, 140.9], '栃木県': [36.1, 37.2, 139.3, 140.3],
+  '群馬県': [35.9, 37.0, 138.3, 139.7], '埼玉県': [35.7, 36.3, 138.7, 139.9], '千葉県': [34.9, 36.1, 139.7, 140.9],
+  '東京都': [35.4, 35.9, 138.9, 139.9], '神奈川県': [35.1, 35.7, 139.0, 139.8], '新潟県': [36.7, 38.6, 137.6, 139.9],
+  '富山県': [36.3, 37.0, 136.8, 137.7], '石川県': [36.1, 37.6, 136.2, 137.4], '福井県': [35.3, 36.3, 135.4, 136.8],
+  '山梨県': [35.2, 35.9, 138.2, 139.2], '長野県': [35.2, 37.0, 137.3, 138.9], '岐阜県': [35.1, 36.5, 136.3, 137.7],
+  '静岡県': [34.6, 35.7, 137.5, 139.2], '愛知県': [34.6, 35.4, 136.7, 137.8], '三重県': [33.7, 35.3, 135.8, 136.9],
+  '滋賀県': [34.8, 35.7, 135.8, 136.5], '京都府': [34.7, 35.8, 134.9, 136.0], '大阪府': [34.3, 35.0, 135.1, 135.8],
+  '兵庫県': [34.2, 35.7, 134.2, 135.5], '奈良県': [33.9, 34.8, 135.6, 136.2], '和歌山県': [33.4, 34.4, 135.0, 136.0],
+  '鳥取県': [35.1, 35.7, 133.1, 134.4], '島根県': [34.3, 35.6, 131.6, 133.4], '岡山県': [34.3, 35.4, 133.2, 134.4],
+  '広島県': [34.0, 35.1, 132.0, 133.5], '山口県': [33.7, 34.8, 130.8, 132.2], '徳島県': [33.5, 34.3, 133.6, 134.8],
+  '香川県': [34.0, 34.6, 133.4, 134.5], '愛媛県': [32.9, 34.3, 132.0, 133.7], '高知県': [32.7, 34.0, 132.5, 134.3],
+  '福岡県': [33.0, 34.0, 130.0, 131.3], '佐賀県': [32.9, 33.6, 129.7, 130.5], '長崎県': [32.6, 34.8, 128.6, 130.4],
+  '熊本県': [32.1, 33.3, 129.9, 131.2], '大分県': [32.7, 33.7, 130.8, 132.1], '宮崎県': [31.3, 32.8, 130.7, 131.9],
+  '鹿児島県': [27.0, 32.1, 128.4, 131.2], '沖縄県': [24.0, 27.9, 122.9, 131.4]
+};
+function lookupPrefecture(lat, lng) {
+  for (var pref in PREFECTURE_BOUNDS) {
+    var b = PREFECTURE_BOUNDS[pref];
+    if (lat >= b[0] && lat <= b[1] && lng >= b[2] && lng <= b[3]) return pref;
+  }
+  return null;
+}
+function getPrefectureFromLoc(loc) {
+  if (!loc) return '';
+  for (var pref in PREFECTURE_BOUNDS) {
+    if (loc.indexOf(pref) === 0 || loc.indexOf(pref.replace(/[県都府道]/, '')) === 0) return pref;
+  }
+  return '';
+}
+
+// ============= FILTERS =============
+function populatePrefectureFilter() {
+  var sel = document.getElementById('filter-prefecture');
+  if (!sel) return;
+  // Add all 47 prefectures
+  var preserved = sel.value;
+  sel.innerHTML = '<option value="">🗾 全都道府県</option>';
+  Object.keys(PREFECTURE_BOUNDS).forEach(function(pref){
+    var opt = document.createElement('option');
+    opt.value = pref;
+    opt.textContent = pref;
+    sel.appendChild(opt);
+  });
+  sel.value = preserved || FILTERS.prefecture || '';
+}
+
+window.applyFilters = function() {
+  var pref = document.getElementById('filter-prefecture');
+  var ind = document.getElementById('filter-industry');
+  FILTERS.prefecture = pref ? pref.value : '';
+  FILTERS.industry = ind ? ind.value : '';
+  saveLS(STORAGE_KEYS.FILTERS, FILTERS);
+  updateFilterStatus();
+  refreshMapLayer();
+};
+
+window.clearFilters = function() {
+  FILTERS = { prefecture: '', industry: '' };
+  saveLS(STORAGE_KEYS.FILTERS, FILTERS);
+  var pref = document.getElementById('filter-prefecture'); if (pref) pref.value = '';
+  var ind = document.getElementById('filter-industry'); if (ind) ind.value = '';
+  NEARBY_MODE = false;
+  document.getElementById('nearby-btn').classList.remove('active');
+  updateFilterStatus();
+  refreshMapLayer();
+};
+
+function updateFilterStatus() {
+  var s = document.getElementById('filter-status');
+  if (!s) return;
+  var parts = [];
+  if (FILTERS.prefecture) parts.push('<span class="accent">' + FILTERS.prefecture + '</span>');
+  if (FILTERS.industry) parts.push('<span class="accent">' + FILTERS.industry + '業</span>');
+  if (NEARBY_MODE && CURRENT_GPS) parts.push('<span class="accent">現在地±' + NEARBY_RADIUS_KM + 'km</span>');
+  s.innerHTML = parts.length ? '絞り込み: ' + parts.join(' / ') : '';
+}
+
+function entryMatchesFilters(entry) {
+  // Prefecture filter — prefer coordinates (robust nationwide), fall back to text
+  if (FILTERS.prefecture) {
+    var entryPref = entry.prefecture;
+    if (!entryPref && entry.lat && entry.lng) entryPref = lookupPrefecture(entry.lat, entry.lng);
+    if (!entryPref) entryPref = getPrefectureFromLoc(entry.loc || entry.city || entry.address || entry.location || '');
+    if (entryPref !== FILTERS.prefecture) return false;
+  }
+  // Industry filter
+  if (FILTERS.industry) {
+    var entryInd = (entry.industry || '').toString();
+    var matched = entryInd.indexOf(FILTERS.industry) >= 0;
+    // Also check industry code aliases
+    var aliases = {
+      '建設': ['総合工事', '建築工事', '住宅建築', '木造建築'],
+      '製造': ['食料品製造', '木材', '電子部品', '機械器具'],
+      '鉄鋼': ['鋼構造物', '溶接', '金属製品', '製鉄'],
+      '土木': ['土工', 'とび'],
+      '設備': ['管工事', '電気工事', '空調'],
+      '運輸': ['貨物', 'タクシー', 'バス', '倉庫'],
+      '小売': ['小売', '書店', '酒販', '衣料'],
+      '宿泊': ['ホテル', '旅館'],
+      '飲食': ['飲食店', 'レストラン'],
+      'サービス': ['理容', '美容', 'クリーニング']
+    };
+    if (!matched && aliases[FILTERS.industry]) {
+      matched = aliases[FILTERS.industry].some(function(a){ return entryInd.indexOf(a) >= 0; });
+    }
+    if (!matched) return false;
+  }
+  // Nearby filter
+  if (NEARBY_MODE && CURRENT_GPS && entry.lat && entry.lng) {
+    var d = distanceKm(CURRENT_GPS.lat, CURRENT_GPS.lng, entry.lat, entry.lng);
+    if (d > NEARBY_RADIUS_KM) return false;
+  }
+  return true;
+}
+
+function refreshMapLayer() {
+  // Rebuild all markers honoring filters, then re-show current layer
+  rebuildMarkers();
+  switchLayer(currentLayer, true);
+  updateSitesCount();
+}
+
+// ============= SITES (現場管理) =============
+window.addSite = function() {
+  var name = prompt('現場名（例：鳴門大鳴門橋メンテナンス）');
+  if (!name) return;
+  var addr = prompt('住所（例：徳島県鳴門市鳴門町土佐泊浦）');
+  if (!addr) return;
+  var lat = parseFloat(prompt('緯度（GPS取得済みなら現在地が候補）', CURRENT_GPS ? CURRENT_GPS.lat.toFixed(5) : ''));
+  var lng = parseFloat(prompt('経度', CURRENT_GPS ? CURRENT_GPS.lng.toFixed(5) : ''));
+  if (isNaN(lat) || isNaN(lng)) return alert('緯度・経度が必要です');
+  var client = prompt('元請け/クライアント（任意）') || '';
+  var startDate = prompt('開始日 (YYYY-MM-DD・任意)') || '';
+  var endDate = prompt('終了予定 (YYYY-MM-DD・任意)') || '';
+  var memo = prompt('メモ（任意）') || '';
+  var site = {
+    id: 'site_' + Date.now().toString(36),
+    name: name, address: addr, lat: lat, lng: lng,
+    client: client, startDate: startDate, endDate: endDate,
+    status: 'active', memo: memo, prefecture: lookupPrefecture(lat, lng),
+    createdAt: Date.now()
+  };
+  SITES.push(site);
+  saveLS(STORAGE_KEYS.SITES, SITES);
+  alert('現場を登録しました：' + name);
+  renderSitesList();
+  updateSitesCount();
+  if (typeof refreshMapLayer === 'function') refreshMapLayer();
+};
+
+window.deleteSite = function(id) {
+  if (!confirm('この現場を削除しますか？')) return;
+  SITES = SITES.filter(function(s){ return s.id !== id; });
+  saveLS(STORAGE_KEYS.SITES, SITES);
+  renderSitesList();
+  updateSitesCount();
+};
+
+window.setSiteStatus = function(id, status) {
+  var s = SITES.find(function(x){ return x.id === id; });
+  if (!s) return;
+  s.status = status;
+  saveLS(STORAGE_KEYS.SITES, SITES);
+  renderSitesList();
+};
+
+function updateSitesCount() {
+  var el = document.getElementById('sites-count');
+  if (el) el.textContent = SITES.length;
+}
+
+function renderSitesList() {
+  var c = document.getElementById('sites-list');
+  if (!c) return;
+  if (SITES.length === 0) {
+    c.innerHTML = '<div style="text-align:center;padding:30px;color:#8a6f5a;font-size:12px;line-height:1.6">現場がまだ登録されていません。<br>「+ 現場を追加」から始めてください。<br><br>原発・橋梁・水門・プラント案件等を登録すると、地図表示・チェックイン・訪問記録ができます。</div>';
+    return;
+  }
+  c.innerHTML = SITES.map(function(s){
+    var statusLabel = { active: '進行中', completed: '完了', cancelled: '中止' }[s.status] || s.status;
+    return '<div class="site-card">' +
+      '<div class="site-name">🏗 ' + escapeHtml(s.name) + '</div>' +
+      '<div class="site-meta">' + escapeHtml(s.address || '') + (s.prefecture ? ' (' + s.prefecture + ')' : '') + '</div>' +
+      (s.client ? '<div class="site-meta">元請け: ' + escapeHtml(s.client) + '</div>' : '') +
+      (s.startDate || s.endDate ? '<div class="site-meta">期間: ' + (s.startDate || '?') + ' 〜 ' + (s.endDate || '?') + '</div>' : '') +
+      '<span class="site-status ' + s.status + '">' + statusLabel + '</span>' +
+      (s.memo ? '<div style="font-size:11.5px;color:#3a2a28;margin-top:5px">' + escapeHtml(s.memo) + '</div>' : '') +
+      '<div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap">' +
+        '<button onclick="checkInToSite(\'' + s.id + '\')" style="font-size:11px;padding:4px 10px;background:#3a8a4a;color:#fff;border:none;border-radius:4px">📍 チェックイン</button>' +
+        '<button onclick="focusOnSite(\'' + s.id + '\')" style="font-size:11px;padding:4px 10px;background:#3a5a8a;color:#fff;border:none;border-radius:4px">🗾 地図で見る</button>' +
+        (s.status === 'active' ? '<button onclick="setSiteStatus(\'' + s.id + '\', \'completed\')" style="font-size:11px;padding:4px 10px;background:#fff;color:#3a2a28;border:1px solid #d8c4a8;border-radius:4px">完了</button>' : '') +
+        '<button onclick="deleteSite(\'' + s.id + '\')" style="font-size:11px;padding:4px 10px;background:#fff;color:#a01010;border:1px solid #d2453e;border-radius:4px">削除</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+window.focusOnSite = function(id) {
+  var s = SITES.find(function(x){ return x.id === id; });
+  if (!s || !map) return;
+  switchTab('map');
+  map.setView([s.lat, s.lng], 14);
+};
+
+// ============= CHECK-IN =============
+window.checkInToSite = function(siteId) {
+  if (!navigator.geolocation) {
+    alert('位置情報未対応');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var site = siteId ? SITES.find(function(x){ return x.id === siteId; }) : null;
+    var dist = site ? distanceKm(pos.coords.latitude, pos.coords.longitude, site.lat, site.lng) : null;
+    var memo = prompt('メモ (任意・現場の状況等)') || '';
+    var checkin = {
+      id: 'ci_' + Date.now().toString(36),
+      timestamp: Date.now(),
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      accuracy: pos.coords.accuracy,
+      siteId: siteId || null,
+      siteName: site ? site.name : '',
+      partnerId: null,
+      distanceFromSite: dist,
+      type: 'work',
+      note: memo
+    };
+    CHECKINS.push(checkin);
+    saveLS(STORAGE_KEYS.CHECKINS, CHECKINS);
+    var msg = '✓ チェックイン完了';
+    if (site && dist !== null) {
+      msg += '\n現場まで: ' + (dist < 1 ? (Math.round(dist*1000)) + 'm' : dist.toFixed(2) + 'km');
+      if (dist > 1) msg += '\n⚠️ 現場から離れています（' + dist.toFixed(1) + 'km）';
+    }
+    alert(msg);
+    renderCheckinsList();
+    if (typeof refreshMapLayer === 'function') refreshMapLayer();
+  }, function(err){
+    alert('位置情報取得失敗：' + err.message);
+  }, { enableHighAccuracy: true, timeout: 15000 });
+};
+
+window.deleteCheckin = function(id) {
+  if (!confirm('このチェックインを削除しますか？')) return;
+  CHECKINS = CHECKINS.filter(function(c){ return c.id !== id; });
+  saveLS(STORAGE_KEYS.CHECKINS, CHECKINS);
+  renderCheckinsList();
+};
+
+function renderCheckinsList() {
+  var c = document.getElementById('checkins-list');
+  if (!c) return;
+  if (CHECKINS.length === 0) {
+    c.innerHTML = '<div style="text-align:center;padding:20px;color:#8a6f5a;font-size:12px;line-height:1.6">チェックイン履歴なし</div>';
+    return;
+  }
+  var sorted = CHECKINS.slice().sort(function(a,b){ return b.timestamp - a.timestamp; }).slice(0, 50);
+  c.innerHTML = sorted.map(function(ci){
+    var d = new Date(ci.timestamp);
+    var timeStr = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+    return '<div class="checkin-card">' +
+      '<div class="ci-time">📍 ' + timeStr + (ci.siteName ? ' @ ' + escapeHtml(ci.siteName) : '') + '</div>' +
+      '<div class="ci-loc">' + ci.lat.toFixed(5) + ', ' + ci.lng.toFixed(5) + ' (±' + Math.round(ci.accuracy) + 'm)' + '</div>' +
+      (ci.distanceFromSite !== null && ci.distanceFromSite !== undefined ? '<div class="ci-loc">現場まで ' + (ci.distanceFromSite < 1 ? Math.round(ci.distanceFromSite*1000) + 'm' : ci.distanceFromSite.toFixed(2) + 'km') + '</div>' : '') +
+      (ci.note ? '<div class="ci-note">' + escapeHtml(ci.note) + '</div>' : '') +
+      '<div style="margin-top:6px"><button onclick="deleteCheckin(\'' + ci.id + '\')" style="font-size:10px;padding:3px 8px;background:#fff;color:#a01010;border:1px solid #d2453e;border-radius:3px">削除</button></div>' +
+    '</div>';
+  }).join('');
+}
+
+// ============= VISIT RECORDS (in partner cards) =============
+window.addVisitRecord = function(partnerId) {
+  var p = PARTNERS.find(function(x){ return x.id === partnerId; });
+  if (!p) return;
+  if (!navigator.geolocation) {
+    alert('位置情報未対応');
+    return;
+  }
+  if (!confirm('現在の位置情報で訪問記録を作成しますか？')) return;
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var memo = prompt('訪問メモ（商談内容・話題等）') || '';
+    if (!p.visits) p.visits = [];
+    p.visits.unshift({
+      ts: Date.now(),
+      date: new Date().toISOString().substring(0,10),
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      accuracy: pos.coords.accuracy,
+      memo: memo
+    });
+    saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
+    alert('✓ 訪問記録を追加しました');
+    renderPartnerView();
+    refreshMapLayer(); // 緑の訪問マーカーを地図に反映
+  }, function(err){
+    alert('位置情報取得失敗：' + err.message);
+  }, { enableHighAccuracy: true });
+};
+
+window.deleteVisit = function(partnerId, visitTs) {
+  var p = PARTNERS.find(function(x){ return x.id === partnerId; });
+  if (!p || !p.visits) return;
+  if (!confirm('この訪問記録を削除しますか？')) return;
+  p.visits = p.visits.filter(function(v){ return v.ts !== visitTs; });
+  saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
+  renderPartnerView();
+  refreshMapLayer();
+};
+
+
 function genId() { return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 window.openEditPartner = function(id) {
+  // Populate prefecture dropdown
+  var prefSel = document.getElementById('ep-prefecture');
+  if (prefSel && prefSel.options.length <= 1) {
+    Object.keys(PREFECTURE_BOUNDS).forEach(function(pref){
+      var opt = document.createElement('option');
+      opt.value = pref; opt.textContent = pref;
+      prefSel.appendChild(opt);
+    });
+  }
   document.getElementById('ep-id').value = id || '';
   var p = id ? PARTNERS.find(function(x){ return x.id===id; }) : null;
   document.getElementById('ep-name').value = p ? p.name : '';
+  if (prefSel) prefSel.value = p ? (p.prefecture||'') : '';
   document.getElementById('ep-city').value = p ? (p.city||'') : '';
   document.getElementById('ep-industry').value = p ? (p.industry||'') : '';
   document.getElementById('ep-relation').value = p ? (p.relation||'') : '';
   document.getElementById('ep-volume').value = p ? (p.volume||'') : '';
   document.getElementById('ep-terms').value = p ? (p.terms||'') : '';
+  document.getElementById('ep-phone').value = p ? (p.phone||'') : '';
+  document.getElementById('ep-email').value = p ? (p.email||'') : '';
   document.getElementById('ep-contact').value = p ? (p.contact||'') : '';
   document.getElementById('ep-score').value = p ? (p.customScore||'') : '';
   document.getElementById('ep-notes').value = p ? (p.notes||'') : '';
@@ -2316,24 +2972,29 @@ window.savePartner = function() {
   var name = document.getElementById('ep-name').value.trim();
   if (!name) { alert('会社名は必須です'); return; }
   var id = document.getElementById('ep-id').value;
+  var existing = id ? PARTNERS.find(function(x){ return x.id===id; }) : null;
   var data = {
     id: id || genId(),
     name: name,
+    prefecture: document.getElementById('ep-prefecture').value || '',
     city: document.getElementById('ep-city').value.trim(),
     industry: document.getElementById('ep-industry').value.trim(),
     relation: document.getElementById('ep-relation').value,
     volume: parseFloat(document.getElementById('ep-volume').value) || 0,
     terms: document.getElementById('ep-terms').value.trim(),
+    phone: document.getElementById('ep-phone').value.trim(),
+    email: document.getElementById('ep-email').value.trim(),
     contact: document.getElementById('ep-contact').value.trim(),
     customScore: document.getElementById('ep-score').value ? parseInt(document.getElementById('ep-score').value, 10) : null,
     notes: document.getElementById('ep-notes').value.trim(),
+    visits: existing ? (existing.visits || []) : [],
+    createdAt: existing ? existing.createdAt : new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
   if (id) {
     var idx = PARTNERS.findIndex(function(x){ return x.id===id; });
     if (idx >= 0) PARTNERS[idx] = data;
   } else {
-    data.createdAt = data.updatedAt;
     PARTNERS.push(data);
   }
   saveLS(STORAGE_KEYS.PARTNERS, PARTNERS);
@@ -2387,9 +3048,18 @@ function partnerRiskScore(p) {
   return calcRiskScore(fake).score;
 }
 function renderPartnerView() {
+  // Render sites & checkins first
+  renderSitesList();
+  renderCheckinsList();
+  updateSitesCount();
+  var siteDispEl = document.getElementById('sites-count-display');
+  if (siteDispEl) siteDispEl.textContent = SITES.length + ' 件';
+  var ciCountEl = document.getElementById('checkins-count');
+  if (ciCountEl) ciCountEl.textContent = CHECKINS.length + ' 件';
+
   var q = (document.getElementById('partner-search') ? document.getElementById('partner-search').value : '').trim().toLowerCase();
   var filtered = q ? PARTNERS.filter(function(p){
-    return (p.name+' '+(p.city||'')+' '+(p.industry||'')+' '+(p.notes||'')+' '+(p.relation||'')).toLowerCase().indexOf(q) >= 0;
+    return (p.name+' '+(p.city||'')+' '+(p.prefecture||'')+' '+(p.industry||'')+' '+(p.phone||'')+' '+(p.email||'')+' '+(p.notes||'')+' '+(p.relation||'')).toLowerCase().indexOf(q) >= 0;
   }) : PARTNERS.slice();
 
   // Summary
@@ -2440,7 +3110,36 @@ function renderPartnerView() {
         var relTag = p.relation ? '<span class="partner-relation">'+p.relation+'</span>' : '';
         var volTag = p.volume ? '<span class="partner-volume">月 '+(p.volume>=10000?(p.volume/10000).toFixed(1)+'億':p.volume.toLocaleString()+'万')+'円</span>' : '';
         var noteHtml = p.notes ? '<div class="partner-note">'+p.notes.replace(/\n/g,'<br>')+'</div>' : '';
-        return '<div class="partner-card"><div class="partner-card-head"><div style="flex:1"><div class="partner-card-name">'+p.name+' '+scoreBadge+'</div><div class="partner-card-meta">'+(p.city||'')+(p.industry?' / '+p.industry:'')+(p.contact?' / '+p.contact:'')+'</div></div><div class="partner-card-actions"><button class="partner-icon-btn" onclick="openEditPartner(\''+p.id+'\')">✎</button></div></div><div class="partner-card-tags">'+relTag+volTag+(p.terms?'<span class="partner-volume">'+p.terms+'</span>':'')+'</div>'+noteHtml+'</div>';
+        var locStr = (p.prefecture||'') + (p.city||'');
+        var phoneLink = p.phone ? '<a href="tel:'+escapeHtml(p.phone)+'" style="color:#3a5a8a;text-decoration:none;font-family:JetBrains Mono;font-size:11px">📞 '+escapeHtml(p.phone)+'</a>' : '';
+        var emailLink = p.email ? '<a href="mailto:'+escapeHtml(p.email)+'" style="color:#3a5a8a;text-decoration:none;font-size:11px">✉️ '+escapeHtml(p.email)+'</a>' : '';
+        // Visits
+        var visits = p.visits || [];
+        var visitsHtml = '';
+        if (visits.length > 0) {
+          var recent = visits.slice(0, 3);
+          visitsHtml = '<div class="visit-list">' + recent.map(function(v){
+            return '<div class="visit-item">' +
+              '<div class="v-date">📍 '+v.date+(v.lat?' <span class="v-loc">'+v.lat.toFixed(3)+','+v.lng.toFixed(3)+'</span>':'')+'</div>' +
+              (v.memo?'<div class="v-memo">'+escapeHtml(v.memo)+'</div>':'') +
+              '<button onclick="event.stopPropagation();deleteVisit(\''+p.id+'\','+v.ts+')" style="font-size:9px;padding:1px 6px;margin-top:2px;background:#fff;color:#a01010;border:1px solid #d2453e;border-radius:3px">削除</button>' +
+              '</div>';
+          }).join('') + (visits.length > 3 ? '<div style="font-size:10px;color:#8a6f5a;text-align:center;padding:3px">+ さらに'+(visits.length-3)+'件</div>' : '') + '</div>';
+        }
+        var contactRow = (phoneLink || emailLink) ? '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:5px 0">'+phoneLink+emailLink+'</div>' : '';
+        return '<div class="partner-card">' +
+          '<div class="partner-card-head"><div style="flex:1">' +
+            '<div class="partner-card-name">'+escapeHtml(p.name)+' '+scoreBadge+'</div>' +
+            '<div class="partner-card-meta">'+escapeHtml(locStr)+(p.industry?' / '+escapeHtml(p.industry):'')+(p.contact?' / '+escapeHtml(p.contact):'')+'</div>' +
+          '</div><div class="partner-card-actions">' +
+            '<button class="partner-icon-btn" onclick="addVisitRecord(\''+p.id+'\')" title="訪問記録">📍</button>' +
+            '<button class="partner-icon-btn" onclick="openEditPartner(\''+p.id+'\')">✎</button>' +
+          '</div></div>' +
+          '<div class="partner-card-tags">'+relTag+volTag+(p.terms?'<span class="partner-volume">'+escapeHtml(p.terms)+'</span>':'')+'</div>' +
+          contactRow +
+          noteHtml +
+          visitsHtml +
+        '</div>';
       }).join('');
     }
   }
@@ -2943,13 +3642,24 @@ window.beginApp = function() {
   // データ読込を試みてからマップ初期化
   loadData().finally(function(){
     setTimeout(function() {
-      initMap();
-      document.getElementById('counter-total').textContent = BANKRUPT.length;
-      // NEW バッジ用CSS追加
+      populatePrefectureFilter();          // 47都道府県をドロップダウンに投入
+      restoreFilterUI();                   // 保存済みフィルタを復元
+      initMap();                           // フィルタ適用済みでマーカー構築
+      document.getElementById('counter-total').textContent = visibleCount();
+      updateSitesCount();
+      updateFilterStatus();
       addNewBadges();
     }, 300);
   });
 };
+
+// 保存済みフィルタ値をドロップダウンに反映（適用はinitMap内rebuildMarkersで実施）
+function restoreFilterUI() {
+  var pref = document.getElementById('filter-prefecture');
+  var ind = document.getElementById('filter-industry');
+  if (pref && FILTERS.prefecture) pref.value = FILTERS.prefecture;
+  if (ind && FILTERS.industry) ind.value = FILTERS.industry;
+}
 
 function addNewBadges() {
   // 直近7日以内の新規倒産マーカーに NEW バッジを付与（情報カードで表示）
